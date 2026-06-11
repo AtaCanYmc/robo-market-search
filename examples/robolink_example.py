@@ -1,8 +1,9 @@
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
-
 from robolink_search import RobolinkClient
+
+# Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
+sys.path.append(str(Path(__file__).parent.parent))
 
 if __name__ == "__main__":
     print("--- Robolink İstemcisi Başlatılıyor ---")
