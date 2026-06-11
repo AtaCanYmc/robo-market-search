@@ -1,6 +1,6 @@
 import json
-import re
 import os
+import re
 from curl_cffi import requests
 from dotenv import load_dotenv
 
@@ -22,35 +22,37 @@ class RobolinkClient:
 
     def _find_current_token(self):
         """
-        Cloudflare'i taklit ederek sitenin kaynak kodundan güncel tokenı çeker.
+        Sitenin kaynak kodundan aisearch JS dosyasını bulur ve token'ı doğrudan içinden çıkarır.
+        Bu yöntem Playwright (tarayıcı) kullanmadan çok daha hızlı ve garantili çalışır.
         """
         try:
-            # impersonate parametresi Cloudflare korumasını açar
+            # 1. Ana sayfadan aisearch.app JS dosyasının URL'sini bul
             response = requests.get(
-                self.base_site_url + "?search_provider=aisearch&query=test",
+                self.base_site_url + "?search_provider=aisearch",
                 headers=self.headers,
                 impersonate="safari15_5"
             )
-
-            js_files = re.findall(r'src="([^"]+\.js)"', response.text)
-            print(js_files)
-
-            for js_url in js_files:
-                if not js_url.startswith("http"):
-                    js_url = self.base_site_url + js_url
-
+            
+            js_url_match = re.search(r'src=["\'](https://cdn\.aisearch\.app/[^"\']+\.js)["\']', response.text)
+            
+            if js_url_match:
+                js_url = js_url_match.group(1)
+                
+                # 2. JS dosyasını indir
                 js_response = requests.get(js_url, headers=self.headers, impersonate="safari15_5")
                 js_content = js_response.text
-
-                token_match = re.search(r'client-token["\']?\s*:\s*["\']([^"\']+)["\']', js_content)
-                if not token_match:
-                    token_match = re.search(r'client-token=([^&"\']+)', js_content)
-
+                
+                # 3. 2924 (Robolink site id) ile eşleşen token'ı bul: V2.init("2924", "TOKEN", ...)
+                token_match = re.search(r'\("2924"\s*,\s*"([^"]+)"', js_content)
                 if token_match:
                     actual_token = token_match.group(1)
-                    print(f"[Sistem] Cloudflare Atlatıldı! Güncel Token: {actual_token}")
+                    print(f"[Sistem] JS içinden güncel token bulundu: {actual_token}")
                     return actual_token
-
+                else:
+                    print("[Sistem] aisearch JS dosyası bulundu ancak token ayıklanamadı.")
+            else:
+                print("[Sistem] aisearch JS URL'si sayfa kaynağında bulunamadı.")
+                
         except Exception as e:
             print(f"Token aranırken hata oluştu: {e}")
 
