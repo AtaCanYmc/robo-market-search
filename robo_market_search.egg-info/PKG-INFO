@@ -9,7 +9,7 @@ Keywords: robotistan,robolink,robo90,direncnet,search,scraper,api
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: curl_cffi~=0.15.0
+Requires-Dist: curl_cffi>=0.5.10
 Dynamic: license-file
 
 # Robo Market Search
