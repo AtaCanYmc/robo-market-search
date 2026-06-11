@@ -11,13 +11,17 @@ class Robo90Client:
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
         }
 
-    def search_component(self, query: str, page: int = 1):
+    def search_component(self, query: str, page: int = 1, stock: int = 1):
         """
         Robo90 üzerinde arama yapar ve sadece stokta olan ürünleri döndürür.
+
+        :arg query: Arama kelimesi
+        :arg page: Sayfa numarası (1'den başlayarak)
+        :arg stock: 1 ise sadece stokta olan ürünler, 0 ise tüm ürünler (stokta olmayanlar dahil) döner.
         """
         # URL'yi oluştur: stokta olanlar (stock=1) ve limit
         encoded_query = urllib.parse.quote(query)
-        target_url = f"{self.base_url}?q={encoded_query}&stock=1&pg={page}"
+        target_url = f"{self.base_url}?q={encoded_query}&stock={stock}&pg={page}"
 
         try:
             # curl_cffi requests kullanarak engellemeleri aşmak için impersonate kullanılabilir
