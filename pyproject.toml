@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "robolink-search"
+name = "tr-robo-search"
 version = "0.1.0"
 authors = [
   { name="Author Name", email="author@example.com" },
 ]
-description = "A client library to search Robolink Market using their aisearch provider."
+description = "A client library to search Robolink, Robotistan, Direncnet Market using their aisearch provider."
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
@@ -17,4 +17,4 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/robolink-search"
+"Homepage" = "https://github.com/AtaCanYmc/tr-robo-search"
