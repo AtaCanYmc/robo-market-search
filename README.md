@@ -1,21 +1,45 @@
-# Robolink Search
+# Robo Market Search
 
-Robolink Market üzerinde hızlı ve dinamik arama yapmanızı sağlayan Python istemci kütüphanesi.
+Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python istemci kütüphanesi.
+
+## Özellikler
+- **Unified Search (Birleştirilmiş Arama)**: 4 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
+- **Standart Veri Tipi**: Tüm sonuçlar, standart `Product` objesi olarak döner.
+- **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek (regex ile ana sayfalardan kazıyarak) kesintisiz çalışır.
 
 ## Kurulum
 
+Henüz yayın aşamasında, manuel kurulum için:
 ```bash
-pip install robolink-search
+git clone https://github.com/AtaCanYmc/robo-market-search.git
+cd robo-market-search
+pip install -e .
 ```
 
-## Kullanım
+(Yakında PyPI üzerinden `pip install robo-market-search` ile yüklenebilecektir.)
+
+## Hızlı Başlangıç (Birleştirilmiş Arama)
 
 ```python
-from robolink_search import RobolinkClient
+from robo_market_search import UnifiedSearchClient
 
-client = RobolinkClient()
-results = client.search_component("esp32", limit=3)
+client = UnifiedSearchClient()
+products = client.search(query="arduino", limit_per_store=5)
 
-for idx, item in enumerate(results, 1):
-    print(f"{idx}. {item.get('name')} - Fiyat: {item.get('price')} TL")
+for p in products:
+    print(f"[{p.store}] {p.name} - {p.price} {p.currency} (Stok: {p.in_stock})")
 ```
+
+## Bireysel Market Araması
+
+Sadece belirli bir markette arama yapmak isterseniz:
+
+```python
+from robo_market_search import RobotistanClient
+
+client = RobotistanClient()
+products = client.search_component("esp32", limit=3)
+```
+
+## Lisans
+MIT License

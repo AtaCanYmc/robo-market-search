@@ -1,12 +1,10 @@
 import json
-import os
 import re
 from typing import List
 from curl_cffi import requests
-from dotenv import load_dotenv
-from robo_shared.models import Product
 
-load_dotenv()
+from robo_market_search.shared.constants import ROBOLINK_FALLBACK_TOKEN
+from robo_market_search.shared.models import Product
 
 
 class RobolinkClient:
@@ -34,32 +32,32 @@ class RobolinkClient:
                 headers=self.headers,
                 impersonate="safari15_5"
             )
-            
+
             js_url_match = re.search(r'src=["\'](https://cdn\.aisearch\.app/[^"\']+\.js)["\']', response.text)
-            
+
             if js_url_match:
                 js_url = js_url_match.group(1)
-                
+
                 # 2. JS dosyasını indir
                 js_response = requests.get(js_url, headers=self.headers, impersonate="safari15_5")
                 js_content = js_response.text
-                
+
                 # 3. 2924 (Robolink site id) ile eşleşen token'ı bul: V2.init("2924", "TOKEN", ...)
                 token_match = re.search(r'\("2924"\s*,\s*"([^"]+)"', js_content)
                 if token_match:
                     actual_token = token_match.group(1)
-                    print(f"[Sistem] JS içinden güncel token bulundu: {actual_token}")
+                    print(f"[RobolinkClient] JS içinden güncel token bulundu: {actual_token}")
                     return actual_token
                 else:
-                    print("[Sistem] aisearch JS dosyası bulundu ancak token ayıklanamadı.")
+                    print("[RobolinkClient] aisearch JS dosyası bulundu ancak token ayıklanamadı.")
             else:
-                print("[Sistem] aisearch JS URL'si sayfa kaynağında bulunamadı.")
-                
-        except Exception as e:
-            print(f"Token aranırken hata oluştu: {e}")
+                print("[RobolinkClient] aisearch JS URL'si sayfa kaynağında bulunamadı.")
 
-        print("[Sistem] Dinamik token bulunamadı, fallback token kullanılıyor.")
-        return os.environ.get("ROBOLINK_FALLBACK_TOKEN", None)
+        except Exception as e:
+            print(f"[RobolinkClient] Token aranırken hata oluştu: {e}")
+
+        print("[RobolinkClient] Dinamik token bulunamadı, fallback token kullanılıyor.")
+        return ROBOLINK_FALLBACK_TOKEN
 
     def search_component(self, query: str, limit: int = 5) -> List[Product]:
         """
@@ -89,37 +87,28 @@ class RobolinkClient:
             data = json.loads(text)
 
             items = data.get("products", [])
-            
+
             parsed_products = []
-            for item in items:
-                url_path = item.get("url", "")
+            for itm in items:
+                url_path = itm.get("url", "")
                 full_url = url_path if url_path.startswith("http") else f"{self.base_site_url}{url_path}"
-                
+
                 # Image URL parsing
                 image_url = ""
-                images = item.get("images", [])
+                images = itm.get("images", [])
                 if images:
                     image_url = images[0]
-                
+
                 parsed_products.append(Product(
-                    name=item.get("name", "Ürün Adı Yok"),
-                    price=float(item.get("price", 0.0)),
-                    currency=item.get("currency", "TL"),
+                    name=itm.get("name", "Ürün Adı Yok"),
+                    price=float(itm.get("price", 0.0)),
+                    currency=itm.get("currency", "TL"),
                     url=full_url,
                     image_url=image_url,
                     store="Robolink",
-                    in_stock=item.get("inStock", True)
+                    in_stock=itm.get("inStock", True)
                 ))
             return parsed_products
         except Exception as e:
-            print(f"Arama yapılırken hata oluştu: {e}")
+            print(f"[RobolinkClient] Arama yapılırken hata oluştu: {e}")
             return []
-
-
-# --- Test Main ---
-if __name__ == "__main__":
-    client = RobolinkClient()
-    results = client.search_component("esp32", limit=3)
-
-    for idx, item in enumerate(results, 1):
-        print(f"{idx}. {item.get('name')} - Fiyat: {item.get('price')} TL")

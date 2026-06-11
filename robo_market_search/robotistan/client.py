@@ -1,18 +1,16 @@
 from curl_cffi import requests
 import uuid
 import re
-import os
+import json
 from typing import List
-from dotenv import load_dotenv
-from robo_shared.models import Product
-
-load_dotenv()
+from robo_market_search.shared.models import Product
+from robo_market_search.shared.constants import ROBOTISTAN_FALLBACK_TOKEN
 
 
 class RobotistanClient:
     def __init__(self, fallback_token: str = None):
         if fallback_token is None:
-            fallback_token = os.getenv("ROBOTISTAN_FALLBACK_TOKEN", "e9c72484-3c49-4e2d-bfef-4d7ce838d87b")
+            fallback_token = ROBOTISTAN_FALLBACK_TOKEN
             
         self.headers = {
             "Content-Type": "application/json",

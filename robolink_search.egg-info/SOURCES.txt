@@ -1,9 +1,0 @@
-README.md
-pyproject.toml
-robolink_search/__init__.py
-robolink_search/client.py
-robolink_search.egg-info/PKG-INFO
-robolink_search.egg-info/SOURCES.txt
-robolink_search.egg-info/dependency_links.txt
-robolink_search.egg-info/requires.txt
-robolink_search.egg-info/top_level.txt

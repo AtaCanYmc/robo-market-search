@@ -3,18 +3,22 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tr-robo-search"
+name = "robo-market-search"
 version = "0.1.0"
 authors = [
-  { name="Author Name", email="author@example.com" },
+  { name="Ata Can", email="atacanymc@gmail.com" },
 ]
-description = "A client library to search Robolink, Robotistan, Direncnet Market using their aisearch provider."
+description = "A unified Python client library to search Robolink, Robotistan, Robo90, and Direncnet."
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "curl_cffi~=0.15.0",
-    "python-dotenv~=1.2.2"
+    "curl_cffi~=0.15.0"
 ]
+license = { text = "MIT" }
+keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api"]
 
 [project.urls]
-"Homepage" = "https://github.com/AtaCanYmc/tr-robo-search"
+"Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
+
+[tool.setuptools.packages.find]
+include = ["robo_market_search", "robo_market_search.*"]

@@ -1,11 +1,11 @@
 import concurrent.futures
 from typing import List
 
-from robo_shared.models import Product
-from robolink_search import RobolinkClient
-from robotistan_search import RobotistanClient
-from robo90_search import Robo90Client
-from direncnet_search import DirencnetClient
+from robo_market_search.shared.models import Product
+from robo_market_search.robolink.client import RobolinkClient
+from robo_market_search.robotistan.client import RobotistanClient
+from robo_market_search.robo90.client import Robo90Client
+from robo_market_search.direncnet.client import DirencnetClient
 
 
 class UnifiedSearchClient:

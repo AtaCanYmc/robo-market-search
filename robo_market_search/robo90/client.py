@@ -3,7 +3,7 @@ from curl_cffi import requests
 import re
 import json
 import urllib.parse
-from robo_shared.models import Product
+from robo_market_search.shared.models import Product
 
 
 class Robo90Client:

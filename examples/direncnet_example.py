@@ -4,7 +4,7 @@ from pathlib import Path
 # Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
 sys.path.append(str(Path(__file__).parent.parent))
 
-from direncnet_search import DirencnetClient
+from robo_market_search import DirencnetClient
 
 if __name__ == "__main__":
     print("--- Direncnet İstemcisi Başlatılıyor ---")

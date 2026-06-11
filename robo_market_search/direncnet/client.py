@@ -2,7 +2,7 @@ from typing import List
 from curl_cffi import requests
 import re
 import json
-from robo_shared.models import Product
+from robo_market_search.shared.models import Product
 
 
 class DirencnetClient:

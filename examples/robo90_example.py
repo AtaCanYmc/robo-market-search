@@ -4,7 +4,7 @@ from pathlib import Path
 # Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
 sys.path.append(str(Path(__file__).parent.parent))
 
-from robo90_search import Robo90Client
+from robo_market_search import Robo90Client
 
 if __name__ == "__main__":
     print("--- Robo90 İstemcisi Başlatılıyor ---")
