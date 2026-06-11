@@ -12,7 +12,7 @@ description = "A unified Python client library to search Robolink, Robotistan, R
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "curl_cffi~=0.15.0"
+    "curl_cffi>=0.5.10"
 ]
 license = { text = "MIT" }
 keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api"]
