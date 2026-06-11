@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robolink-search"
+version = "0.1.0"
+authors = [
+  { name="Author Name", email="author@example.com" },
+]
+description = "A client library to search Robolink Market using their aisearch provider."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "curl_cffi~=0.15.0",
+    "python-dotenv~=1.2.2"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/robolink-search"
