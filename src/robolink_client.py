@@ -57,7 +57,7 @@ class RobolinkClient:
             print(f"Token aranırken hata oluştu: {e}")
 
         print("[Sistem] Dinamik token bulunamadı, fallback token kullanılıyor.")
-        return os.environ.get("FALLBACK_TOKEN", "8slGSE3mxcMPePm2f5U5E-sWahphkQdA")
+        return os.environ.get("ROBOLINK_FALLBACK_TOKEN", None)
 
     def search_component(self, query: str, limit: int = 5):
         """
