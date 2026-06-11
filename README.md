@@ -9,14 +9,11 @@ Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotis
 
 ## Kurulum
 
-Henüz yayın aşamasında, manuel kurulum için:
-```bash
-git clone https://github.com/AtaCanYmc/robo-market-search.git
-cd robo-market-search
-pip install -e .
-```
+PyPI üzerinden doğrudan kurabilirsiniz:
 
-(Yakında PyPI üzerinden `pip install robo-market-search` ile yüklenebilecektir.)
+```bash
+pip install robo-market-search
+```
 
 ## Hızlı Başlangıç (Birleştirilmiş Arama)
 
