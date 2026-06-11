@@ -1,7 +1,9 @@
+from typing import List
 from curl_cffi import requests
 import re
 import json
 import urllib.parse
+from robo_shared.models import Product
 
 
 class Robo90Client:
@@ -11,7 +13,7 @@ class Robo90Client:
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
         }
 
-    def search_component(self, query: str, page: int = 1, stock: int = 1):
+    def search_component(self, query: str, page: int = 1, stock: int = 1) -> List[Product]:
         """
         Robo90 üzerinde arama yapar ve sadece stokta olan ürünleri döndürür.
 
@@ -37,7 +39,34 @@ class Robo90Client:
             for p in raw_products:
                 # JSON karakter kaçışlarını (escape) temizle ve objeye dönüştür
                 clean_p = p.replace("\\'", "'").replace('\\"', '"')
-                stoktaki_urunler.append(json.loads(clean_p))
+                try:
+                    item = json.loads(clean_p)
+                    
+                    # URL ve Price parsing
+                    url_path = item.get("url", "")
+                    full_url = url_path if url_path.startswith("http") else f"https://www.robo90.com{url_path}"
+                    
+                    price_str = str(item.get("total_sale_price", "0.0")).replace(",", ".")
+                    try:
+                        price = float(price_str)
+                    except ValueError:
+                        price = 0.0
+                        
+                    image_url = ""
+                    if "image" in item:
+                        image_url = item["image"]
+                        
+                    stoktaki_urunler.append(Product(
+                        name=item.get("name", "Ürün Adı Yok"),
+                        price=price,
+                        currency="TL",
+                        url=full_url,
+                        image_url=image_url,
+                        store="Robo90",
+                        in_stock=stock == 1 or item.get("stockAmount", 1) > 0
+                    ))
+                except json.JSONDecodeError:
+                    continue
 
             return stoktaki_urunler
 

@@ -1,9 +1,10 @@
 import sys
 from pathlib import Path
-from robo90_search import Robo90Client
 
 # Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
 sys.path.append(str(Path(__file__).parent.parent))
+
+from robo90_search import Robo90Client
 
 if __name__ == "__main__":
     print("--- Robo90 İstemcisi Başlatılıyor ---")
@@ -17,10 +18,9 @@ if __name__ == "__main__":
     if robo90_products:
         print(f"Toplam {len(robo90_products)} ürün bulundu (Robo90):\n")
         for index, item in enumerate(robo90_products, 1):
-            name = item.get("name", "Ürün Adı Yok")
-            price = item.get("total_sale_price", "Fiyat Yok")
-            print(f"[{index}] {name}")
-            print(f"    💰 Fiyat: {price} TL")
+            print(f"[{index}] {item.name}")
+            print(f"    💰 Fiyat: {item.price} {item.currency}")
+            print(f"    🔗 Link: {item.url}")
             print("-" * 50)
     else:
         print("❌ Robo90 aramasında ürün dönmedi.")

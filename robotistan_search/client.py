@@ -2,7 +2,9 @@ from curl_cffi import requests
 import uuid
 import re
 import os
+from typing import List
 from dotenv import load_dotenv
+from robo_shared.models import Product
 
 load_dotenv()
 
@@ -55,7 +57,7 @@ class RobotistanClient:
         print("[Sistem] Dinamik token bulunamadı, fallback token kullanılıyor.")
         return fallback_token
 
-    def search_component(self, query: str, limit: int = 200, page: int = 1):
+    def search_component(self, query: str, limit: int = 200, page: int = 1) -> List[Product]:
         """
         Robotistan üzerinde Segmentify altyapısı kullanılarak arama yapar.
 
@@ -97,8 +99,28 @@ class RobotistanClient:
             data = response.json()
 
             if "search" in data and len(data["search"]) > 0 and len(data["search"][0]) > 0:
-                all_products = data["search"][0][0].get("products", [])
-                return all_products
+                raw_products = data["search"][0][0].get("products", [])
+                parsed_products = []
+                for item in raw_products:
+                    url_path = item.get("url", "")
+                    full_url = url_path if url_path.startswith("http") else f"https:{url_path}" if url_path.startswith("//") else f"https://www.robotistan.com{url_path}"
+                    
+                    price_str = str(item.get("price", "0.0")).replace(",", ".")
+                    try:
+                        price = float(price_str)
+                    except ValueError:
+                        price = 0.0
+                        
+                    parsed_products.append(Product(
+                        name=item.get("name", "Ürün Adı Yok"),
+                        price=price,
+                        currency="TL",
+                        url=full_url,
+                        image_url=item.get("image", ""),
+                        store="Robotistan",
+                        in_stock=item.get("inStock", True)
+                    ))
+                return parsed_products
             else:
                 return []
 

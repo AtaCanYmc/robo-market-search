@@ -1,9 +1,10 @@
 import sys
 from pathlib import Path
-from direncnet_search import DirencnetClient
 
 # Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
 sys.path.append(str(Path(__file__).parent.parent))
+
+from direncnet_search import DirencnetClient
 
 if __name__ == "__main__":
     print("--- Direncnet İstemcisi Başlatılıyor ---")
@@ -20,10 +21,9 @@ if __name__ == "__main__":
         print(f"Toplam {len(products)} ürün bulundu (Direncnet):\n")
 
         for index, item in enumerate(products, 1):
-            name = item.get("name", "Ürün Adı Yok")
-            price = item.get("total_sale_price", "Fiyat Yok")
-            print(f"[{index}] {name}")
-            print(f"    💰 Fiyat: {price} TL")
+            print(f"[{index}] {item.name}")
+            print(f"    💰 Fiyat: {item.price} {item.currency}")
+            print(f"    🔗 Link: {item.url}")
             print("-" * 50)
     else:
         print("❌ Direncnet aramasında ürün dönmedi.")

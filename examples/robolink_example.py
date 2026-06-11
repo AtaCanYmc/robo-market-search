@@ -1,9 +1,10 @@
 import sys
 from pathlib import Path
-from robolink_search import RobolinkClient
 
 # Kütüphaneyi lokal test edebilmek için ana dizini path'e ekliyoruz
 sys.path.append(str(Path(__file__).parent.parent))
+
+from robolink_search import RobolinkClient
 
 if __name__ == "__main__":
     print("--- Robolink İstemcisi Başlatılıyor ---")
@@ -25,17 +26,9 @@ if __name__ == "__main__":
     if products:
         print(f"Toplam {len(products)} ürün bulundu:\n")
         for index, item in enumerate(products, 1):
-            name = item.get("name", "Ürün Adı Yok")
-            price = item.get("price", "Fiyat Yok")
-            currency = item.get("currency", "TL")
-            url_path = item.get("url", "")
-
-            # Tam URL oluşturma
-            full_url = url_path if url_path.startswith("http") else f"{client.base_site_url}{url_path}"
-
-            print(f"[{index}] {name}")
-            print(f"    💰 Fiyat: {price} {currency}")
-            print(f"    🔗 Link:  {full_url}")
+            print(f"[{index}] {item.name}")
+            print(f"    💰 Fiyat: {item.price} {item.currency}")
+            print(f"    🔗 Link:  {item.url}")
             print("-" * 50)
     else:
         print("❌ Arama sonucunda hiçbir ürün dönmedi veya bir hata oluştu.")

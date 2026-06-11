@@ -1,8 +1,10 @@
 import json
 import os
 import re
+from typing import List
 from curl_cffi import requests
 from dotenv import load_dotenv
+from robo_shared.models import Product
 
 load_dotenv()
 
@@ -59,7 +61,7 @@ class RobolinkClient:
         print("[Sistem] Dinamik token bulunamadı, fallback token kullanılıyor.")
         return os.environ.get("ROBOLINK_FALLBACK_TOKEN", None)
 
-    def search_component(self, query: str, limit: int = 5):
+    def search_component(self, query: str, limit: int = 5) -> List[Product]:
         """
         Dinamik token ile API üzerinden arama yapar.
         """
@@ -87,7 +89,28 @@ class RobolinkClient:
             data = json.loads(text)
 
             items = data.get("products", [])
-            return items
+            
+            parsed_products = []
+            for item in items:
+                url_path = item.get("url", "")
+                full_url = url_path if url_path.startswith("http") else f"{self.base_site_url}{url_path}"
+                
+                # Image URL parsing
+                image_url = ""
+                images = item.get("images", [])
+                if images:
+                    image_url = images[0]
+                
+                parsed_products.append(Product(
+                    name=item.get("name", "Ürün Adı Yok"),
+                    price=float(item.get("price", 0.0)),
+                    currency=item.get("currency", "TL"),
+                    url=full_url,
+                    image_url=image_url,
+                    store="Robolink",
+                    in_stock=item.get("inStock", True)
+                ))
+            return parsed_products
         except Exception as e:
             print(f"Arama yapılırken hata oluştu: {e}")
             return []

@@ -1,6 +1,8 @@
+from typing import List
 from curl_cffi import requests
 import re
 import json
+from robo_shared.models import Product
 
 
 class DirencnetClient:
@@ -11,7 +13,7 @@ class DirencnetClient:
             "Accept": "*/*"
         }
 
-    def search_component(self, query: str, limit: int = 0):
+    def search_component(self, query: str, limit: int = 0) -> List[Product]:
         """
         Direnç.net üzerinde arama yapar ve sayfalandırmayı takip ederek 
         stoktaki tüm ürünleri getirir.
@@ -48,8 +50,30 @@ class DirencnetClient:
                 for match in matches:
                     clean_json = match.replace("\\'", "'").replace('\\"', '"')
                     try:
-                        product_data = json.loads(clean_json)
-                        all_products.append(product_data)
+                        item = json.loads(clean_json)
+                        
+                        url_path = item.get("url", "")
+                        full_url = url_path if url_path.startswith("http") else f"https://www.direnc.net{url_path}"
+                        
+                        price_str = str(item.get("total_sale_price", "0.0")).replace(",", ".")
+                        try:
+                            price = float(price_str)
+                        except ValueError:
+                            price = 0.0
+                            
+                        image_url = ""
+                        if "image" in item:
+                            image_url = item["image"]
+                            
+                        all_products.append(Product(
+                            name=item.get("name", "Ürün Adı Yok"),
+                            price=price,
+                            currency="TL",
+                            url=full_url,
+                            image_url=image_url,
+                            store="Direncnet",
+                            in_stock=item.get("stockAmount", 1) > 0 or item.get("stock", 1) > 0
+                        ))
 
                         # Limit kontrolü
                         if limit > 0 and len(all_products) >= limit:
