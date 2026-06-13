@@ -12,10 +12,20 @@ description = "A unified Python client library to search Robolink, Robotistan, R
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "curl_cffi>=0.5.10"
+    "curl_cffi>=0.5.10",
+    "beautifulsoup4"
 ]
 license = { text = "MIT" }
 keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api"]
+
+[project.optional-dependencies]
+cli = ["typer", "rich"]
+mcp = ["mcp", "anyio"]
+all = ["typer", "rich", "mcp", "anyio"]
+
+[project.scripts]
+robo-search = "robo_market_search.cli.main:app"
+robo-mcp = "robo_market_search.mcp.server:main"
 
 [project.urls]
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
