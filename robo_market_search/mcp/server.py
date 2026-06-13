@@ -2,7 +2,7 @@ import anyio
 import mcp.types as types
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-
+import asyncio
 from robo_market_search.unified.client import UnifiedSearchClient
 
 app = Server("robo-market-search")
@@ -25,7 +25,8 @@ async def list_tools() -> list[types.Tool]:
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "Aranacak elektronik komponentin veya malzemenin tam adı (örn: ESP32, Arduino Uno)"
+                        "description": ("Aranacak elektronik komponentin veya malzemenin tam adı "
+                                        "(örn: ESP32, Arduino Uno)")
                     },
                     "limit_per_store": {
                         "type": "integer",
@@ -34,6 +35,11 @@ async def list_tools() -> list[types.Tool]:
                     }
                 },
                 "required": ["query"]
+            },
+            outputSchema={  # type: ignore
+                "type": "string",
+                "description": ("Markdown formatında, ürün adı, market, fiyat, stok ve "
+                                "bağlantı bilgilerini içeren arama sonuçları listesi.")
             }
         )
     ]
@@ -91,7 +97,8 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         return [
             types.TextContent(
                 type="text",
-                text=f"Arama işlemi sırasında bir hata meydana geldi: {str(e)}\nLütfen daha sonra tekrar deneyin veya farklı bir sorgu kullanın."
+                text=(f"Arama işlemi sırasında bir hata meydana geldi: "
+                      f"{str(e)}\nLütfen daha sonra tekrar deneyin veya farklı bir sorgu kullanın.")
             )
         ]
 
@@ -102,7 +109,7 @@ async def _run_server():
 
 
 def main():
-    anyio.run(_run_server)
+    asyncio.run(_run_server())
 
 
 if __name__ == "__main__":
