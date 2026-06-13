@@ -1,0 +1,3 @@
+[console_scripts]
+robo-mcp = robo_market_search.mcp.server:main
+robo-search = robo_market_search.cli.main:app

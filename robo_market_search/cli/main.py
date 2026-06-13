@@ -23,6 +23,16 @@ def search(
     client = UnifiedSearchClient()
     results = []
 
+    logo = r"""[bold cyan]
+  ___      __          ____                 __  
+ | _ \___ | |__  ___  / __/___ ___ ________/ /  
+ |   / _ \| '_ \/ _ \_\ \/ -_) _ `/ __/ __/ _ \ 
+ |_|_\___/|_.__/\___/___/\__/\_,_/_/  \__/_//_/ 
+[/bold cyan]
+    [dim]Türkiye'nin Elektronik Market Arama Motoru[/dim]
+"""
+    console.print(logo)
+
     with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
@@ -44,7 +54,7 @@ def search(
         results.sort(key=lambda x: getattr(x, 'title', ''))
 
     table = Table(
-        title=f"'{query}' Arama Sonuçları",
+        title=f"\n'{query}' Arama Sonuçları",
         show_header=True,
         header_style="bold magenta",
         title_style="bold cyan"

@@ -5,10 +5,15 @@ robo_market_search/__init__.py
 robo_market_search.egg-info/PKG-INFO
 robo_market_search.egg-info/SOURCES.txt
 robo_market_search.egg-info/dependency_links.txt
+robo_market_search.egg-info/entry_points.txt
 robo_market_search.egg-info/requires.txt
 robo_market_search.egg-info/top_level.txt
+robo_market_search/cli/__init__.py
+robo_market_search/cli/main.py
 robo_market_search/direncnet/__init__.py
 robo_market_search/direncnet/client.py
+robo_market_search/mcp/__init__.py
+robo_market_search/mcp/server.py
 robo_market_search/robo90/__init__.py
 robo_market_search/robo90/client.py
 robo_market_search/robolink/__init__.py
