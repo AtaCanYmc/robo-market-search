@@ -1,5 +1,14 @@
-# Robo Market Search
+<div align="center">
+  <img src="docs/logo.svg" alt="Robo Market Search Logo" width="300" />
 
+  # Robo Market Search
+
+  [![PyPI version](https://img.shields.io/pypi/v/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
+  [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</div>
+
+<br/>
 Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python istemci kütüphanesi.
 
 Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protocol)** sunucusu özelliklerine sahiptir.
@@ -28,24 +37,32 @@ pip install "robo-market-search[all]"
 
 ## Komut Satırı Arayüzü (CLI) Kullanımı
 
-Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz:
+Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz. CLI aracı `typer` ve `rich` kullanılarak geliştirilmiştir ve sonuçları terminalinizde şık, renkli bir tablo formatında sunar.
+
+![CLI Örnek Çıktı](docs/cli_example.png)
+
+### Örnek Komutlar:
 
 ```bash
-# Temel arama
+# Temel arama (Tüm marketleri tarar, en ucuzdan pahalıya sıralar)
 robo-search "ESP32-WROOM"
 
-# Limit belirterek arama (Market başına 3 ürün)
+# Limit belirterek arama (Market başına maksimum 3 ürün getirir, ekran kirliliğini önler)
 robo-search "Arduino Uno" --limit 3
 
-# Fiyat sıralamasını devreden çıkararak arama
+# Fiyat sıralamasını devreden çıkararak ham sonuçları listeleme
 robo-search "PLA Filament" --no-sort
 ```
 
+---
+
 ## Model Context Protocol (MCP) Sunucusu
 
-Proje, LLM'ler (örn. Claude Desktop) için resmi MCP sunucusu içerir. Bu sayede yapay zeka asistanınız projeleriniz için doğrudan Türkiye pazarındaki elektronik parçaların fiyat ve stok durumunu canlı olarak sorgulayabilir.
+Proje, LLM'ler (örn. Claude Desktop) için resmi MCP (Model Context Protocol) sunucusu içerir. Bu sayede yapay zeka asistanınız projeleriniz için doğrudan Türkiye pazarındaki elektronik parçaların fiyat ve stok durumunu **canlı olarak** sorgulayabilir.
 
-Claude Desktop yapılandırma dosyanıza (`claude_desktop_config.json`) aşağıdaki ayarı ekleyerek kullanmaya başlayabilirsiniz:
+### Claude Desktop'a Ekleme
+
+Claude Desktop uygulamanızın konfigürasyon dosyasına (Windows için `%APPDATA%\Claude\claude_desktop_config.json`, macOS için `~/Library/Application Support/Claude/claude_desktop_config.json`) aşağıdaki ayarı ekleyerek sunucuyu tanımlayın:
 
 ```json
 {
@@ -57,6 +74,15 @@ Claude Desktop yapılandırma dosyanıza (`claude_desktop_config.json`) aşağı
   }
 }
 ```
+
+**Not:** Komutun çalışabilmesi için `robo-mcp` komutunun sistem PATH'inize eklenmiş (yani paketin başarıyla kurulmuş) olması gerekir. Gerekirse `"command": "/tam/yol/.venv/bin/robo-mcp"` şeklinde absolute (tam) dosya yolunu da verebilirsiniz.
+
+### LLM ile Nasıl Kullanılır?
+Claude ile sohbet ederken şu tarz komutlar verebilirsiniz:
+* *"Bana Türkiye'den ucuz bir ESP32-CAM ve HC-SR04 bul."*
+* *"Bir Arduino robot projesi yapmak istiyorum, gereken temel parçaları Türkiye marketlerinden araştırıp maliyet tablosu çıkarır mısın?"*
+
+LLM, arka planda `robo-mcp` aracını çağırıp güncel fiyat/stok bilgilerini çekecek ve size sunacaktır.
 
 ## Hızlı Başlangıç (Python SDK / Birleştirilmiş Arama)
 
