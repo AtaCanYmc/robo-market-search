@@ -53,6 +53,5 @@ jobs:
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        # Optionally, you can set 'password: ${{ secrets.PYPI_API_TOKEN }}'
-        # if you don't use Trusted Publishing, but Trusted Publishing is recommended.
+        password: ${{ secrets.PYPI_API_TOKEN }}
         verbose: true
