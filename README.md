@@ -60,9 +60,28 @@ robo-search "PLA Filament" --no-sort
 
 Proje, LLM'ler (örn. Claude Desktop) için resmi MCP (Model Context Protocol) sunucusu içerir. Bu sayede yapay zeka asistanınız projeleriniz için doğrudan Türkiye pazarındaki elektronik parçaların fiyat ve stok durumunu **canlı olarak** sorgulayabilir.
 
-### Claude Desktop'a Ekleme
+![MCP Örnek Çıktı](docs/mcp_example.png)
 
-Claude Desktop uygulamanızın konfigürasyon dosyasına (Windows için `%APPDATA%\Claude\claude_desktop_config.json`, macOS için `~/Library/Application Support/Claude/claude_desktop_config.json`) aşağıdaki ayarı ekleyerek sunucuyu tanımlayın:
+### Sunucuyu Başlatma ve Test Etme
+
+MCP sunucusunun sağlıklı çalışıp çalışmadığını Claude'a bağlamadan önce test etmek isterseniz, paketle birlikte gelen örnek test script'ini çalıştırabilir veya resmi MCP Inspector aracını kullanabilirsiniz.
+
+**1. Python İstemcisi ile Test:**
+Kendi yazdığımız bir Python scripti ile sunucuyu sanki bir LLM'miş gibi tetikleyebilirsiniz:
+```bash
+python examples/mcp_client_example.py
+```
+
+**2. Resmi MCP Inspector ile Test (Görsel Arayüz):**
+Web tarayıcınız üzerinden görsel olarak test etmek için npx ile inspector'ı başlatın:
+```bash
+npx @modelcontextprotocol/inspector robo-mcp
+```
+*(Bu komut lokalinizde bir web sunucusu başlatır ve tarayıcı üzerinden aracı test etmenize olanak tanır.)*
+
+### LLM İstemcilerine (Clients) Kurulum
+
+Yapay zeka asistanlarının bu aracı kullanabilmesi için ayar dosyalarına aşağıdaki JSON konfigürasyonunu eklemeniz yeterlidir:
 
 ```json
 {
@@ -75,7 +94,18 @@ Claude Desktop uygulamanızın konfigürasyon dosyasına (Windows için `%APPDAT
 }
 ```
 
-**Not:** Komutun çalışabilmesi için `robo-mcp` komutunun sistem PATH'inize eklenmiş (yani paketin başarıyla kurulmuş) olması gerekir. Gerekirse `"command": "/tam/yol/.venv/bin/robo-mcp"` şeklinde absolute (tam) dosya yolunu da verebilirsiniz.
+**Not:** Komutun çalışabilmesi için `robo-mcp` komutunun sistem PATH'inize eklenmiş olması gerekir. Gerekirse `"command": "/tam/yol/.venv/bin/robo-mcp"` şeklinde absolute (tam) dosya yolunu da verebilirsiniz.
+
+Bu konfigürasyonu kullandığınız asistana göre aşağıdaki konumlara ekleyebilirsiniz:
+
+#### 1. Claude Desktop
+Windows için `%APPDATA%\Claude\claude_desktop_config.json`, macOS için `~/Library/Application Support/Claude/claude_desktop_config.json` dosyasını düzenleyip yukarıdaki JSON'ı ekleyin.
+
+#### 2. Antigravity (Agent)
+Antigravity'nin MCP ayar dosyasına (genellikle projenin kök dizinindeki veya global yapılandırma klasöründeki `mcp.json` veya `mcp_servers.json`) ilgili `mcpServers` objesini eklemeniz yeterlidir.
+
+#### 3. GitHub Copilot / VS Code AI Eklentileri (Cline, RooCode vb.)
+VS Code üzerinde GitHub Copilot altyapısıyla çalışan MCP destekli eklentileri (Örn: Cline) kullanıyorsanız, `~/.vscode/global_storage/.../cline_mcp_settings.json` veya eklentinin kendi "MCP Settings" arayüzü üzerinden yukarıdaki JSON objesini tanımlayarak aracı Copilot'a bağlayabilirsiniz.
 
 ### LLM ile Nasıl Kullanılır?
 Claude ile sohbet ederken şu tarz komutlar verebilirsiniz:

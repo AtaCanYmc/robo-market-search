@@ -35,7 +35,7 @@ async def main():
 
                 result = await session.call_tool(
                     "search_electronic_components",
-                    arguments={"query": "ESP32", "limit_per_store": 2}
+                    arguments={"query": "ESP32-C3", "limit_per_store": 2}
                 )
 
                 print("--- MCP SUNUCUSUNDAN GELEN YANIT ---\n")

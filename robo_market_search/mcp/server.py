@@ -67,10 +67,11 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
         markdown_lines = [f"## '{query}' Arama Sonuçları (Fiyata Göre Sıralı)\n"]
         for idx, item in enumerate(results, 1):
-            stok = getattr(item, "stock_status", "Bilinmiyor")
-            fiyat = f"{item.price:.2f} TL" if getattr(item, "price", None) else "Fiyat Yok"
-            market_adi = getattr(item, "market_name", "Bilinmeyen Market")
-            urun_adi = getattr(item, "title", "İsimsiz Ürün")
+            stok = getattr(item, "in_stock", "Bilinmiyor")
+            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
+                                                                                     None) else "Fiyat Yok"
+            market_adi = getattr(item, "store", "Bilinmeyen Market")
+            urun_adi = getattr(item, "name", "İsimsiz Ürün")
             link = getattr(item, "url", "#")
 
             markdown_lines.append(
