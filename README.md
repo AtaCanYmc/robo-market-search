@@ -104,8 +104,12 @@ Windows için `%APPDATA%\Claude\claude_desktop_config.json`, macOS için `~/Libr
 #### 2. Antigravity (Agent)
 Antigravity'nin MCP ayar dosyasına (genellikle projenin kök dizinindeki veya global yapılandırma klasöründeki `mcp.json` veya `mcp_servers.json`) ilgili `mcpServers` objesini eklemeniz yeterlidir.
 
-#### 3. GitHub Copilot / VS Code AI Eklentileri (Cline, RooCode vb.)
-VS Code üzerinde GitHub Copilot altyapısıyla çalışan MCP destekli eklentileri (Örn: Cline) kullanıyorsanız, `~/.vscode/global_storage/.../cline_mcp_settings.json` veya eklentinin kendi "MCP Settings" arayüzü üzerinden yukarıdaki JSON objesini tanımlayarak aracı Copilot'a bağlayabilirsiniz.
+#### 3. Cline (VS Code) / RooCode vb. Eklentiler
+VS Code üzerinde çalışan Cline veya RooCode gibi MCP destekli AI eklentileri kullanıyorsanız, ayarlardan (veya `~/.vscode/global_storage/.../cline_mcp_settings.json` üzerinden) yukarıdaki JSON'ı tanımlayarak aracı asistanınıza öğretebilirsiniz.
+
+> [!NOTE]
+> **ChatGPT, Gemini ve Ollama Desteği Hakkında:**
+> ChatGPT ve Gemini'nin kendi resmi web arayüzleri veya Ollama'nın terminal arayüzü doğrudan yerel MCP sunucularını desteklemez. Ancak VS Code içerisindeki **Cline** gibi eklentilerin API ayarlarına giderek arka planda çalışacak model olarak ChatGPT, Gemini veya yerel bilgisayarınızdaki **Ollama** modellerini (örn. `llama3`) seçerseniz; bu modellerin tamamı `robo-mcp` aracımızı sorunsuzca kullanabilir.
 
 ### LLM ile Nasıl Kullanılır?
 Claude ile sohbet ederken şu tarz komutlar verebilirsiniz:
