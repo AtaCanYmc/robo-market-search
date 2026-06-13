@@ -48,7 +48,7 @@ class DirencnetClient:
                     break
 
                 for match in matches:
-                    clean_json = match.replace("\\'", "'").replace('\\"', '"')
+                    clean_json = match.replace("\\'", "'").replace('\\"', '"').replace('\\\\', '\\')
                     try:
                         item = json.loads(clean_json)
                         

@@ -38,7 +38,7 @@ class Robo90Client:
             stoktaki_urunler = []
             for p in raw_products:
                 # JSON karakter kaçışlarını (escape) temizle ve objeye dönüştür
-                clean_p = p.replace("\\'", "'").replace('\\"', '"')
+                clean_p = p.replace("\\'", "'").replace('\\"', '"').replace('\\\\', '\\')
                 try:
                     item = json.loads(clean_p)
                     

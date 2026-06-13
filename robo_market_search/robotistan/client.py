@@ -39,20 +39,20 @@ class RobotistanClient:
             match = re.search(r"'apikey'\s*:\s*'([^']+)'", response.text)
             if match:
                 token = match.group(1)
-                print(f"[Sistem] Robotistan için güncel token bulundu: {token}")
+                print(f"[RobotistanClient] Robotistan için güncel token bulundu: {token}")
                 return token
 
             # Bulunamazsa cdn linki içerisindeki url path'inden deneyelim
             match = re.search(r"cdn\.segmentify\.com/([^/]+)/segmentify\.js", response.text)
             if match:
                 token = match.group(1)
-                print(f"[Sistem] Robotistan için güncel token bulundu (cdn linkinden): {token}")
+                print(f"[RobotistanClient] Robotistan için güncel token bulundu (cdn linkinden): {token}")
                 return token
 
         except Exception as e:
             print(f"[Hata] Token aranırken hata oluştu: {e}")
 
-        print("[Sistem] Dinamik token bulunamadı, fallback token kullanılıyor.")
+        print("[RobotistanClient] Dinamik token bulunamadı, fallback token kullanılıyor.")
         return fallback_token
 
     def search_component(self, query: str, limit: int = 200, page: int = 1) -> List[Product]:
