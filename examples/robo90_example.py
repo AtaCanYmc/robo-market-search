@@ -19,6 +19,7 @@ if __name__ == "__main__":
         print(f"Toplam {len(robo90_products)} ürün bulundu (Robo90):\n")
         for index, item in enumerate(robo90_products, 1):
             print(f"[{index}] {item.name}")
+            print(f"       Cevap: {item}")
             print(f"    💰 Fiyat: {item.price} {item.currency}")
             print(f"    🔗 Link: {item.url}")
             print("-" * 50)

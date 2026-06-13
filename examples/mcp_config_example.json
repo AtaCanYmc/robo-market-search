@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "robo-market-search": {
-      "command": "robo-mcp",
+      "command": "robo-market-search-mcp",
       "args": []
     }
   }

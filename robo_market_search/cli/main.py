@@ -65,12 +65,19 @@ def search(
     table.add_column("Stok Durumu", justify="center")
 
     for item in results:
-        stok = getattr(item, "stock_status", "Bilinmiyor")
+        in_stock = getattr(item, "in_stock", None)
+        if in_stock:
+            stok = "Var"
+        elif in_stock is False:
+            stok = "Yok"
+        else:
+            stok = "Bilinmiyor"
 
-        stok_renkli = f"[green]{stok}[/green]" if "Var" in str(stok) or stok == True else f"[red]{stok}[/red]"
-        fiyat_text = f"{item.price:.2f} TL" if getattr(item, "price", None) else "Fiyat Yok"
-        market_adi = getattr(item, "market_name", "Bilinmeyen")
-        urun_adi = getattr(item, "title", "İsimsiz Ürün")
+        stok_renkli = f"[green]{stok}[/green]" if "Var" in str(stok) else f"[red]{stok}[/red]"
+        fiyat_text = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
+                                                                                      None) else "Fiyat Yok"
+        market_adi = getattr(item, "store", "Bilinmeyen")
+        urun_adi = getattr(item, "name", "İsimsiz Ürün")
 
         table.add_row(urun_adi, market_adi, fiyat_text, stok_renkli)
 

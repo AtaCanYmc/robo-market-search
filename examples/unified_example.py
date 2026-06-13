@@ -26,6 +26,7 @@ if __name__ == "__main__":
             stock_status = "Stokta Var" if item.in_stock else "Stokta Yok"
             
             print(f"[{index}] {item.name}")
+            print(f"       Cevap: {item}")
             print(f"    🏪 Market: {item.store}")
             print(f"    💰 Fiyat : {item.price} {item.currency}")
             print(f"    📦 Stok  : {stock_status}")
