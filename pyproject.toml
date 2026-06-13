@@ -21,11 +21,13 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 [project.optional-dependencies]
 cli = ["typer", "rich"]
 mcp = ["mcp", "anyio"]
-all = ["typer", "rich", "mcp", "anyio"]
+bot = ["aiogram"]
+all = ["typer", "rich", "mcp", "anyio", "aiogram"]
 
 [project.scripts]
 robo-search = "robo_market_search.cli.main:app"
 robo-mcp = "robo_market_search.mcp.server:main"
+robo-bot = "robo_market_search.bot.server:main"
 
 [project.urls]
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
