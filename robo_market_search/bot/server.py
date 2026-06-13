@@ -6,8 +6,6 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-from aiogram.utils.formatting import Text, Bold
-
 from robo_market_search.unified.client import UnifiedSearchClient
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
@@ -15,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize dispatcher
 dp = Dispatcher()
+
 
 @dp.message(Command("start"))
 async def send_welcome(message: types.Message):
@@ -46,9 +45,10 @@ async def search_components(message: types.Message):
         return
 
     query = command_parts[1]
-    
+
     # Kullanıcıya bekleme mesajı gönder
-    wait_message = await message.answer(f"🔍 *'{query}'* için marketler taranıyor, lütfen bekleyin...", parse_mode=ParseMode.MARKDOWN)
+    wait_message = await message.answer(f"🔍 *'{query}'* için marketler taranıyor, lütfen bekleyin...",
+                                        parse_mode=ParseMode.MARKDOWN)
 
     try:
         # Senkron arama işlemini event loop'u bloklamamak için thread içinde çalıştır
@@ -58,23 +58,25 @@ async def search_components(message: types.Message):
         )
 
         if not results:
-            await wait_message.edit_text(f"❌ *'{query}'* araması için hiçbir markette sonuç bulunamadı.", parse_mode=ParseMode.MARKDOWN)
+            await wait_message.edit_text(f"❌ *'{query}'* araması için hiçbir markette sonuç bulunamadı.",
+                                         parse_mode=ParseMode.MARKDOWN)
             return
 
         # Markdown tablosu/listesi oluştur
         markdown_lines = [f"📊 *'{query}'* İçin En Ucuz Sonuçlar:\n"]
-        
+
         # En ucuz 10 ürünü göster
         for idx, item in enumerate(results[:10], 1):
             stok = "✅ Stokta" if getattr(item, "in_stock", False) else "❌ Tükendi"
-            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price", None) else "Fiyat Yok"
+            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
+                                                                                     None) else "Fiyat Yok"
             market_adi = getattr(item, "store", "Bilinmeyen Market")
             urun_adi = getattr(item, "name", "İsimsiz Ürün")
             link = getattr(item, "url", "#")
 
             # Escape markdown special characters if necessary, but keep it simple
             urun_adi_safe = urun_adi.replace("[", "").replace("]", "").replace("*", "").replace("_", "")
-            
+
             markdown_lines.append(
                 f"{idx}\\. *{urun_adi_safe}*\n"
                 f"🏪 Market: {market_adi}\n"
@@ -84,7 +86,7 @@ async def search_components(message: types.Message):
             )
 
         final_text = "\n".join(markdown_lines)
-        
+
         # Eğer çok uzunsa Telegram limitine takılmaması için kes (Genelde 4096 karakterdir)
         if len(final_text) > 4000:
             final_text = final_text[:4000] + "...\n(Mesaj çok uzun olduğu için kesildi)"
@@ -93,18 +95,15 @@ async def search_components(message: types.Message):
 
     except Exception as e:
         logger.error(f"Arama hatası: {e}")
-        await wait_message.edit_text("❌ Arama işlemi sırasında bir hata meydana geldi. Lütfen daha sonra tekrar deneyin.", parse_mode=ParseMode.MARKDOWN)
+        await wait_message.edit_text(
+            "❌ Arama işlemi sırasında bir hata meydana geldi. Lütfen daha sonra tekrar deneyin.",
+            parse_mode=ParseMode.MARKDOWN)
 
 
-async def _run_bot():
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    if not token:
-        logger.error("TELEGRAM_BOT_TOKEN ortam değişkeni bulunamadı. Lütfen token'ı ayarlayın.")
-        sys.exit(1)
-
+async def _run_bot(token: str):
     # Bot objesini oluştur
     bot = Bot(token=token, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
-    
+
     logger.info("Bot başarıyla başlatıldı, mesajlar bekleniyor...")
     # Long polling ile mesaj dinlemeye başla
     await dp.start_polling(bot)
@@ -112,10 +111,25 @@ async def _run_bot():
 
 def main():
     """Entry point for robo-bot script"""
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Robo Market Search - Telegram Bot")
+    parser.add_argument("--token", type=str, help="Telegram Bot API Token", default=None)
+    args = parser.parse_args()
+
+    # Token'ı sırasıyla: 1. CLI argümanı, 2. Çevresel Değişken üzerinden oku
+    token = args.token or os.getenv("TELEGRAM_BOT_TOKEN")
+
+    if not token:
+        logger.error("Telegram Token bulunamadı! Lütfen '--token' parametresini kullanın "
+                     "veya TELEGRAM_BOT_TOKEN çevresel değişkenini ayarlayın.")
+        sys.exit(1)
+
     try:
-        asyncio.run(_run_bot())
+        asyncio.run(_run_bot(token))
     except KeyboardInterrupt:
         logger.info("Bot kullanıcı tarafından durduruldu.")
+
 
 if __name__ == "__main__":
     main()

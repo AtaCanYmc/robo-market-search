@@ -8,6 +8,8 @@ robo_market_search.egg-info/dependency_links.txt
 robo_market_search.egg-info/entry_points.txt
 robo_market_search.egg-info/requires.txt
 robo_market_search.egg-info/top_level.txt
+robo_market_search/bot/__init__.py
+robo_market_search/bot/server.py
 robo_market_search/cli/__init__.py
 robo_market_search/cli/main.py
 robo_market_search/direncnet/__init__.py

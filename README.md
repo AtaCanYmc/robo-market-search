@@ -56,6 +56,31 @@ robo-search "PLA Filament" --no-sort
 
 ---
 
+## Telegram Bot Entegrasyonu
+
+Projenizi kişisel bir elektronik arama asistanına dönüştürmek için yerleşik bir Telegram botu da barındırır. `aiogram` kullanılarak geliştirilen bu asenkron bot, saniyeler içinde marketleri tarar ve en ucuz ürünleri size linkleriyle birlikte mesaj olarak atar.
+
+<p align="center">
+  <img src="docs/bot_example.jpeg" width="35%" alt="Telegram Bot Örnek 1"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/bot_example_2.jpeg" width="35%" alt="Telegram Bot Örnek 2"/>
+</p>
+
+### Kullanımı
+
+1. Telegram üzerinden `@BotFather` ile yeni bir bot oluşturun ve token'ınızı alın.
+2. Botu başlatmak için terminalden komutu token ile birlikte çalıştırın:
+
+```bash
+robo-bot --token "SİZİN_TELEGRAM_TOKENINIZ"
+```
+
+*(Alternatif olarak `TELEGRAM_BOT_TOKEN` isimli bir ortam değişkeni (environment variable) tanımlayarak sadece `robo-bot` yazarak da çalıştırabilirsiniz.)*
+
+Bot çalıştıktan sonra Telegram uygulamasından botunuza `/ara ESP32` veya `/ara Arduino Uno` yazarak doğrudan arama yapabilirsiniz.
+
+---
+
 ## Model Context Protocol (MCP) Sunucusu
 
 Proje, LLM'ler (örn. Claude Desktop) için resmi MCP (Model Context Protocol) sunucusu içerir. Bu sayede yapay zeka asistanınız projeleriniz için doğrudan Türkiye pazarındaki elektronik parçaların fiyat ve stok durumunu **canlı olarak** sorgulayabilir.

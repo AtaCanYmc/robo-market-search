@@ -6,6 +6,10 @@ typer
 rich
 mcp
 anyio
+aiogram
+
+[bot]
+aiogram
 
 [cli]
 typer

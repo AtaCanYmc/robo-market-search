@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "robo-market-search"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
-  { name="Ata Can", email="atacanymc@gmail.com" },
+    { name = "Ata Can", email = "atacanymc@gmail.com" },
 ]
 description = "A unified Python client library to search Robolink, Robotistan, Robo90, and Direncnet."
 readme = "README.md"
@@ -16,7 +16,7 @@ dependencies = [
     "beautifulsoup4"
 ]
 license = { text = "MIT" }
-keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api"]
+keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api", "mcp", "bot", "cli", "python", "library"]
 
 [project.optional-dependencies]
 cli = ["typer", "rich"]

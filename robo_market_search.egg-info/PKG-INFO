@@ -17,11 +17,14 @@ Requires-Dist: rich; extra == "cli"
 Provides-Extra: mcp
 Requires-Dist: mcp; extra == "mcp"
 Requires-Dist: anyio; extra == "mcp"
+Provides-Extra: bot
+Requires-Dist: aiogram; extra == "bot"
 Provides-Extra: all
 Requires-Dist: typer; extra == "all"
 Requires-Dist: rich; extra == "all"
 Requires-Dist: mcp; extra == "all"
 Requires-Dist: anyio; extra == "all"
+Requires-Dist: aiogram; extra == "all"
 Dynamic: license-file
 
 <div align="center">

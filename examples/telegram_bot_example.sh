@@ -8,7 +8,7 @@
 # 2. Size verilen HTTP API Token'ı kopyalayın.
 # 3. Aşağıdaki "BOT_TOKENINIZ_BURAYA" yazan yeri kendi tokenınız ile değiştirin.
 
-export TELEGRAM_BOT_TOKEN="BOT_TOKENINIZ_BURAYA"
+export TELEGRAM_BOT_TOKEN="<BOT_TOKENINIZ_BURAYA>"
 
 echo "====================================================="
 echo " 🤖 Robo Market Search - Telegram Bot Başlatılıyor..."
@@ -24,9 +24,12 @@ echo "Durdurmak için CTRL+C tuşlarına basabilirsiniz."
 echo "-----------------------------------------------------"
 
 # Eğer projeyi "pip install -e .[all]" ile kurduysanız, robo-bot komutu
-# sisteminizde otomatik olarak tanınacaktır:
+# Sisteminizde otomatik olarak tanınacaktır:
+# 1. Yöntem: Token'ı çevresel değişkenden okuyarak başlatma (Yukarıda export ettik)
 robo-bot
 
-# Eğer komut bulunamadı hatası alırsanız, yukarıdaki satırı yorum satırı yapıp
-# aşağıdaki Python modül çalıştırma yöntemini kullanabilirsiniz:
-# python -m robo_market_search.bot.server
+# 2. Yöntem: Token'ı doğrudan argüman olarak vererek başlatma
+# robo-bot --token "BOT_TOKENINIZ_BURAYA"
+
+# Eğer komut bulunamadı hatası alırsanız:
+# python -m robo_market_search.bot.server --token "BOT_TOKENINIZ_BURAYA"
