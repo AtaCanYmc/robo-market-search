@@ -35,11 +35,6 @@ async def list_tools() -> list[types.Tool]:
                     }
                 },
                 "required": ["query"]
-            },
-            outputSchema={  # type: ignore
-                "type": "string",
-                "description": ("Markdown formatında, ürün adı, market, fiyat, stok ve "
-                                "bağlantı bilgilerini içeren arama sonuçları listesi.")
             }
         )
     ]
