@@ -15,7 +15,7 @@ dependencies = [
     "curl_cffi>=0.5.10",
     "beautifulsoup4"
 ]
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api", "mcp", "bot", "cli", "python", "library"]
 
 [project.optional-dependencies]
