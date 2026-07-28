@@ -20,9 +20,9 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 
 [project.optional-dependencies]
 cli = ["typer", "rich"]
-mcp = ["mcp", "anyio"]
+mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-all = ["typer", "rich", "mcp", "anyio", "aiogram"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram"]
 dev = [
     "pre-commit",
     "ruff",
