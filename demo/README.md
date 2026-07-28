@@ -92,6 +92,21 @@ docker compose up -d
 
 Tarayıcıda açın: **http://localhost:8000**
 
+## Vercel ile Canlıya Alma (Deployment)
+
+### 1. Vercel CLI ile
+```bash
+# Proje kök dizininde veya demo/ klasöründe:
+npm i -g vercel
+vercel
+```
+
+### 2. GitHub Entegrasyonu ile
+1. Vercel Dashboard'da **New Project** oluşturun.
+2. `AtaCanYmc/robo-market-search` GitHub deposunu seçin.
+3. Root Directory olarak `demo` klasörünü ayarlayın.
+4. **Deploy** butonuna basın. Vercel `demo/vercel.json` yapılandırmasını otomatik algılayacaktır.
+
 ## Özellikler
 
 - **Gerçek zamanlı arama** — Robotistan, Robolink, Robo90, Direnç.net
