@@ -11,17 +11,55 @@
 
   {# Header Row #}
   <div class="flex items-start sm:items-center justify-between gap-3 flex-wrap">
-    <div>
-      <h2 class="text-slate-200 font-semibold text-base sm:text-lg">
-        "<span class="text-cyan-400">{{ query }}</span>" için arama sonuçları
-      </h2>
-      <p class="text-slate-500 text-xs mt-0.5">
-        {% if total_items > 0 %}
-          Toplam {{ total_items }} ürün süzüldü (Tarama sonucu: {{ raw_total }})
-        {% else %}
-          Kriterlere uygun ürün bulunamadı
-        {% endif %}
-      </p>
+    {# Header Text & Download Actions #}
+    <div class="flex items-center justify-between w-full flex-wrap gap-3">
+      <div>
+        <h2 class="text-slate-200 font-semibold text-base sm:text-lg">
+          "<span class="text-cyan-400">{{ query }}</span>" için arama sonuçları
+        </h2>
+        <p class="text-slate-500 text-xs mt-0.5">
+          {% if total_items > 0 %}
+            Toplam {{ total_items }} ürün süzüldü (Tarama sonucu: {{ raw_total }})
+          {% else %}
+            Kriterlere uygun ürün bulunamadı
+          {% endif %}
+        </p>
+      </div>
+
+      {# Download Buttons #}
+      {% if total_items > 0 %}
+      <div class="flex items-center gap-2">
+        <a
+          href="/export/csv?query={{ query }}&limit={{ limit }}"
+          download
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+                 bg-slate-900 border border-slate-800 hover:border-emerald-500/50
+                 text-emerald-400 hover:text-emerald-300 text-xs font-medium
+                 shadow-sm transition-all duration-150"
+          title="Sonuçları CSV (Excel uyumlu) olarak indir"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+          </svg>
+          CSV İndir
+        </a>
+
+        <a
+          href="/export/json?query={{ query }}&limit={{ limit }}"
+          download
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+                 bg-slate-900 border border-slate-800 hover:border-cyan-500/50
+                 text-cyan-400 hover:text-cyan-300 text-xs font-medium
+                 shadow-sm transition-all duration-150"
+          title="Sonuçları JSON formatında indir"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+          </svg>
+          JSON İndir
+        </a>
+      </div>
+      {% endif %}
     </div>
 
     {# Market Store Chips Filter #}
