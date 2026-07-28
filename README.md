@@ -18,6 +18,7 @@ Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protoc
 
 ## Özellikler
 - **Unified Search (Birleştirilmiş Arama)**: 4 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
+- **Sepet Optimizasyonu & Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
 - **Standart Veri Tipi**: Tüm sonuçlar, standart `Product` objesi olarak döner.
 - **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek (regex ile ana sayfalardan kazıyarak) kesintisiz çalışır.
 - **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
@@ -116,6 +117,20 @@ robo-search "Arduino Uno" --limit 3
 # Fiyat sıralamasını devreden çıkararak ham sonuçları listeleme
 robo-search "PLA Filament" --no-sort
 ```
+
+---
+
+## Web Demo Arayüzü
+
+Projenin canlı ön izlemesini ve kullanıcı dostu web arayüzünü `demo/` dizinindeki FastAPI + HTMX uygulaması ile deneyimleyebilirsiniz.
+
+![Web Demo Görseli](.github/screenshots/web-demo-example.png)
+
+### Web Arayüz Özellikleri:
+- **Canlı & Paralel Arama:** HTMX ile sayfa yenilenmeden hızlı sonuç gösterimi.
+- **Filtreleme & Sıralama:** Mağaza filtreleme çipler, stok filtreleme, fiyat aralığı süzgeci ve ucuzdan pahalıya sıralama.
+- **Sonuçları İndirme (Export):** Arama sonuçlarını **CSV** veya **JSON** formatında tek tıkla indirme.
+- **Responsive & Dark Mode:** Şık, modern ve mobil uyumlu cam tasarımlı (glassmorphic) arayüz.
 
 ---
 
@@ -263,9 +278,86 @@ client = RobotistanClient()
 products = client.search_component("esp32", limit=3)
 ```
 
+## Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)
+
+> 👨🏻‍💻 [**Sha-Dox**](https://github.com/Sha-Dox) tarafından projeye kazandırılmıştır.*
+
+Birden fazla malzeme satın almak istediğinizde, parçaları tek bir mağazadan mı yoksa kargo limitlerini (ücretsiz kargo eşiklerini) dikkate alarak farklı mağazalar arasında bölüşerek mi almanızın daha ucuza geleceğini otomatik hesaplayabilirsiniz:
+
+```python
+from robo_market_search import UnifiedSearchClient
+
+client = UnifiedSearchClient()
+
+# Birden fazla ürün için en optimal sepet kombinasyonunu bul
+result = client.cart_search(queries=["ESP32", "L298N", "HC-SR04"])
+
+# 1. Tüm mağazaların sepete özel toplamı ve kargo ücretleri
+for summary in result.store_summaries:
+    print(f"[{summary.store}] Ürün: {summary.total_price} TL | Kargo: {summary.shipping_cost} TL | Toplam: {summary.total_with_shipping} TL")
+
+# 2. Mağazalar arası en ucuz bölünmüş sepet kombinasyonu (Optimal Split)
+if result.best_split:
+    print(f"🏆 En Optimal Genel Toplam: {result.best_split.grand_total} TL")
+```
+
+*(Detaylı çalışan örnek için [`examples/cart_search_example.py`](examples/cart_search_example.py) dosyasına göz atabilirsiniz.)*
+
+## Sıkça Sorulan Sorular (S.S.S. / FAQ)
+
+<details>
+<summary><b>❓ Hangi sitenin SEO'su daha iyi ise ona arama sonuçlarında öncelik veriliyor mu?</b></summary>
+<br/>
+
+**Hayır, kesinlikle hayır.**
+
+Robo Market Search bir Google veya Yandex gibi web arama motoru değildir; sitelerin SEO puanları, Backlink'leri veya Google sıralamaları sonuçlarımızı **hiçbir şekilde etkilemez.**
+
+Sistem tamamen tarafsız bir kazıma (scraping) ve fiyat karşılaştırma mantığıyla çalışır:
+1. Bir kelime aratıldığında 4 marketin (Robotistan, Robolink, Robo90, Direnç.net) kendi iç arama motorlarına **eşzamanlı (paralel)** doğrudan istek atılır.
+2. Gelen tüm ürünler eşit şartlarda toplanır ve standart `Product` modeline dönüştürülür.
+3. Varsayılan olarak sonuçlar **sadece ve sadece ürün fiyatına göre (en ucuzdan en pahalıya)** sıralanır.
+
+Dolayısıyla hiçbir markete SEO veya popülerlik avantajı tanınmaz; kullanıcıya her zaman en net ve en ucuz fiyat alternatifi sunulur.
+</details>
+
+<details>
+<summary><b>❓ Ürünlerin fiyat ve stok bilgileri ne kadar güncel?</b></summary>
+<br/>
+
+Arama yapıldığı an 4 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir.
+</details>
+
+<details>
+<summary><b>❓ Birden fazla farklı parça alırken kargo ücretlerini nasıl optimize ediyorsunuz?</b></summary>
+<br/>
+
+`cart_search` metodu veya web demomuzdaki sepet optimizasyonu özelliği sayesindedir. Sistem, listenizdeki parçaların hangi marketlerde olduğunu ve her marketin **ücretsiz kargo barajını (örn. 250 TL üzeri bedava kargo)** analiz eder. Ürünleri tek bir mağazadan toplu almak mı yoksa kargo limitlerini aşacak şekilde mağazalar arasında bölüşmek mi (split cart) daha ucuza gelir otomatik hesaplar.
+</details>
+
+<details>
+<summary><b>❓ Yeni bir elektronik mağazası eklemek istersem ne yapmalıyım?</b></summary>
+<br/>
+
+Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `robo_market_search/` altında yeni bir klasör açıp `search_component` metoduna sahip bir `BaseClient` türevi oluşturmanız yeterlidir. Katkıda bulunmak için [CONTRIBUTING.md](CONTRIBUTING.md) belgesini inceleyebilir veya Pull Request açabilirsiniz.
+</details>
+
+<details>
+<summary><b>❓ Claude, ChatGPT veya VS Code üzerinde MCP (Model Context Protocol) olarak nasıl kullanabilirim?</b></summary>
+<br/>
+
+`pip install "robo-market-search[all]"` kurulumundan sonra gelen `robo-mcp` komutunu Claude Desktop veya VS Code (Cline / RooCode) ayarlarınızdaki `mcpServers` bölümüne eklemeniz yeterlidir. Detaylı rehber yukarıdaki **Model Context Protocol (MCP) Sunucusu** başlığında adım adım açıklanmıştır.
+</details>
+
 ## Katkıda Bulunma
 
 Katkılarınızı memnuniyetle karşılıyoruz! Lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını okuyun.
+
+## Katkıda Bulunanlar (Contributors) & Teşekkürler
+
+Projemizin gelişmesinde emeği geçen ve katkıda bulunan tüm topluluk üyelerine teşekkür ederiz!
+
+- [**Sha-Dox**](https://github.com/Sha-Dox) — Sepet optimizasyonu, kargo ücreti hesaplaması ve multi-store split algoritmalarının (`cart_search`) geliştirilmesine katkılarından dolayı özel teşekkürler!
 
 ## Güvenlik
 

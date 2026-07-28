@@ -3,6 +3,8 @@
 Tek parça (monolithic) FastAPI + Jinja2 + HTMX web demo uygulaması.
 Tailwind CSS CDN üzerinden dahil edilmiştir; derleme adımı yoktur.
 
+![Web Demo Ekran Görüntüsü](../.github/screenshots/web-demo-example.png)
+
 ## Dosya Ağacı
 
 ```
