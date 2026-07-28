@@ -89,17 +89,30 @@ source .venv/bin/activate        # On Windows: .venv\Scripts\activate
 
 # 3. Install the package with ALL optional dependencies + dev tools
 pip install -e ".[all]"
-pip install flake8 pytest
+pip install pre-commit ruff mypy types-beautifulsoup4
+
+# 4. Install the git hooks (runs automatically on every commit)
+pre-commit install             # pre-commit hook
+pre-commit install --hook-type commit-msg  # Conventional Commits check
 ```
 
-### Running the linter
+### Running the linter & formatter
 
 ```bash
-# Check for syntax errors and undefined names (must pass)
-flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+# Check & auto-fix all files with ruff
+ruff check --fix .
 
-# Full style check (warnings only)
-flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+# Format all files with ruff
+ruff format .
+
+# Or run all pre-commit hooks manually at once
+pre-commit run --all-files
+```
+
+### Type checking
+
+```bash
+mypy robo_market_search/
 ```
 
 ### Running tests
@@ -170,10 +183,15 @@ chore(deps): bump curl_cffi from 0.5.10 to 0.6.0
 
 ## Code Style
 
-- Follow **PEP 8** conventions.
-- Maximum line length: **127 characters** (matching the CI flake8 config).
-- Docstrings: **Google style**.
-- Type hints are encouraged for public API functions.
+This project uses **[Ruff](https://docs.astral.sh/ruff/)** for both linting and formatting, and **[Mypy](https://mypy.readthedocs.io/)** for static type checking. All settings live in `pyproject.toml`.
+
+- Maximum line length: **127 characters**
+- Quote style: **double quotes**
+- Import order: `stdlib → third-party → first-party` (enforced by ruff/isort)
+- Type hints: **required** in `shared/` and `unified/` modules; encouraged everywhere
+- Docstrings: **Google style**
+
+The pre-commit hooks run all checks automatically on every `git commit`. CI also runs the same hooks, so a passing pre-commit guarantees a passing CI lint job.
 
 ---
 
