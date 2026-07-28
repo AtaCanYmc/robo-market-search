@@ -1,22 +1,23 @@
-from curl_cffi import requests
-import uuid
 import re
-import json
-from typing import List
-from robo_market_search.shared.models import Product
+from typing import List, Optional
+import uuid
+
+from curl_cffi import requests
+
 from robo_market_search.shared.constants import ROBOTISTAN_FALLBACK_TOKEN
+from robo_market_search.shared.models import Product
 
 
 class RobotistanClient:
-    def __init__(self, fallback_token: str = None):
+    def __init__(self, fallback_token: Optional[str] = None) -> None:
         if fallback_token is None:
             fallback_token = ROBOTISTAN_FALLBACK_TOKEN
-            
+
         self.headers = {
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
             "Origin": "https://www.robotistan.com",
-            "Referer": "https://www.robotistan.com/"
+            "Referer": "https://www.robotistan.com/",
         }
 
         # Segmentify için her başlatmada benzersiz bir session/user id üretmek engelleri aşmak için faydalıdır.
@@ -64,31 +65,30 @@ class RobotistanClient:
         :arg page: Hangi sayfanın döneceği (Segmentify API'sine gönderilir, ancak gerçek dönen ürünler farklı olabilir)
         """
         api_url = f"https://per2.segmentify.com/add/events/v1.json?apiKey={self.client_token}"
-        
+
         # Segmentify v1 yapısı genellikle bir array kabul eder.
         # İletilen örnek payload'a uygun olarak güncellenmiştir.
-        payload = [{
-            "name": "SEARCH",
-            "userId": self.user_id,
-            "sessionId": self.session_id,
-            "device": "PC",
-            "pageUrl": f"https://www.robotistan.com/searchandising?q={query}&page={page}&trigger=keyword",
-            "referrer": "https://www.robotistan.com/",
-            "browser": "Chrome",
-            "os": "macOS",
-            "osversion": "10.15.7",
-            "userAgent": self.headers["User-Agent"],
-            "lang": "TR",
-            "currency": "TRY",
-            "query": query,
-            "type": "faceted",
-            "ordering": {
-                "page": page,
-                "sort": "BEST_MATCH"
-            },
-            "filters": [],
-            "count": limit  # Eklenebilir, limit belirlemek için faydalıdır
-        }]
+        payload = [
+            {
+                "name": "SEARCH",
+                "userId": self.user_id,
+                "sessionId": self.session_id,
+                "device": "PC",
+                "pageUrl": f"https://www.robotistan.com/searchandising?q={query}&page={page}&trigger=keyword",
+                "referrer": "https://www.robotistan.com/",
+                "browser": "Chrome",
+                "os": "macOS",
+                "osversion": "10.15.7",
+                "userAgent": self.headers["User-Agent"],
+                "lang": "TR",
+                "currency": "TRY",
+                "query": query,
+                "type": "faceted",
+                "ordering": {"page": page, "sort": "BEST_MATCH"},
+                "filters": [],
+                "count": limit,  # Eklenebilir, limit belirlemek için faydalıdır
+            }
+        ]
 
         try:
             response = requests.post(api_url, json=payload, headers=self.headers, impersonate="safari15_5")
@@ -101,23 +101,31 @@ class RobotistanClient:
                 parsed_products = []
                 for item in raw_products:
                     url_path = item.get("url", "")
-                    full_url = url_path if url_path.startswith("http") else f"https:{url_path}" if url_path.startswith("//") else f"https://www.robotistan.com{url_path}"
-                    
+                    full_url = (
+                        url_path
+                        if url_path.startswith("http")
+                        else f"https:{url_path}"
+                        if url_path.startswith("//")
+                        else f"https://www.robotistan.com{url_path}"
+                    )
+
                     price_str = str(item.get("price", "0.0")).replace(",", ".")
                     try:
                         price = float(price_str)
                     except ValueError:
                         price = 0.0
-                        
-                    parsed_products.append(Product(
-                        name=item.get("name", "Ürün Adı Yok"),
-                        price=price,
-                        currency="TL",
-                        url=full_url,
-                        image_url=item.get("image", ""),
-                        store="Robotistan",
-                        in_stock=item.get("inStock", True)
-                    ))
+
+                    parsed_products.append(
+                        Product(
+                            name=item.get("name", "Ürün Adı Yok"),
+                            price=price,
+                            currency="TL",
+                            url=full_url,
+                            image_url=item.get("image", ""),
+                            store="Robotistan",
+                            in_stock=item.get("inStock", True),
+                        )
+                    )
                 return parsed_products
             else:
                 return []

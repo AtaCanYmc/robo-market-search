@@ -1,0 +1,59 @@
+version: 2
+
+updates:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Python pip dependencies
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Group all production dependencies into a single PR
+      python-production:
+        dependency-type: "production"
+        patterns:
+          - "*"
+      # Keep dev / optional dependencies separate
+      python-optional:
+        dependency-type: "development"
+        patterns:
+          - "*"
+    ignore:
+      # Skip major version bumps for scraping-sensitive dependencies
+      # to avoid unexpected breaking changes
+      - dependency-name: "curl_cffi"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "beautifulsoup4"
+        update-types: ["version-update:semver-major"]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # GitHub Actions (keep action versions up to date)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(actions)"
+    groups:
+      # Bundle all GitHub Actions updates into one PR per week
+      github-actions:
+        patterns:
+          - "*"

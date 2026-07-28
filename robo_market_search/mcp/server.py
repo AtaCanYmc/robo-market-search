@@ -1,15 +1,18 @@
+import asyncio
+from typing import List
+
 import anyio
-import mcp.types as types
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-import asyncio
+import mcp.types as types
+
 from robo_market_search.unified.client import UnifiedSearchClient
 
 app = Server("robo-market-search")
 
 
 @app.list_tools()
-async def list_tools() -> list[types.Tool]:
+async def list_tools() -> List[types.Tool]:
     return [
         types.Tool(
             name="search_electronic_components",
@@ -25,23 +28,22 @@ async def list_tools() -> list[types.Tool]:
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": ("Aranacak elektronik komponentin veya malzemenin tam adı "
-                                        "(örn: ESP32, Arduino Uno)")
+                        "description": ("Aranacak elektronik komponentin veya malzemenin tam adı (örn: ESP32, Arduino Uno)"),
                     },
                     "limit_per_store": {
                         "type": "integer",
                         "description": "Market başına getirilecek maksimum sonuç sayısı. Varsayılan: 5",
-                        "default": 5
-                    }
+                        "default": 5,
+                    },
                 },
-                "required": ["query"]
-            }
+                "required": ["query"],
+            },
         )
     ]
 
 
 @app.call_tool()
-async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
+async def call_tool(name: str, arguments: dict) -> List[types.TextContent]:
     if name != "search_electronic_components":
         raise ValueError(f"Bilinmeyen araç: {name}")
 
@@ -53,23 +55,15 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
     try:
         client = UnifiedSearchClient()
-        results = await anyio.to_thread.run_sync(
-            lambda: client.search(query=query, limit_per_store=limit)
-        )
+        results = await anyio.to_thread.run_sync(lambda: client.search(query=query, limit_per_store=limit))
 
         if not results:
-            return [
-                types.TextContent(
-                    type="text",
-                    text=f"'{query}' araması için hiçbir markette sonuç bulunamadı."
-                )
-            ]
+            return [types.TextContent(type="text", text=f"'{query}' araması için hiçbir markette sonuç bulunamadı.")]
 
         markdown_lines = [f"## '{query}' Arama Sonuçları (Fiyata Göre Sıralı)\n"]
         for idx, item in enumerate(results, 1):
             stok = getattr(item, "in_stock", "Bilinmiyor")
-            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
-                                                                                     None) else "Fiyat Yok"
+            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price", None) else "Fiyat Yok"
             market_adi = getattr(item, "store", "Bilinmeyen Market")
             urun_adi = getattr(item, "name", "İsimsiz Ürün")
             link = getattr(item, "url", "#")
@@ -82,19 +76,16 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
                 f"   - **Link:** [Ürüne Git]({link})\n"
             )
 
-        return [
-            types.TextContent(
-                type="text",
-                text="\n".join(markdown_lines)
-            )
-        ]
+        return [types.TextContent(type="text", text="\n".join(markdown_lines))]
 
     except Exception as e:
         return [
             types.TextContent(
                 type="text",
-                text=(f"Arama işlemi sırasında bir hata meydana geldi: "
-                      f"{str(e)}\nLütfen daha sonra tekrar deneyin veya farklı bir sorgu kullanın.")
+                text=(
+                    f"Arama işlemi sırasında bir hata meydana geldi: "
+                    f"{e!s}\nLütfen daha sonra tekrar deneyin veya farklı bir sorgu kullanın."
+                ),
             )
         ]
 

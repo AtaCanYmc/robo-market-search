@@ -25,6 +25,7 @@ class ShippingInfo:
 @dataclass
 class CartItemResult:
     """Best price found for a single query/item in a specific store."""
+
     query: str
     product: Optional[Product] = None
     price: float = 0.0
@@ -34,6 +35,7 @@ class CartItemResult:
 @dataclass
 class StoreCartSummary:
     """Breakdown of all items in a single store."""
+
     store: str
     items: List[CartItemResult]
     total_price: float = 0.0
@@ -47,6 +49,7 @@ class StoreCartSummary:
 @dataclass
 class SplitAssignment:
     """One item→store assignment in a split purchase."""
+
     query: str
     store: str
     price: float
@@ -56,6 +59,7 @@ class SplitAssignment:
 @dataclass
 class SplitStoreGroup:
     """Group of items bought from the same store in a split."""
+
     store: str
     items: List[SplitAssignment]
     subtotal: float = 0.0
@@ -66,6 +70,7 @@ class SplitStoreGroup:
 @dataclass
 class SplitCombination:
     """A complete split-purchase plan covering all items."""
+
     groups: List[SplitStoreGroup]
     grand_total: float = 0.0
 
@@ -73,6 +78,7 @@ class SplitCombination:
 @dataclass
 class CartSearchResult:
     """Overall cart search result across all stores."""
+
     queries: List[str]
     store_summaries: List[StoreCartSummary]
     cheapest_store: Optional[StoreCartSummary] = None

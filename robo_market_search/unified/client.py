@@ -1,31 +1,30 @@
 import concurrent.futures
 from typing import Dict, List, Optional, Tuple
 
-from robo_market_search.shared.models import (
-    Product,
-    CartItemResult,
-    StoreCartSummary,
-    CartSearchResult,
-    ShippingInfo,
-    SplitAssignment,
-    SplitStoreGroup,
-    SplitCombination,
-)
+from robo_market_search.direncnet.client import DirencnetClient
+from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
-from robo_market_search.robo90.client import Robo90Client
-from robo_market_search.direncnet.client import DirencnetClient
-
+from robo_market_search.shared.models import (
+    CartItemResult,
+    CartSearchResult,
+    Product,
+    ShippingInfo,
+    SplitAssignment,
+    SplitCombination,
+    SplitStoreGroup,
+    StoreCartSummary,
+)
 
 STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet"]
 
 # Sensible default shipping estimates for Turkish electronics stores.
 # flat_rate = default shipping cost, free_shipping_min = free over this amount.
 SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
-    "Robolink":    ShippingInfo(flat_rate=39.90, free_shipping_min=250.0),
-    "Robotistan":  ShippingInfo(flat_rate=34.90, free_shipping_min=200.0),
-    "Robo90":      ShippingInfo(flat_rate=39.90, free_shipping_min=300.0),
-    "Direncnet":   ShippingInfo(flat_rate=29.90, free_shipping_min=200.0),
+    "Robolink": ShippingInfo(flat_rate=39.90, free_shipping_min=250.0),
+    "Robotistan": ShippingInfo(flat_rate=34.90, free_shipping_min=200.0),
+    "Robo90": ShippingInfo(flat_rate=39.90, free_shipping_min=300.0),
+    "Direncnet": ShippingInfo(flat_rate=29.90, free_shipping_min=200.0),
 }
 
 
@@ -33,7 +32,8 @@ class UnifiedSearchClient:
     """
     Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı arama yapar.
     """
-    def __init__(self):
+
+    def __init__(self) -> None:
         self.robolink = RobolinkClient()
         self.robotistan = RobotistanClient()
         self.robo90 = Robo90Client()
@@ -51,7 +51,7 @@ class UnifiedSearchClient:
                 executor.submit(self.robolink.search_component, query, limit_per_store): "Robolink",
                 executor.submit(self.robotistan.search_component, query, limit_per_store, 1): "Robotistan",
                 executor.submit(self.robo90.search_component, query, 1, 1): "Robo90",
-                executor.submit(self.direncnet.search_component, query, limit_per_store): "Direncnet"
+                executor.submit(self.direncnet.search_component, query, limit_per_store): "Direncnet",
             }
 
             for future in concurrent.futures.as_completed(future_to_store):
@@ -127,16 +127,18 @@ class UnifiedSearchClient:
             info = shipping[store_name]
             shipping_cost = self._compute_shipping(total, info) if not missing else 0.0
 
-            store_summaries.append(StoreCartSummary(
-                store=store_name,
-                items=items,
-                total_price=total,
-                shipping_cost=shipping_cost,
-                total_with_shipping=total + shipping_cost,
-                missing_items=missing,
-                has_all_items=len(missing) == 0,
-                free_shipping_min=info.free_shipping_min,
-            ))
+            store_summaries.append(
+                StoreCartSummary(
+                    store=store_name,
+                    items=items,
+                    total_price=total,
+                    shipping_cost=shipping_cost,
+                    total_with_shipping=total + shipping_cost,
+                    missing_items=missing,
+                    has_all_items=len(missing) == 0,
+                    free_shipping_min=info.free_shipping_min,
+                )
+            )
 
         stores_with_all = [s for s in store_summaries if s.has_all_items]
         cheapest_store = min(stores_with_all, key=lambda s: s.total_with_shipping) if stores_with_all else None
@@ -180,9 +182,7 @@ class UnifiedSearchClient:
         groups: Dict[str, List[SplitAssignment]] = {}
         for q, store in assignment.items():
             prod = best_price[q][store]
-            groups.setdefault(store, []).append(
-                SplitAssignment(query=q, store=store, price=prod.price, product=prod)
-            )
+            groups.setdefault(store, []).append(SplitAssignment(query=q, store=store, price=prod.price, product=prod))
         group_list: List[SplitStoreGroup] = []
         grand = 0.0
         for store, assigns in groups.items():
@@ -191,13 +191,15 @@ class UnifiedSearchClient:
             ship = ship_info.cost(subtotal)
             total = subtotal + ship
             grand += total
-            group_list.append(SplitStoreGroup(
-                store=store,
-                items=assigns,
-                subtotal=subtotal,
-                shipping=ship,
-                total=total,
-            ))
+            group_list.append(
+                SplitStoreGroup(
+                    store=store,
+                    items=assigns,
+                    subtotal=subtotal,
+                    shipping=ship,
+                    total=total,
+                )
+            )
         return SplitCombination(groups=group_list, grand_total=grand)
 
     def _optimize_split(

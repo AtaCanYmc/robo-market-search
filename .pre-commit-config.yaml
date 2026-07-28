@@ -1,0 +1,76 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# pre-commit hooks — robo-market-search
+#
+# Kurulum:
+#   pip install pre-commit
+#   pre-commit install          # git hook'ları aktif et
+#   pre-commit run --all-files  # tüm dosyalarda manuel çalıştır
+# ─────────────────────────────────────────────────────────────────────────────
+default_language_version:
+  python: python3
+
+default_stages: [pre-commit]
+
+repos:
+  # ── 1. Genel dosya sağlığı ──────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace       # Satır sonu boşlukları sil
+      - id: end-of-file-fixer         # Dosya sonu newline garantisi
+      - id: check-yaml                # YAML sözdizimi kontrolü
+      - id: check-toml                # TOML sözdizimi kontrolü
+      - id: check-json                # JSON sözdizimi kontrolü
+      - id: check-merge-conflict      # Birleşme çakışma işaretlerini engelle
+      - id: check-added-large-files   # 500KB+ dosyaları engelle
+        args: [--maxkb=500]
+      - id: check-case-conflict       # Büyük/küçük harf farklı ama aynı isim
+      - id: debug-statements          # pdb/breakpoint satırlarını yakala
+      - id: mixed-line-ending         # CRLF/LF tutarsızlığını önle
+        args: [--fix=lf]
+
+  # ── 2. Ruff — Linter + Formatter ───────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.3
+    hooks:
+      # Lint: otomatik düzeltilebilir sorunları da fix et
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        types_or: [python, pyi]
+      # Format: siyah-uyumlu kod biçimlendirici
+      - id: ruff-format
+        types_or: [python, pyi]
+
+  # ── 3. Mypy — Statik Tip Kontrolü ──────────────────────────────────────
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.16.1
+    hooks:
+      - id: mypy
+        args:
+          - --config-file=pyproject.toml
+          - --no-error-summary     # Özet satırını gizle (CI'da gürültü azaltır)
+        additional_dependencies:
+          - types-beautifulsoup4
+          - types-requests
+        # Sadece ana paketi kontrol et; test/örnek dosyaları kapsam dışı
+        files: ^robo_market_search/
+        types_or: [python, pyi]
+
+  # ── 4. Conventional Commits zorunluluğu ────────────────────────────────
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.6.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]        # commit-msg aşamasında çalışır
+        args:
+          - feat
+          - fix
+          - perf
+          - refactor
+          - docs
+          - test
+          - build
+          - ci
+          - chore
+          - revert
+          - style

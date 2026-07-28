@@ -1,2 +1,137 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Type stubs
+*.pyi.bak
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+.eggs/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+.virtualenv/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+nosetests.xml
+test-results/
+junit*.xml
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Environment & Secrets
+# ─────────────────────────────────────────────────────────────────────────────
 .env
-.idea/*
+.env.*
+!.env.example        # Şablon dosyası commit'lenebilir
+*.env
+secrets.toml
+secrets.yaml
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IDEs & Editors
+# ─────────────────────────────────────────────────────────────────────────────
+
+# JetBrains (PyCharm, DataSpell, …)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+Session.vim
+
+# Emacs
+*#
+.#*
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Operating System
+# ─────────────────────────────────────────────────────────────────────────────
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Project-specific
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Jupyter Notebooks (araştırma/deneme)
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
+
+# Telegram bot token (eğer dosyaya yazılırsa)
+token.txt
+
+# Geçici dosyalar
+*.tmp
+*.bak
+*.orig
+tmp/
+temp/
