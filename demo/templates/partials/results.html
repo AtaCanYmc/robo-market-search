@@ -1,0 +1,181 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   partials/results.html
+   HTMX partial — rendered by POST /search and injected into #results-area
+   Context vars: products (List[Product]), query (str), limit (int)
+   ───────────────────────────────────────────────────────────────────────── #}
+
+{# ── Results header ────────────────────────────────────────────────────── #}
+<div class="flex items-start sm:items-center justify-between mb-6 gap-3 flex-wrap animate-fade-in">
+  <div>
+    <h2 class="text-slate-200 font-semibold text-base sm:text-lg">
+      "<span class="text-cyan-400">{{ query }}</span>" araması
+    </h2>
+    <p class="text-slate-500 text-xs mt-0.5">
+      {% if products %}
+        {{ products | length }} ürün bulundu &nbsp;·&nbsp; En ucuzdan pahalıya sıralandı
+      {% else %}
+        Hiçbir markette sonuç bulunamadı
+      {% endif %}
+    </p>
+  </div>
+
+  {% if products %}
+  <span class="shrink-0 text-xs font-mono
+               bg-slate-900 border border-slate-800
+               text-slate-500 px-3 py-1 rounded-full">
+    {{ products | length }} sonuç
+  </span>
+  {% endif %}
+</div>
+
+
+{% if products %}
+
+{# ── Results grid ──────────────────────────────────────────────────────── #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+  {% for p in products %}
+  {# Look up tailwind badge classes by store name #}
+  {% set color = STORE_COLORS.get(p.store, "bg-slate-600/20 text-slate-400 border-slate-600/30") %}
+
+  <article
+    class="result-card group
+           flex flex-col
+           bg-slate-900 border border-slate-800/80
+           hover:border-slate-600/60
+           rounded-2xl p-5 gap-4
+           hover:shadow-xl hover:shadow-slate-950/70
+           transition-all duration-200
+           animate-fade-up"
+    aria-label="{{ p.name }}"
+  >
+
+    {# ── Card header: store badge + stock status ── #}
+    <div class="flex items-center justify-between gap-2">
+      <span class="inline-flex items-center text-xs font-semibold
+                   px-2.5 py-1 rounded-full border {{ color }}
+                   select-none">
+        {{ p.store }}
+      </span>
+
+      {% if p.in_stock %}
+      <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400"
+            title="Stokta var">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
+        Stokta
+      </span>
+      {% else %}
+      <span class="inline-flex items-center gap-1.5 text-xs text-red-400"
+            title="Tükendi">
+        <span class="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0"></span>
+        Tükendi
+      </span>
+      {% endif %}
+    </div>
+
+    {# ── Product name ── #}
+    <h3 class="text-sm text-slate-200 font-medium leading-snug
+               line-clamp-3 flex-1
+               group-hover:text-white transition-colors duration-150">
+      {{ p.name }}
+    </h3>
+
+    {# ── Price ── #}
+    <div class="flex items-baseline gap-1.5">
+      <span class="text-2xl font-bold text-transparent bg-clip-text
+                   bg-gradient-to-r from-cyan-300 to-blue-400 leading-none">
+        {{ "%.2f"|format(p.price) }}
+      </span>
+      <span class="text-slate-500 text-sm font-medium">{{ p.currency }}</span>
+    </div>
+
+    {# ── CTA button ── #}
+    <a
+      href="{{ p.url }}"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-auto flex items-center justify-center gap-2
+             w-full rounded-xl py-2.5 px-4
+             bg-slate-800 hover:bg-slate-700 active:bg-slate-600
+             border border-slate-700/80 hover:border-slate-500
+             text-slate-300 hover:text-white
+             text-xs font-semibold
+             transition-all duration-150"
+      aria-label="{{ p.store }}'da {{ p.name }} ürününü görüntüle"
+    >
+      <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+           stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21
+                 h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+      </svg>
+      Ürüne Git
+    </a>
+
+  </article>
+  {% endfor %}
+
+</div>
+
+{# ── Price range summary bar ───────────────────────────────────────────── #}
+{% if products | length > 1 %}
+{% set min_price = products | map(attribute="price") | min %}
+{% set max_price = products | map(attribute="price") | max %}
+<div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1
+            text-xs text-slate-600 border-t border-slate-800/60 pt-4 animate-fade-in">
+  <span>
+    En ucuz: <strong class="text-cyan-400">{{ "%.2f"|format(min_price) }} TL</strong>
+  </span>
+  <span>
+    En pahalı: <strong class="text-slate-400">{{ "%.2f"|format(max_price) }} TL</strong>
+  </span>
+  <span>
+    Fark: <strong class="text-slate-400">{{ "%.2f"|format(max_price - min_price) }} TL</strong>
+  </span>
+  <span class="ml-auto hidden sm:inline">
+    Toplam {{ products | length }} ürün · {{ query }}
+  </span>
+</div>
+{% endif %}
+
+
+{% else %}
+
+{# ── No-results state ──────────────────────────────────────────────────── #}
+<div class="text-center py-20 animate-fade-in">
+
+  <div class="inline-flex items-center justify-center
+              w-16 h-16 rounded-2xl
+              bg-slate-900 border border-slate-800
+              mb-5 mx-auto shadow-inner">
+    <svg class="w-7 h-7 text-slate-700" fill="none" viewBox="0 0 24 24"
+         stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198
+               1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168
+               .75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375
+               0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336
+               -.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008
+               V9.75Z"/>
+    </svg>
+  </div>
+
+  <h3 class="text-slate-300 font-semibold text-base mb-2">Sonuç bulunamadı</h3>
+  <p class="text-slate-600 text-sm max-w-sm mx-auto leading-relaxed">
+    "<strong class="text-slate-500">{{ query }}</strong>" için hiçbir markette ürün
+    bulunamadı. Daha kısa veya farklı bir arama terimi deneyin.
+  </p>
+
+  {# Suggestions #}
+  <div class="mt-6 flex flex-wrap justify-center gap-2">
+    {% for tip in ["Parça numarası kullan", "Türkçe/İngilizce dene", "Daha kısa yaz"] %}
+    <span class="inline-flex items-center gap-1.5
+                 bg-slate-900 border border-slate-800
+                 text-slate-600 text-xs px-3 py-1.5 rounded-full">
+      💡 {{ tip }}
+    </span>
+    {% endfor %}
+  </div>
+</div>
+
+{% endif %}
