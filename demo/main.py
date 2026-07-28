@@ -44,7 +44,7 @@ STORE_COLORS: dict[str, str] = {
 }
 
 # Inject once — available in every template without passing it explicitly.
-templates.env.globals["STORE_COLORS"] = STORE_COLORS
+templates.env.globals.update(STORE_COLORS=STORE_COLORS)
 
 # ── App ──────────────────────────────────────────────────────────────────────
 app = FastAPI(

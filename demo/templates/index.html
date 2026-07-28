@@ -5,14 +5,14 @@
 {% block content %}
 
 {# ── Hero ───────────────────────────────────────────────────────────────── #}
-<section class="text-center pt-10 pb-12">
+<section class="text-center pt-8 pb-10">
 
   {# Badge #}
-  <div class="inline-flex items-center gap-2 mb-6
+  <div class="inline-flex items-center gap-2 mb-5
               bg-cyan-500/10 border border-cyan-500/20 rounded-full
               text-cyan-400 text-xs font-medium px-3.5 py-1.5">
     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse-slow"></span>
-    4 Markette Eşzamanlı · Fiyata Göre Sıralı · Canlı Stok
+    4 Markette Eşzamanlı · Filtreleme & Sayfalama · Canlı Stok
   </div>
 
   {# Headline #}
@@ -26,13 +26,12 @@
   </h1>
 
   <p class="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-    Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda, paralel olarak tara.
-    Sonuçlar otomatik olarak en ucuzdan pahalıya sıralanır.
+    Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda tara. Filtrele, sırala ve aradığın bileşeni bul.
   </p>
 </section>
 
 {# ── Search Form ────────────────────────────────────────────────────────── #}
-<section class="max-w-2xl mx-auto mb-12">
+<section class="max-w-4xl mx-auto mb-10">
   <form
     id="search-form"
     hx-post="/search"
@@ -40,7 +39,7 @@
     hx-swap="innerHTML"
     hx-indicator="#search-skeleton"
     hx-on::before-request="hideEmpty()"
-    class="space-y-3"
+    class="space-y-4"
   >
     {# Main input #}
     <div class="relative group">
@@ -90,25 +89,68 @@
       </button>
     </div>
 
-    {# Options: limit selector #}
-    <div class="flex items-center gap-3 flex-wrap px-1">
-      <span class="text-xs text-slate-600 select-none">Market başına sonuç:</span>
-      <div class="flex gap-1.5" role="radiogroup" aria-label="Market başına sonuç sayısı">
-        {% for val in [3, 5, 10] %}
-        <label class="cursor-pointer select-none">
-          <input type="radio" name="limit" value="{{ val }}"
-                 class="sr-only peer"
-                 {% if val == 5 %}checked{% endif %}>
-          <span class="block px-3 py-1 rounded-lg text-xs font-medium
-                       border border-slate-700 text-slate-500
-                       peer-checked:bg-cyan-500/15 peer-checked:border-cyan-500/40
-                       peer-checked:text-cyan-400
-                       hover:border-slate-500 hover:text-slate-300
-                       transition-all duration-150">
-            {{ val }}
-          </span>
+    {# Hidden page reset field #}
+    <input type="hidden" name="page" id="page-input" value="1" />
+
+    {# Filter & Control Bar #}
+    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-4 items-center justify-between text-xs">
+      
+      {# Left side: Market limits & Sorting #}
+      <div class="flex flex-wrap items-center gap-4">
+        
+        {# Limit #}
+        <div class="flex items-center gap-2">
+          <span class="text-slate-500 select-none">Market başına limit:</span>
+          <div class="flex gap-1" role="radiogroup">
+            {% for val in [5, 10, 20] %}
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="limit" value="{{ val }}"
+                     class="sr-only peer"
+                     {% if val == 10 %}checked{% endif %}>
+              <span class="block px-2.5 py-1 rounded-lg font-medium
+                           border border-slate-800 text-slate-400
+                           peer-checked:bg-cyan-500/15 peer-checked:border-cyan-500/40
+                           peer-checked:text-cyan-400
+                           hover:border-slate-600 transition-all">
+                {{ val }}
+              </span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        {# Sort #}
+        <div class="flex items-center gap-2">
+          <span class="text-slate-500 select-none">Sıralama:</span>
+          <select name="sort_by" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-300 focus:outline-none focus:border-cyan-500">
+            <option value="price_asc">Fiyat: Artan (En Ucuz)</option>
+            <option value="price_desc">Fiyat: Azalan (En Pahalı)</option>
+            <option value="name_asc">Ürün Adı: A-Z</option>
+            <option value="store_asc">Market Adı</option>
+          </select>
+        </div>
+
+      </div>
+
+      {# Right side: Stock checkbox & Page size #}
+      <div class="flex flex-wrap items-center gap-4">
+        
+        {# Stock only #}
+        <label class="inline-flex items-center gap-2 cursor-pointer select-none text-slate-300">
+          <input type="checkbox" name="stock_only" value="true" class="rounded border-slate-700 text-cyan-500 focus:ring-cyan-500/20 bg-slate-950">
+          <span>Sadece Stoktakiler</span>
         </label>
-        {% endfor %}
+
+        {# Page size #}
+        <div class="flex items-center gap-2">
+          <span class="text-slate-500 select-none">Sayfa başı:</span>
+          <select name="page_size" class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-300 focus:outline-none focus:border-cyan-500">
+            <option value="6">6 Ürün</option>
+            <option value="12" selected>12 Ürün</option>
+            <option value="24">24 Ürün</option>
+          </select>
+        </div>
+
       </div>
     </div>
   </form>
@@ -134,14 +176,12 @@
   </div>
 </section>
 
-{# ── Skeleton (HTMX indicator — always in DOM, hidden/shown via CSS) ───── #}
+{# ── Skeleton (HTMX indicator) ───── #}
 <div id="search-skeleton" class="htmx-indicator flex-col gap-4 mb-4" aria-hidden="true">
-  {# Skeleton header #}
-  <div class="flex items-center gap-3 mb-2">
+  <div class="flex items-center justify-between mb-2">
     <div class="h-4 w-44 bg-slate-800 rounded-lg animate-pulse-slow"></div>
     <div class="h-4 w-20 bg-slate-800 rounded-lg animate-pulse-slow"></div>
   </div>
-  {# Skeleton grid #}
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {% for i in range(6) %}
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3.5 animate-pulse-slow">
@@ -163,18 +203,11 @@
 {# ── Results area (HTMX target) ─────────────────────────────────────────── #}
 <section id="results-area" aria-live="polite" aria-label="Arama sonuçları">
 
-  {# Empty / welcome state (replaced after first search) #}
+  {# Empty / welcome state #}
   <div id="empty-state" class="text-center py-20">
-
-    {# Icon #}
-    <div class="inline-flex items-center justify-center w-18 h-18
-                w-16 h-16 rounded-2xl
-                bg-slate-900 border border-slate-800/80
-                mb-5 shadow-inner">
-      <svg class="w-7 h-7 text-slate-700" fill="none" viewBox="0 0 24 24"
-           stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"/>
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800/80 mb-5 shadow-inner">
+      <svg class="w-7 h-7 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"/>
       </svg>
     </div>
 
@@ -183,19 +216,16 @@
       Arama kutusuna bir ürün adı veya parça numarası girerek 4 marketi aynı anda tara.
     </p>
 
-    {# Feature pills #}
     <div class="flex flex-wrap justify-center gap-2 mt-8">
       {% set features = [
         ("⚡", "Paralel Arama"),
+        ("🎛️", "Gelişmiş Filtreler"),
+        ("📄", "Dinamik Sayfalama"),
         ("💰", "Fiyata Göre Sırala"),
         ("📦", "Stok Durumu"),
-        ("🔗", "Direkt Ürün Linki"),
-        ("🏪", "4 Market"),
       ] %}
       {% for icon, label in features %}
-      <span class="inline-flex items-center gap-1.5
-                   bg-slate-900 border border-slate-800/80
-                   text-slate-600 text-xs px-3.5 py-1.5 rounded-full">
+      <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-slate-800/80 text-slate-600 text-xs px-3.5 py-1.5 rounded-full">
         <span aria-hidden="true">{{ icon }}</span>{{ label }}
       </span>
       {% endfor %}
@@ -211,24 +241,36 @@
 <script>
 "use strict";
 
-// ── Helpers ───────────────────────────────────────────────────────────────
-
 function hideEmpty() {
   const el = document.getElementById("empty-state");
   if (el) { el.style.display = "none"; }
 }
 
-// ── Quick-search chips ────────────────────────────────────────────────────
-document.querySelectorAll(".quick-chip").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const input = document.getElementById("query-input");
-    input.value = btn.dataset.query;
-    // Trigger HTMX submit programmatically
+// Reset page to 1 when main form controls change (except pagination buttons)
+document.querySelectorAll("#search-form select, #search-form input[type='checkbox'], #search-form input[type='radio']").forEach(elem => {
+  elem.addEventListener("change", () => {
+    document.getElementById("page-input").value = "1";
     htmx.trigger(document.getElementById("search-form"), "submit");
   });
 });
 
-// ── Keyboard shortcut: press "/" to focus search ──────────────────────────
+// Quick-search chips
+document.querySelectorAll(".quick-chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const input = document.getElementById("query-input");
+    input.value = btn.dataset.query;
+    document.getElementById("page-input").value = "1";
+    htmx.trigger(document.getElementById("search-form"), "submit");
+  });
+});
+
+// Change page helper function (called from pagination buttons)
+function goToPage(pageNumber) {
+  document.getElementById("page-input").value = pageNumber;
+  htmx.trigger(document.getElementById("search-form"), "submit");
+}
+
+// Keyboard shortcut: "/"
 document.addEventListener("keydown", e => {
   if (e.key === "/" && document.activeElement !== document.getElementById("query-input")) {
     e.preventDefault();
@@ -239,11 +281,10 @@ document.addEventListener("keydown", e => {
   }
 });
 
-// ── After HTMX swap: scroll results into view ────────────────────────────
+// After HTMX swap
 document.body.addEventListener("htmx:afterSwap", e => {
   if (e.detail.target.id === "results-area") {
     hideEmpty();
-    e.detail.target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 });
 </script>
