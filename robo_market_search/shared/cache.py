@@ -5,10 +5,10 @@ SQLite and memory-backed TTL caching layer for Robo Market Search.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import sqlite3
 import time
-from pathlib import Path
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from robo_market_search.shared.models import Product
 
@@ -45,9 +45,7 @@ class SearchCache:
                 )
                 """
             )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_expires_at ON search_cache(expires_at)"
-            )
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_expires_at ON search_cache(expires_at)")
             conn.commit()
 
     @staticmethod

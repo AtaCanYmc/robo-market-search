@@ -4,7 +4,6 @@ Main web views router (Index, Search with filtering & pagination).
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import math
 from typing import TYPE_CHECKING, List, Optional

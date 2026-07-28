@@ -12,12 +12,11 @@ Kurulum ve çalıştırma:
 from __future__ import annotations
 
 import logging
-import sys
 from pathlib import Path
+import sys
 
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
-
 from routes.search import router as search_router
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -38,9 +37,9 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 # ── Store badge colour map (shared with all templates as a global) ────────────
 STORE_COLORS: dict[str, str] = {
     "Robotistan": "bg-blue-500/20 text-blue-300 border-blue-500/30",
-    "Robolink":   "bg-orange-500/20 text-orange-300 border-orange-500/30",
-    "Robo90":     "bg-violet-500/20 text-violet-300 border-violet-500/30",
-    "Direncnet":  "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    "Robolink": "bg-orange-500/20 text-orange-300 border-orange-500/30",
+    "Robo90": "bg-violet-500/20 text-violet-300 border-violet-500/30",
+    "Direncnet": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
 }
 
 # Inject once — available in every template without passing it explicitly.

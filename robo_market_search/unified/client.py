@@ -63,7 +63,9 @@ class UnifiedSearchClient:
 
         loop = asyncio.get_event_loop()
 
-        async def _fetch(store_name: str, fn) -> List[Product]:
+        from typing import Callable
+
+        async def _fetch(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
             try:
                 return await loop.run_in_executor(None, fn)
             except Exception as exc:
