@@ -22,6 +22,12 @@ Sitemap: https://robo-market-search.vercel.app/sitemap.xml
     return Response(content=content, media_type="text/plain")
 
 
+@router.get("/favicon.ico", include_in_schema=False)
+async def favicon_ico() -> Response:
+    """Favicon isteğini 204 No Content ile karşılar."""
+    return Response(status_code=204)
+
+
 @router.get("/sitemap.xml", include_in_schema=False)
 async def sitemap_xml() -> Response:
     """Sitemap.xml dosyasını sunar."""
