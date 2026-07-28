@@ -46,7 +46,7 @@ class DirencnetClient:
                         item = json.loads(clean_json)
 
                         url_path = item.get("url", "")
-                        full_url = url_path if url_path.startswith("http") else f"https://www.direnc.net{url_path}"
+                        full_url = url_path if url_path.startswith("http") else f"https://www.direnc.net/{url_path}"
 
                         price_str = str(item.get("total_sale_price", "0.0")).replace(",", ".")
                         try:
