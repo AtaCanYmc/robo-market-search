@@ -15,6 +15,8 @@ from fastapi.responses import HTMLResponse
 if TYPE_CHECKING:
     from fastapi.templating import Jinja2Templates
 
+from robo_market_search.unified.client import UnifiedSearchClient
+
 logger = logging.getLogger("demo.routes")
 
 router = APIRouter()
@@ -55,8 +57,7 @@ async def search(
     logger.info("Search query=%r limit=%d page=%d sort=%s", query, limit, page, sort_by)
 
     try:
-        from robo_market_search.unified.client import UnifiedSearchClient
-
+        client = UnifiedSearchClient()
         # Unified async arama (asyncio + önbellek katmanı)
         raw_products = await client.search_async(query=query, limit_per_store=limit)
 
