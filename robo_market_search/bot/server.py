@@ -56,7 +56,7 @@ async def search_components(message: types.Message):
     try:
         # Senkron arama işlemini event loop'u bloklamamak için thread içinde çalıştır
         client = UnifiedSearchClient()
-        results = await asyncio.to_thread(lambda: client.search(query=query, limit_per_store=5))
+        results = await asyncio.get_event_loop().run_in_executor(None, lambda: client.search(query=query, limit_per_store=5))
 
         if not results:
             await wait_message.edit_text(

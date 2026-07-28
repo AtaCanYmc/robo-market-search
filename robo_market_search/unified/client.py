@@ -33,7 +33,7 @@ class UnifiedSearchClient:
     Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı arama yapar.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.robolink = RobolinkClient()
         self.robotistan = RobotistanClient()
         self.robo90 = Robo90Client()

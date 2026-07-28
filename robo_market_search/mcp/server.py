@@ -1,4 +1,5 @@
 import asyncio
+from typing import List
 
 import anyio
 from mcp.server import Server
@@ -11,7 +12,7 @@ app = Server("robo-market-search")
 
 
 @app.list_tools()
-async def list_tools() -> list[types.Tool]:
+async def list_tools() -> List[types.Tool]:
     return [
         types.Tool(
             name="search_electronic_components",
@@ -42,7 +43,7 @@ async def list_tools() -> list[types.Tool]:
 
 
 @app.call_tool()
-async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
+async def call_tool(name: str, arguments: dict) -> List[types.TextContent]:
     if name != "search_electronic_components":
         raise ValueError(f"Bilinmeyen araç: {name}")
 

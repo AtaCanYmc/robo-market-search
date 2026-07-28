@@ -92,6 +92,10 @@ ignore = [
     "SIM108",  # Ternary ifade yerine if-else — scraper kodunda daha okunaklı
     # B rule ince ayarları
     "B904",   # raise ... from err — scraper except bloklarında zorunlu değil
+    # Türkçe karakter kuralları — proje kasıtlı olarak Türkçe yazılmıştır
+    "RUF001",  # String contains ambiguous Turkish dotless-i (ı)
+    "RUF002",  # Docstring contains ambiguous Turkish dotless-i (ı)
+    "RUF003",  # Comment contains ambiguous Turkish dotless-i (ı)
 ]
 
 # Otomatik düzeltilebilir kurallar (--fix ile aktif)

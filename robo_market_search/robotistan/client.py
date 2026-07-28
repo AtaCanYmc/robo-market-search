@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Optional
 import uuid
 
 from curl_cffi import requests
@@ -9,7 +9,7 @@ from robo_market_search.shared.models import Product
 
 
 class RobotistanClient:
-    def __init__(self, fallback_token: str = None):
+    def __init__(self, fallback_token: Optional[str] = None) -> None:
         if fallback_token is None:
             fallback_token = ROBOTISTAN_FALLBACK_TOKEN
 
