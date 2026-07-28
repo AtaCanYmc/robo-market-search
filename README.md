@@ -1,11 +1,14 @@
 <div align="center">
-  <img src="docs/logo.svg" alt="Robo Market Search Logo" width="300" />
+  <img src=".github/screenshots/logo.svg" alt="Robo Market Search Logo" width="300" />
 
   # Robo Market Search
 
   [![PyPI version](https://img.shields.io/pypi/v/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
   [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
   [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+  [![CI](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/test.yml/badge.svg)](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/test.yml)
+  [![Release](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/release-please.yml/badge.svg)](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/release-please.yml)
+  [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 </div>
 
 <br/>
@@ -19,6 +22,66 @@ Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protoc
 - **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek (regex ile ana sayfalardan kazıyarak) kesintisiz çalışır.
 - **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
 - **LLM/MCP Entegrasyonu**: Claude vb. LLM asistanlarına, projeniz için donanım/elektronik malzeme arama yeteneği kazandırır.
+
+## Ekosistem Mimarisi
+
+```mermaid
+graph TB
+    subgraph Clients["🖥️  İstemciler"]
+        direction LR
+        PY["🐍 Python SDK"]
+        CLI["⌨️  CLI<br/><code>robo-search</code>"]
+        MCP["🤖 MCP Sunucusu<br/><code>robo-mcp</code>"]
+        BOT["💬 Telegram Bot<br/><code>robo-bot</code>"]
+    end
+
+    subgraph Core["⚙️  Çekirdek Kütüphane"]
+        UC["UnifiedSearchClient"]
+        subgraph Scrapers["Market İstemcileri (Paralel Thread'ler)"]
+            direction LR
+            R1["RobotistanClient"]
+            R2["RobolinkClient"]
+            R3["Robo90Client"]
+            R4["DirencnetClient"]
+        end
+        TK["🔑 Dinamik Token
+Yenileyici"]
+        MD["📦 Product
+Model"]
+    end
+
+    subgraph Markets["🛒 Türkiye Elektronik Pazarları"]
+        direction LR
+        M1["robotistan.com"]
+        M2["robolink.com"]
+        M3["robo90.com"]
+        M4["direnc.net"]
+    end
+
+    PY  --> UC
+    CLI --> UC
+    MCP --> UC
+    BOT --> UC
+
+    UC --> R1 & R2 & R3 & R4
+    R1 <-.->|token yenileme| TK
+    R2 <-.->|token yenileme| TK
+    R3 <-.->|token yenileme| TK
+    R4 <-.->|token yenileme| TK
+
+    R1 -->|HTTP / scrape| M1
+    R2 -->|HTTP / scrape| M2
+    R3 -->|HTTP / scrape| M3
+    R4 -->|HTTP / scrape| M4
+
+    R1 & R2 & R3 & R4 --> MD
+    MD -->|"ucuzdan pahalıya sıralı\nProduct listesi"| UC
+
+    style Clients  fill:#1e293b,stroke:#38bdf8,color:#e2e8f0
+    style Core     fill:#0f172a,stroke:#818cf8,color:#e2e8f0
+    style Markets  fill:#1e293b,stroke:#34d399,color:#e2e8f0
+    style Scrapers fill:#0f172a,stroke:#818cf8,color:#c7d2fe
+```
 
 ## Kurulum
 
@@ -39,7 +102,7 @@ pip install "robo-market-search[all]"
 
 Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz. CLI aracı `typer` ve `rich` kullanılarak geliştirilmiştir ve sonuçları terminalinizde şık, renkli bir tablo formatında sunar.
 
-![CLI Örnek Çıktı](docs/cli_example.png)
+![CLI Örnek Çıktı](.github/screenshots/cli_example.png)
 
 ### Örnek Komutlar:
 
@@ -61,9 +124,9 @@ robo-search "PLA Filament" --no-sort
 Projenizi kişisel bir elektronik arama asistanına dönüştürmek için yerleşik bir Telegram botu da barındırır. `aiogram` kullanılarak geliştirilen bu asenkron bot, saniyeler içinde marketleri tarar ve en ucuz ürünleri size linkleriyle birlikte mesaj olarak atar.
 
 <p align="center">
-  <img src="docs/bot_example.jpeg" width="35%" alt="Telegram Bot Örnek 1"/>
+  <img src=".github/screenshots/bot_example.jpeg" width="35%" alt="Telegram Bot Örnek 1"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="docs/bot_example_2.jpeg" width="35%" alt="Telegram Bot Örnek 2"/>
+  <img src=".github/screenshots/bot_example_2.jpeg" width="35%" alt="Telegram Bot Örnek 2"/>
 </p>
 
 ### Kullanımı
@@ -85,7 +148,7 @@ Bot çalıştıktan sonra Telegram uygulamasından botunuza `/ara ESP32` veya `/
 
 Proje, LLM'ler (örn. Claude Desktop) için resmi MCP (Model Context Protocol) sunucusu içerir. Bu sayede yapay zeka asistanınız projeleriniz için doğrudan Türkiye pazarındaki elektronik parçaların fiyat ve stok durumunu **canlı olarak** sorgulayabilir.
 
-![MCP Örnek Çıktı](docs/mcp_example.png)
+![MCP Örnek Çıktı](.github/screenshots/mcp_example.png)
 
 ### Sunucuyu Başlatma ve Test Etme
 
@@ -143,6 +206,40 @@ Claude ile sohbet ederken şu tarz komutlar verebilirsiniz:
 
 LLM, arka planda `robo-mcp` aracını çağırıp güncel fiyat/stok bilgilerini çekecek ve size sunacaktır.
 
+### MCP Arama Akışı
+
+```mermaid
+sequenceDiagram
+    actor User as 👤 Kullanıcı
+    participant LLM as 🤖 Claude / LLM
+    participant MCP as robo-mcp
+    participant UC  as UnifiedSearchClient
+    participant M1  as robotistan.com
+    participant M2  as robolink.com
+    participant M3  as robo90.com
+    participant M4  as direnc.net
+
+    User->>LLM: "ESP32-CAM için en ucuz fiyatı bul"
+    LLM->>MCP: search_products(query="ESP32-CAM")
+    MCP->>UC: search(query="ESP32-CAM")
+
+    par Paralel HTTP İstekleri
+        UC->>M1: GET /search?q=ESP32-CAM
+        UC->>M2: GET /search?q=ESP32-CAM
+        UC->>M3: GET /search?q=ESP32-CAM
+        UC->>M4: GET /search?q=ESP32-CAM
+    end
+
+    M1-->>UC: [Product, ...]
+    M2-->>UC: [Product, ...]
+    M3-->>UC: [Product, ...]
+    M4-->>UC: [Product, ...]
+
+    UC-->>MCP: Birleşik & fiyata göre sıralı liste
+    MCP-->>LLM: JSON product listesi
+    LLM-->>User: "En ucuzu Robotistan'da 142₺"
+```
+
 ## Hızlı Başlangıç (Python SDK / Birleştirilmiş Arama)
 
 ```python
@@ -165,6 +262,18 @@ from robo_market_search import RobotistanClient
 client = RobotistanClient()
 products = client.search_component("esp32", limit=3)
 ```
+
+## Katkıda Bulunma
+
+Katkılarınızı memnuniyetle karşılıyoruz! Lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını okuyun.
+
+## Güvenlik
+
+Güvenlik açığı bildirimi için [SECURITY.md](SECURITY.md) dosyasındaki talimatları izleyin.
+
+## Davranış Kuralları
+
+Bu proje [Katılımcı Sözleşmesi](CODE_OF_CONDUCT.md) ile yönetilmektedir.
 
 ## Lisans
 Apache License 2.0

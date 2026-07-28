@@ -1,0 +1,95 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write        # To create/push release tags and commits
+  pull-requests: write   # To open and update Release PRs
+
+jobs:
+  release-please:
+    name: 🚀 Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name:        ${{ steps.release.outputs.tag_name }}
+      version:         ${{ steps.release.outputs.version }}
+      upload_url:      ${{ steps.release.outputs.upload_url }}
+
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          # Use a PAT or GitHub App token so that the created release
+          # can in turn trigger the downstream publish workflow.
+          # If you only have GITHUB_TOKEN, set token: ${{ secrets.GITHUB_TOKEN }}
+          # and manually trigger publish.yml after merge.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Publish to PyPI — only runs when release-please creates a real release
+  # ──────────────────────────────────────────────────────────────────────────
+  build:
+    name: 📦 Build Distribution
+    runs-on: ubuntu-latest
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install build backend
+        run: python -m pip install build --user
+
+      - name: Clean previous distributions
+        run: rm -rf dist/
+
+      - name: Build wheel and sdist
+        run: python -m build
+
+      - name: Upload distribution artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+          retention-days: 5
+
+  publish-to-pypi:
+    name: 📤 Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: [release-please, build]
+    if: ${{ needs.release-please.outputs.release_created }}
+
+    environment:
+      name: pypi
+      url: https://pypi.org/project/robo-market-search/
+
+    permissions:
+      id-token: write   # Required for PyPI Trusted Publishing (OIDC)
+      contents: read
+
+    steps:
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          # If you're not using Trusted Publishing, uncomment the line below:
+          # password: ${{ secrets.PYPI_API_TOKEN }}
