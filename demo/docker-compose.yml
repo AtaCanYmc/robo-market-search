@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web-demo:
+    build:
+      context: ..
+      dockerfile: demo/Dockerfile
+    container_name: robo-market-search-demo
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

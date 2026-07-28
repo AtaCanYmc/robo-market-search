@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Türkiye'nin elektronik ve robotik pazarlarında gerçek zamanlı ürün arama motoru — Robotistan, Robolink, Robo90, Direnç.net" />
+  <meta name="keywords" content="elektronik arama, robotistan, robolink, robo90, direncnet, esp32, arduino, fiyat karşılaştırma, robotik parça" />
+  <meta name="author" content="Ata Can" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#020617" />
+  <link rel="canonical" href="https://robo-market-search.vercel.app/" />
+
+  <!-- ── Open Graph / Facebook ── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://robo-market-search.vercel.app/" />
+  <meta property="og:title" content="Robo Market Search — Türkiye'nin Elektronik Arama Motoru" />
+  <meta property="og:description" content="Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda, paralel olarak tara. Canlı stok ve fiyat karşılaştırması." />
+  <meta property="og:site_name" content="Robo Market Search" />
+  <meta property="og:locale" content="tr_TR" />
+
+  <!-- ── Twitter Card ── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Robo Market Search — Türkiye'nin Elektronik Arama Motoru" />
+  <meta name="twitter:description" content="Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda, paralel olarak tara." />
+
+  <!-- ── JSON-LD Structured Data (Schema.org SearchAction) ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Robo Market Search",
+    "url": "https://robo-market-search.vercel.app/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://robo-market-search.vercel.app/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <title>{% block title %}Robo Market Search — Türkiye'nin Elektronik Arama Motoru{% endblock %}</title>
+
+  <!-- ── Tailwind CSS v3 CDN ── -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'fade-up':    'fadeUp 0.35s ease-out both',
+            'fade-in':    'fadeIn 0.25s ease-out both',
+            'pulse-slow': 'pulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%':   { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%':   { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- ── Google Fonts: Inter ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- ── HTMX ── -->
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+  <style>
+    /* ── HTMX indicator ── */
+    .htmx-indicator                      { display: none !important; }
+    .htmx-request .htmx-indicator,
+    .htmx-request.htmx-indicator         { display: flex !important; }
+
+    /* Swap transitions */
+    .htmx-swapping { opacity: 0; transition: opacity 0.15s ease-out; }
+    .htmx-settling { opacity: 1; transition: opacity 0.3s ease-in;  }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar             { width: 5px; }
+    ::-webkit-scrollbar-track       { background: #020617; }
+    ::-webkit-scrollbar-thumb       { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Glow on search focus */
+    #query-input:focus {
+      box-shadow: 0 0 0 3px rgba(34,211,238,0.15), 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Result card stagger */
+    .result-card:nth-child(1)  { animation-delay: 0ms; }
+    .result-card:nth-child(2)  { animation-delay: 40ms; }
+    .result-card:nth-child(3)  { animation-delay: 80ms; }
+    .result-card:nth-child(4)  { animation-delay: 120ms; }
+    .result-card:nth-child(5)  { animation-delay: 160ms; }
+    .result-card:nth-child(6)  { animation-delay: 200ms; }
+    .result-card:nth-child(n+7){ animation-delay: 240ms; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- ── Navigation ──────────────────────────────────────────────────────── -->
+  <nav class="sticky top-0 z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+
+      <!-- Brand -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600
+                    flex items-center justify-center shadow-lg shadow-cyan-500/30
+                    group-hover:shadow-cyan-500/50 transition-shadow">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
+        <span class="font-bold text-sm tracking-tight">
+          Robo<span class="text-cyan-400">Market</span>
+          <span class="text-slate-600 font-normal ml-1 text-xs">Search</span>
+        </span>
+      </a>
+
+      <!-- Meta links -->
+      <div class="flex items-center gap-4 text-xs">
+        <span class="hidden sm:flex items-center gap-1.5 text-slate-500">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-slow"></span>
+          Canlı Veri
+        </span>
+        <a href="/api/docs" target="_blank"
+           class="text-slate-500 hover:text-slate-300 transition-colors">
+          API Docs ↗
+        </a>
+        <a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank"
+           rel="noopener"
+           class="text-slate-500 hover:text-slate-300 transition-colors">
+          GitHub ↗
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
+  <footer class="border-t border-slate-800/50 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5
+                flex flex-col sm:flex-row items-center justify-between
+                gap-2 text-xs text-slate-600">
+      <p>© 2025 robo-market-search — Apache 2.0 Lisansı</p>
+      <div class="flex items-center gap-3">
+        {% for store in ["Robotistan", "Robolink", "Robo90", "Direnç.net"] %}
+          <span>{{ store }}</span>
+          {% if not loop.last %}<span class="text-slate-800">·</span>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -81,7 +81,7 @@ class RobolinkClient:
             parsed_products = []
             for itm in items:
                 url_path = itm.get("url", "")
-                full_url = url_path if url_path.startswith("http") else f"{self.base_site_url}{url_path}"
+                full_url = url_path if url_path.startswith("http") else f"{self.base_site_url}/{url_path}"
 
                 # Image URL parsing
                 image_url = ""

@@ -20,9 +20,9 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 
 [project.optional-dependencies]
 cli = ["typer", "rich"]
-mcp = ["mcp", "anyio"]
+mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-all = ["typer", "rich", "mcp", "anyio", "aiogram"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram"]
 dev = [
     "pre-commit",
     "ruff",
@@ -81,6 +81,7 @@ ignore = [
     # Python 3.8 uyumluluğu: `list[...]` yerine `List[...]` kullanımı zorunlu
     "UP006",  # Use `list` instead of `List`
     "UP007",  # Use `X | Y` instead of `Optional[X]` — 3.10+ syntax
+    "UP045",  # Use `X | None` instead of `Optional[X]` — 3.10+ syntax (Python 3.8 target)
     "UP035",  # `typing` importlarını `collections.abc`'ye taşı — gereksiz
     # Uzun satırlar — mevcut kodda 127 karakter tolerans tanındı
     "E501",
@@ -105,6 +106,9 @@ unfixable = []
 # Test/örnek dosyalarına özel esneklik
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["ALL"]             # Örnekler kural dışı
+"demo/*" = [
+    "B008",  # FastAPI Form(...) dependency default calls
+]
 "robo_market_search/bot/*" = [
     "B008",  # typer/aiogram decorator'larında do-not-call-in-defaults
 ]

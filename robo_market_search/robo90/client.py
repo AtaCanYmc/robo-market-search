@@ -44,7 +44,7 @@ class Robo90Client:
 
                     # URL ve Price parsing
                     url_path = item.get("url", "")
-                    full_url = url_path if url_path.startswith("http") else f"https://www.robo90.com{url_path}"
+                    full_url = url_path if url_path.startswith("http") else f"https://www.robo90.com/{url_path}"
 
                     price_str = str(item.get("total_sale_price", "0.0")).replace(",", ".")
                     try:
