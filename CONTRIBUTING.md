@@ -1,6 +1,6 @@
 # Contributing to Robo Market Search
 
-First off, thank you for taking the time to contribute! 🎉  
+First off, thank you for taking the time to contribute! 🎉
 Every contribution — bug reports, feature requests, documentation improvements, or code — is welcome and appreciated.
 
 ---

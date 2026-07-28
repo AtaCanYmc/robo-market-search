@@ -1,11 +1,13 @@
-import os
 import asyncio
 import logging
+import os
 import sys
+
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command
-from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.filters import Command
+
 from robo_market_search.unified.client import UnifiedSearchClient
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
@@ -47,19 +49,19 @@ async def search_components(message: types.Message):
     query = command_parts[1]
 
     # Kullanıcıya bekleme mesajı gönder
-    wait_message = await message.answer(f"🔍 *'{query}'* için marketler taranıyor, lütfen bekleyin...",
-                                        parse_mode=ParseMode.MARKDOWN)
+    wait_message = await message.answer(
+        f"🔍 *'{query}'* için marketler taranıyor, lütfen bekleyin...", parse_mode=ParseMode.MARKDOWN
+    )
 
     try:
         # Senkron arama işlemini event loop'u bloklamamak için thread içinde çalıştır
         client = UnifiedSearchClient()
-        results = await asyncio.to_thread(
-            lambda: client.search(query=query, limit_per_store=5)
-        )
+        results = await asyncio.to_thread(lambda: client.search(query=query, limit_per_store=5))
 
         if not results:
-            await wait_message.edit_text(f"❌ *'{query}'* araması için hiçbir markette sonuç bulunamadı.",
-                                         parse_mode=ParseMode.MARKDOWN)
+            await wait_message.edit_text(
+                f"❌ *'{query}'* araması için hiçbir markette sonuç bulunamadı.", parse_mode=ParseMode.MARKDOWN
+            )
             return
 
         # Markdown tablosu/listesi oluştur
@@ -68,8 +70,7 @@ async def search_components(message: types.Message):
         # En ucuz 10 ürünü göster
         for idx, item in enumerate(results[:10], 1):
             stok = "✅ Stokta" if getattr(item, "in_stock", False) else "❌ Tükendi"
-            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
-                                                                                     None) else "Fiyat Yok"
+            fiyat = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price", None) else "Fiyat Yok"
             market_adi = getattr(item, "store", "Bilinmeyen Market")
             urun_adi = getattr(item, "name", "İsimsiz Ürün")
             link = getattr(item, "url", "#")
@@ -97,7 +98,8 @@ async def search_components(message: types.Message):
         logger.error(f"Arama hatası: {e}")
         await wait_message.edit_text(
             "❌ Arama işlemi sırasında bir hata meydana geldi. Lütfen daha sonra tekrar deneyin.",
-            parse_mode=ParseMode.MARKDOWN)
+            parse_mode=ParseMode.MARKDOWN,
+        )
 
 
 async def _run_bot(token: str):
@@ -121,8 +123,10 @@ def main():
     token = args.token or os.getenv("TELEGRAM_BOT_TOKEN")
 
     if not token:
-        logger.error("Telegram Token bulunamadı! Lütfen '--token' parametresini kullanın "
-                     "veya TELEGRAM_BOT_TOKEN çevresel değişkenini ayarlayın.")
+        logger.error(
+            "Telegram Token bulunamadı! Lütfen '--token' parametresini kullanın "
+            "veya TELEGRAM_BOT_TOKEN çevresel değişkenini ayarlayın."
+        )
         sys.exit(1)
 
     try:

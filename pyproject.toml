@@ -84,14 +84,14 @@ ignore = [
     "UP035",  # `typing` importlarını `collections.abc`'ye taşı — gereksiz
     # Uzun satırlar — mevcut kodda 127 karakter tolerans tanındı
     "E501",
-    # Exception yakalamada `Exception as e` değil bare `except` — scraper'larda makul
-    "B001",
-    # try/except içinde `print` — bu proje intent olarak print kullanıyor
-    "T201",
+    # Bare except — scraper'larda makul (Ruff'ta E722)
+    "E722",
     # Kural çakışmaları
     "RUF012",  # ClassVar annotation — dataclass'larda gürültü
     # SIM kuralları: bazen okunabilirliği azaltıyor
     "SIM108",  # Ternary ifade yerine if-else — scraper kodunda daha okunaklı
+    # B rule ince ayarları
+    "B904",   # raise ... from err — scraper except bloklarında zorunlu değil
 ]
 
 # Otomatik düzeltilebilir kurallar (--fix ile aktif)

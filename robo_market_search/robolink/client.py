@@ -1,6 +1,7 @@
 import json
 import re
 from typing import List
+
 from curl_cffi import requests
 
 from robo_market_search.shared.constants import ROBOLINK_FALLBACK_TOKEN
@@ -13,11 +14,7 @@ class RobolinkClient:
         self.api_url = "https://api.aisearch.app/sites/2924/v1/search/query"
 
         # Gerçek tarayıcı başlıkları
-        self.headers = {
-            "Accept": "*/*",
-            "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
-            "Referer": self.base_site_url
-        }
+        self.headers = {"Accept": "*/*", "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8", "Referer": self.base_site_url}
         self.client_token = self._find_current_token()
 
     def _find_current_token(self):
@@ -28,9 +25,7 @@ class RobolinkClient:
         try:
             # 1. Ana sayfadan aisearch.app JS dosyasının URL'sini bul
             response = requests.get(
-                self.base_site_url + "?search_provider=aisearch",
-                headers=self.headers,
-                impersonate="safari15_5"
+                self.base_site_url + "?search_provider=aisearch", headers=self.headers, impersonate="safari15_5"
             )
 
             js_url_match = re.search(r'src=["\'](https://cdn\.aisearch\.app/[^"\']+\.js)["\']', response.text)
@@ -71,17 +66,12 @@ class RobolinkClient:
             "page": 1,
             "client-token": self.client_token,
             "lang": "tr",
-            "d": "www.robolinkmarket.com"
+            "d": "www.robolinkmarket.com",
         }
 
         try:
             # API isteğinde de taklit (impersonate) kullanıyoruz
-            response = requests.get(
-                self.api_url,
-                headers=self.headers,
-                params=params,
-                impersonate="safari15_5"
-            )
+            response = requests.get(self.api_url, headers=self.headers, params=params, impersonate="safari15_5")
             response.raise_for_status()
             text = response.text
             data = json.loads(text)
@@ -99,15 +89,17 @@ class RobolinkClient:
                 if images:
                     image_url = images[0]
 
-                parsed_products.append(Product(
-                    name=itm.get("name", "Ürün Adı Yok"),
-                    price=float(itm.get("price", 0.0)),
-                    currency=itm.get("currency", "TL"),
-                    url=full_url,
-                    image_url=image_url,
-                    store="Robolink",
-                    in_stock=itm.get("inStock", True)
-                ))
+                parsed_products.append(
+                    Product(
+                        name=itm.get("name", "Ürün Adı Yok"),
+                        price=float(itm.get("price", 0.0)),
+                        currency=itm.get("currency", "TL"),
+                        url=full_url,
+                        image_url=image_url,
+                        store="Robolink",
+                        in_stock=itm.get("inStock", True),
+                    )
+                )
             return parsed_products
         except Exception as e:
             print(f"[RobolinkClient] Arama yapılırken hata oluştu: {e}")

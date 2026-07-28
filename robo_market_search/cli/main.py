@@ -1,23 +1,23 @@
 import csv
-import typer
 from typing import Dict, List, Optional
+
 from rich.console import Console
-from rich.table import Table
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 from rich.panel import Panel
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
+from rich.table import Table
+import typer
 
-
-from robo_market_search.unified.client import UnifiedSearchClient
 from robo_market_search.shared.models import ShippingInfo
+from robo_market_search.unified.client import UnifiedSearchClient
 
 app = typer.Typer(help="Robo Market Search CLI")
 console = Console()
 
 LOGO = r"""[bold cyan]
-  ___      __          ____                 __  
- | _ \___ | |__  ___  / __/___ ___ ________/ /  
- |   / _ \| '_ \/ _ \_\ \/ -_) _ `/ __/ __/ _ \ 
- |_|_\___/|_.__/\___/___/\__/\_,_/_/  \__/_//_/ 
+  ___      __          ____                 __
+ | _ \___ | |__  ___  / __/___ ___ ________/ /
+ |   / _ \| '_ \/ _ \_\ \/ -_) _ `/ __/ __/ _ \
+ |_|_\___/|_.__/\___/___/\__/\_,_/_/  \__/_//_/
 [/bold cyan]
     [dim]Türkiye'nin Elektronik Market Arama Motoru[/dim]
 """
@@ -33,14 +33,9 @@ def _render_results_table(query, results, sort):
         raise typer.Exit()
 
     if not sort:
-        results.sort(key=lambda x: getattr(x, 'title', ''))
+        results.sort(key=lambda x: getattr(x, "title", ""))
 
-    table = Table(
-        title=f"\n'{query}' Arama Sonuçları",
-        show_header=True,
-        header_style="bold magenta",
-        title_style="bold cyan"
-    )
+    table = Table(title=f"\n'{query}' Arama Sonuçları", show_header=True, header_style="bold magenta", title_style="bold cyan")
     table.add_column("Ürün Adı", style="cyan", no_wrap=False)
     table.add_column("Market", style="green", justify="center")
     table.add_column("Fiyat", justify="right", style="bold yellow")
@@ -56,8 +51,7 @@ def _render_results_table(query, results, sort):
             stok = "Bilinmiyor"
 
         stok_renkli = f"[green]{stok}[/green]" if "Var" in str(stok) else f"[red]{stok}[/red]"
-        fiyat_text = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price",
-                                                                                      None) else "Fiyat Yok"
+        fiyat_text = f"{item.price:.2f} {getattr(item, 'currency', 'TL')}" if getattr(item, "price", None) else "Fiyat Yok"
         market_adi = getattr(item, "store", "Bilinmeyen")
         urun_adi = getattr(item, "name", "İsimsiz Ürün")
 
@@ -90,15 +84,33 @@ def _read_csv(path: str) -> List[str]:
             val = row[0].strip()
             if first:
                 first = False
-                if val.lower() in ("parça", "part", "ürün", "urun", "item", "name", "product", "query", "malzeme", "component", "sku"):
+                if val.lower() in (
+                    "parça",
+                    "part",
+                    "ürün",
+                    "urun",
+                    "item",
+                    "name",
+                    "product",
+                    "query",
+                    "malzeme",
+                    "component",
+                    "sku",
+                ):
                     continue
             queries.append(val)
     return queries
 
 
 def _build_shipping_overrides(
-    shipping_robolink, shipping_robotistan, shipping_robo90, shipping_direncnet,
-    free_shipping_robolink, free_shipping_robotistan, free_shipping_robo90, free_shipping_direncnet,
+    shipping_robolink,
+    shipping_robotistan,
+    shipping_robo90,
+    shipping_direncnet,
+    free_shipping_robolink,
+    free_shipping_robotistan,
+    free_shipping_robo90,
+    free_shipping_direncnet,
 ) -> Optional[Dict[str, ShippingInfo]]:
     overrides: Dict[str, ShippingInfo] = {}
     pairs = [
@@ -151,10 +163,7 @@ def search(
 def _run_single_search(client: UnifiedSearchClient, query: str, limit: int, sort: bool):
     results: List = []
     with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console,
-            transient=True
+        SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console, transient=True
     ) as progress:
         progress.add_task(description=f"[cyan]'{query}' marketlerde aranıyor...", total=None)
         try:
@@ -168,11 +177,11 @@ def _run_single_search(client: UnifiedSearchClient, query: str, limit: int, sort
 def _run_csv_search(client: UnifiedSearchClient, queries: List[str], limit: int, sort: bool):
     all_results: Dict[str, List] = {}
     with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            console=console,
-            transient=True,
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        console=console,
+        transient=True,
     ) as progress:
         task = progress.add_task("[cyan]Ürünler taranıyor...", total=len(queries))
         for q in queries:
@@ -221,10 +230,16 @@ def cart(
     shipping_robotistan: Optional[float] = typer.Option(None, "--shipping-robotistan", help="Robotistan kargo ücreti (TL)"),
     shipping_robo90: Optional[float] = typer.Option(None, "--shipping-robo90", help="Robo90 kargo ücreti (TL)"),
     shipping_direncnet: Optional[float] = typer.Option(None, "--shipping-direncnet", help="Direncnet kargo ücreti (TL)"),
-    free_shipping_robolink: Optional[float] = typer.Option(None, "--free-robolink", help="Robolink'te ücretsiz kargo sınırı (TL)"),
-    free_shipping_robotistan: Optional[float] = typer.Option(None, "--free-robotistan", help="Robotistan'da ücretsiz kargo sınırı (TL)"),
+    free_shipping_robolink: Optional[float] = typer.Option(
+        None, "--free-robolink", help="Robolink'te ücretsiz kargo sınırı (TL)"
+    ),
+    free_shipping_robotistan: Optional[float] = typer.Option(
+        None, "--free-robotistan", help="Robotistan'da ücretsiz kargo sınırı (TL)"
+    ),
     free_shipping_robo90: Optional[float] = typer.Option(None, "--free-robo90", help="Robo90'da ücretsiz kargo sınırı (TL)"),
-    free_shipping_direncnet: Optional[float] = typer.Option(None, "--free-direncnet", help="Direncnet'te ücretsiz kargo sınırı (TL)"),
+    free_shipping_direncnet: Optional[float] = typer.Option(
+        None, "--free-direncnet", help="Direncnet'te ücretsiz kargo sınırı (TL)"
+    ),
 ):
     """
     Birden fazla ürünü sepete ekleyip en ucuz (kargo dahil) kombinasyonu bulur.
@@ -243,12 +258,18 @@ def cart(
         raise typer.Exit(code=1)
 
     if len(queries) < 2:
-        console.print("[bold red]En az 2 ürün belirtmelisiniz. Örn: robo-search cart \"arduino uno\" \"raspberry pi\"[/bold red]")
+        console.print('[bold red]En az 2 ürün belirtmelisiniz. Örn: robo-search cart "arduino uno" "raspberry pi"[/bold red]')
         raise typer.Exit(code=1)
 
     overrides = _build_shipping_overrides(
-        shipping_robolink, shipping_robotistan, shipping_robo90, shipping_direncnet,
-        free_shipping_robolink, free_shipping_robotistan, free_shipping_robo90, free_shipping_direncnet,
+        shipping_robolink,
+        shipping_robotistan,
+        shipping_robo90,
+        shipping_direncnet,
+        free_shipping_robolink,
+        free_shipping_robotistan,
+        free_shipping_robo90,
+        free_shipping_direncnet,
     )
 
     _show_logo()
@@ -258,10 +279,7 @@ def cart(
     result = None
 
     with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console,
-            transient=True
+        SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console, transient=True
     ) as progress:
         progress.add_task(description="[cyan]Tüm ürünler marketlerde aranıyor (kargo dahil)...", total=None)
         try:
@@ -302,22 +320,13 @@ def cart(
                 table.add_row(f"[dim]{item.query} — bulunamadı[/dim]", "[red]—[/red]")
 
         table.add_section()
-        shipping_line = (
-            f"[dim]Kargo ({summary.shipping_cost:.2f} TL, "
-            f"{summary.free_shipping_min:.0f} TL üzeri ücretsiz)[/dim]"
-        )
+        shipping_line = f"[dim]Kargo ({summary.shipping_cost:.2f} TL, {summary.free_shipping_min:.0f} TL üzeri ücretsiz)[/dim]"
         table.add_row(shipping_line, "")
 
         if summary.missing_items:
-            table.add_row(
-                "[bold]TOPLAM[/bold]",
-                f"[bold]{summary.total_with_shipping:.2f} TL[/bold] [red](Eksik)[/red]"
-            )
+            table.add_row("[bold]TOPLAM[/bold]", f"[bold]{summary.total_with_shipping:.2f} TL[/bold] [red](Eksik)[/red]")
         else:
-            table.add_row(
-                "[bold]TOPLAM (kargo dahil)[/bold]",
-                f"[bold]{summary.total_with_shipping:.2f} TL[/bold]"
-            )
+            table.add_row("[bold]TOPLAM (kargo dahil)[/bold]", f"[bold]{summary.total_with_shipping:.2f} TL[/bold]")
 
         console.print(table)
 
@@ -343,23 +352,11 @@ def cart(
                 first = False
 
             split_table.add_section()
-            split_table.add_row(
-                "  [dim]Kargo[/dim]",
-                "",
-                f"[dim]{group.shipping:.2f} TL[/dim]"
-            )
-            split_table.add_row(
-                f"  [bold]{group.store} toplam[/bold]",
-                "",
-                f"[bold]{group.total:.2f} TL[/bold]"
-            )
+            split_table.add_row("  [dim]Kargo[/dim]", "", f"[dim]{group.shipping:.2f} TL[/dim]")
+            split_table.add_row(f"  [bold]{group.store} toplam[/bold]", "", f"[bold]{group.total:.2f} TL[/bold]")
 
         split_table.add_section()
-        split_table.add_row(
-            "[bold]GENEL TOPLAM[/bold]",
-            "",
-            f"[bold]{result.best_split.grand_total:.2f} TL[/bold]"
-        )
+        split_table.add_row("[bold]GENEL TOPLAM[/bold]", "", f"[bold]{result.best_split.grand_total:.2f} TL[/bold]")
         console.print(split_table)
 
     # ── 3. En ucuz seçenek karşılaştırması ─────────────────────────────
@@ -387,18 +384,22 @@ def cart(
     # ── 4. Öneri ───────────────────────────────────────────────────────
     label, best_total = result.best_overall()
     if label:
-        console.print(Panel(
-            f"[bold green]En ucuz seçenek: {label} — toplam {best_total:.2f} TL[/bold green]",
-            title="Öneri",
-            border_style="green",
-        ))
+        console.print(
+            Panel(
+                f"[bold green]En ucuz seçenek: {label} — toplam {best_total:.2f} TL[/bold green]",
+                title="Öneri",
+                border_style="green",
+            )
+        )
     else:
-        console.print(Panel(
-            "[bold yellow]⚠️ Hiçbir market tüm ürünleri stoklarında bulundurmuyor.\n"
-            "Yukarıdaki tablolardan kısmi alışveriş yapabilirsiniz.[/bold yellow]",
-            title="Uyarı",
-            border_style="yellow",
-        ))
+        console.print(
+            Panel(
+                "[bold yellow]⚠️ Hiçbir market tüm ürünleri stoklarında bulundurmuyor.\n"
+                "Yukarıdaki tablolardan kısmi alışveriş yapabilirsiniz.[/bold yellow]",
+                title="Uyarı",
+                border_style="yellow",
+            )
+        )
 
 
 if __name__ == "__main__":
