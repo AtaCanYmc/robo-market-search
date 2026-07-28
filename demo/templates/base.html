@@ -4,8 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Türkiye'nin elektronik ve robotik pazarlarında gerçek zamanlı ürün arama motoru — Robotistan, Robolink, Robo90, Direnç.net" />
+  <meta name="keywords" content="elektronik arama, robotistan, robolink, robo90, direncnet, esp32, arduino, fiyat karşılaştırma, robotik parça" />
+  <meta name="author" content="Ata Can" />
+  <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#020617" />
-  <title>{% block title %}Robo Market Search{% endblock %}</title>
+  <link rel="canonical" href="https://robo-market-search.vercel.app/" />
+
+  <!-- ── Open Graph / Facebook ── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://robo-market-search.vercel.app/" />
+  <meta property="og:title" content="Robo Market Search — Türkiye'nin Elektronik Arama Motoru" />
+  <meta property="og:description" content="Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda, paralel olarak tara. Canlı stok ve fiyat karşılaştırması." />
+  <meta property="og:site_name" content="Robo Market Search" />
+  <meta property="og:locale" content="tr_TR" />
+
+  <!-- ── Twitter Card ── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Robo Market Search — Türkiye'nin Elektronik Arama Motoru" />
+  <meta name="twitter:description" content="Robotistan, Robolink, Robo90 ve Direnç.net'i tek sorguda, paralel olarak tara." />
+
+  <!-- ── JSON-LD Structured Data (Schema.org SearchAction) ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Robo Market Search",
+    "url": "https://robo-market-search.vercel.app/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://robo-market-search.vercel.app/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <title>{% block title %}Robo Market Search — Türkiye'nin Elektronik Arama Motoru{% endblock %}</title>
 
   <!-- ── Tailwind CSS v3 CDN ── -->
   <script src="https://cdn.tailwindcss.com"></script>

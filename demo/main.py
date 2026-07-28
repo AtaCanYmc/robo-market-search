@@ -1,6 +1,6 @@
 """
 Robo Market Search — Web Demo
-FastAPI + Jinja2 + HTMX tek parça (monolithic) web uygulaması.
+FastAPI + Jinja2 + HTMX web uygulaması.
 
 Kurulum ve çalıştırma:
     cd demo/
@@ -17,7 +17,10 @@ import sys
 
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
-from routes.search import router as search_router
+from routes.export import router as export_router
+from routes.health import router as health_router
+from routes.seo import router as seo_router
+from routes.views import router as views_router
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -58,4 +61,7 @@ app = FastAPI(
 app.state.templates = templates
 
 # ── Include Routers ──────────────────────────────────────────────────────────
-app.include_router(search_router)
+app.include_router(views_router)
+app.include_router(export_router)
+app.include_router(seo_router)
+app.include_router(health_router)

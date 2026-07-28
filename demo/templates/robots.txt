@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /search
+Disallow: /export/
+
+Sitemap: https://robo-market-search.vercel.app/sitemap.xml
