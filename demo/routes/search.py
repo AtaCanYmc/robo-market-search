@@ -57,14 +57,8 @@ async def search(
     try:
         from robo_market_search.unified.client import UnifiedSearchClient
 
-        client = UnifiedSearchClient()
-        loop = asyncio.get_event_loop()
-
-        # Senkron scraper'ı thread pool üzerinden çalıştır
-        raw_products = await loop.run_in_executor(
-            None,
-            lambda: client.search(query=query, limit_per_store=limit),
-        )
+        # Unified async arama (asyncio + önbellek katmanı)
+        raw_products = await client.search_async(query=query, limit_per_store=limit)
 
         # ── 1. Bulunan Tüm Marketlerin Listesi (Filtre Paneli İçin) ──
         all_stores = sorted({p.store for p in raw_products})

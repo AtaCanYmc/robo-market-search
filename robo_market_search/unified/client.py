@@ -1,10 +1,19 @@
+"""
+Unified search client with async support (asyncio/aiohttp/threadpool) and SQLite caching.
+"""
+
+from __future__ import annotations
+
+import asyncio
 import concurrent.futures
+import logging
 from typing import Dict, List, Optional, Tuple
 
 from robo_market_search.direncnet.client import DirencnetClient
 from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
+from robo_market_search.shared.cache import SearchCache
 from robo_market_search.shared.models import (
     CartItemResult,
     CartSearchResult,
@@ -16,10 +25,10 @@ from robo_market_search.shared.models import (
     StoreCartSummary,
 )
 
+logger = logging.getLogger("robo_market_search.unified")
+
 STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet"]
 
-# Sensible default shipping estimates for Turkish electronics stores.
-# flat_rate = default shipping cost, free_shipping_min = free over this amount.
 SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
     "Robolink": ShippingInfo(flat_rate=39.90, free_shipping_min=250.0),
     "Robotistan": ShippingInfo(flat_rate=34.90, free_shipping_min=200.0),
@@ -30,20 +39,67 @@ SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
 
 class UnifiedSearchClient:
     """
-    Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı arama yapar.
+    Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı ve önbellekli arama yapar.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, use_cache: bool = True, cache_ttl_seconds: int = 7200) -> None:
         self.robolink = RobolinkClient()
         self.robotistan = RobotistanClient()
         self.robo90 = Robo90Client()
         self.direncnet = DirencnetClient()
+        self.use_cache = use_cache
+        self.cache = SearchCache(default_ttl_seconds=cache_ttl_seconds) if use_cache else None
+
+    async def search_async(self, query: str, limit_per_store: int = 10) -> List[Product]:
+        """
+        Asenkron (asyncio) arama metodu. 4 marketi asyncio.gather ile eşzamanlı tarar.
+        Önbellek kontrolü içerir.
+        """
+        if self.use_cache and self.cache:
+            cached = self.cache.get(query, limit_per_store)
+            if cached is not None:
+                logger.info("Cache HIT for query=%r limit=%d", query, limit_per_store)
+                return cached
+
+        loop = asyncio.get_event_loop()
+
+        async def _fetch(store_name: str, fn) -> List[Product]:
+            try:
+                return await loop.run_in_executor(None, fn)
+            except Exception as exc:
+                logger.error("Error searching %s: %s", store_name, exc)
+                return []
+
+        tasks = [
+            _fetch("Robolink", lambda: self.robolink.search_component(query, limit_per_store)),
+            _fetch("Robotistan", lambda: self.robotistan.search_component(query, limit_per_store, 1)),
+            _fetch("Robo90", lambda: self.robo90.search_component(query, 1, 1)[:limit_per_store]),
+            _fetch("Direncnet", lambda: self.direncnet.search_component(query, limit_per_store)),
+        ]
+
+        store_results_list = await asyncio.gather(*tasks)
+
+        results: List[Product] = []
+        for store_results in store_results_list:
+            results.extend(store_results)
+
+        results.sort(key=lambda x: x.price)
+
+        if self.use_cache and self.cache and results:
+            self.cache.set(query, limit_per_store, results)
+
+        return results
 
     def search(self, query: str, limit_per_store: int = 10) -> List[Product]:
         """
-        Arama kelimesini alıp tüm marketlere paralel (Thread) olarak sorar.
-        Gelen sonuçları birleştirip fiyata göre (ucuzdan pahalıya) sıralar.
+        Senkron arama metodu (Thread pool + Cache).
         """
+        if self.use_cache and self.cache:
+            cached = self.cache.get(query, limit_per_store)
+            if cached is not None:
+                logger.info("Cache HIT for query=%r limit=%d", query, limit_per_store)
+                return cached
+
         results: List[Product] = []
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
@@ -64,9 +120,13 @@ class UnifiedSearchClient:
 
                     results.extend(store_results)
                 except Exception as exc:
-                    print(f"[HATA] {store_name} aramasında sorun oluştu: {exc}")
+                    logger.error("%s aramasında sorun oluştu: %s", store_name, exc)
 
         results.sort(key=lambda x: x.price)
+
+        if self.use_cache and self.cache and results:
+            self.cache.set(query, limit_per_store, results)
+
         return results
 
     @staticmethod
@@ -80,25 +140,16 @@ class UnifiedSearchClient:
         shipping_overrides: Optional[Dict[str, ShippingInfo]] = None,
     ) -> CartSearchResult:
         """
-        Birden fazla ürün/parça için tüm marketlerde arama yapar,
-        kargo ücretini hesaplar ve en ucuz kombinasyonu (tek market
-        veya bölünmüş sipariş) bulur.
-
-        queries:         Aranacak ürün/parça isimlerinin listesi.
-        limit_per_store: Her sorgu için market başına sonuç sayısı.
-        shipping_overrides: Varsayılan kargo bilgilerini geçersiz kılmak için.
+        Birden fazla ürün için en uygun sepet kombinasyonunu hesaplar.
         """
         shipping = dict(SHIPPING_DEFAULTS)
         if shipping_overrides:
             shipping.update(shipping_overrides)
 
-        # ── 1. Her sorguyu tüm marketlerde ara ──────────────────────────
         all_results: Dict[str, List[Product]] = {}
         for q in queries:
             all_results[q] = self.search(query=q, limit_per_store=limit_per_store)
 
-        # ── 2. Her market için en ucuz ürünleri bul ────────────────────
-        # best_price[query][store] = cheapest Product
         best_price: Dict[str, Dict[str, Product]] = {}
         for q in queries:
             best_price[q] = {}
@@ -108,7 +159,6 @@ class UnifiedSearchClient:
                     best_price[q][p.store] = p
                     seen.add(p.store)
 
-        # ── 3. Tek-market özetleri (kargo dahil) ────────────────────────
         store_summaries: List[StoreCartSummary] = []
         for store_name in STORE_NAMES:
             items: List[CartItemResult] = []
@@ -143,9 +193,6 @@ class UnifiedSearchClient:
         stores_with_all = [s for s in store_summaries if s.has_all_items]
         cheapest_store = min(stores_with_all, key=lambda s: s.total_with_shipping) if stores_with_all else None
 
-        # ── 4. Bölünmüş sipariş optimizasyonu (brute-force) ────────────
-        #    Her ürünü hangi marketten alacağımızın tüm kombinasyonlarını
-        #    dener, toplam (ürün + kargo) maliyeti en düşük olanı seçer.
         best_split = self._optimize_split(queries, best_price, shipping)
 
         return CartSearchResult(
@@ -161,7 +208,6 @@ class UnifiedSearchClient:
         best_price: Dict[str, Dict[str, Product]],
         shipping: Dict[str, ShippingInfo],
     ) -> float:
-        """Total cost (items + shipping) for a given item→store assignment."""
         store_items: Dict[str, List[str]] = {}
         for q, s in assignment.items():
             store_items.setdefault(s, []).append(q)
@@ -178,7 +224,6 @@ class UnifiedSearchClient:
         best_price: Dict[str, Dict[str, Product]],
         shipping: Dict[str, ShippingInfo],
     ) -> SplitCombination:
-        """Build SplitCombination result from an assignment dict."""
         groups: Dict[str, List[SplitAssignment]] = {}
         for q, store in assignment.items():
             prod = best_price[q][store]
@@ -208,19 +253,6 @@ class UnifiedSearchClient:
         best_price: Dict[str, Dict[str, Product]],
         shipping: Dict[str, ShippingInfo],
     ) -> Optional[SplitCombination]:
-        """
-        Kargo ücretini de dikkate alarak en ucuz bölünmüş siparişi bulur.
-
-        Algoritma:
-          1. Greedy başlangıç — her ürünü en ucuz olduğu markete ata.
-          2. Konsolidasyon — bir marketteki tüm ürünleri başka bir markete
-             taşımayı dene (kargo eşiğini aşmak için).
-          3. Lokal iyileştirme — her ürünü tek tek diğer marketlere taşı.
-          4. 2-3 arasında iyileşme kalmayana kadar tekrarla.
-
-        M=4 market için O(M * N * K) — brüt kuvvetin O(M^N) yerine.
-        """
-        # Her ürün için hangi marketlerde bulunduğu
         item_options: List[Tuple[str, Dict[str, Product]]] = []
         for q in queries:
             if best_price[q]:
@@ -228,18 +260,15 @@ class UnifiedSearchClient:
             else:
                 return None
 
-        # ── 1. Greedy başlangıç ──────────────────────────────────────────
         assignment: Dict[str, str] = {}
         for q, stores in item_options:
             assignment[q] = min(stores, key=lambda s: stores[s].price)
         best_total = self._eval_assignment(assignment, best_price, shipping)
 
-        # ── 2-4. Konsolidasyon + lokal iyileştirme ───────────────────────
         improved = True
         while improved:
             improved = False
 
-            # 2a. Konsolidasyon: tüm ürünleri bir marketten diğerine taşı
             for src in STORE_NAMES:
                 src_items = [q for q, _ in item_options if assignment.get(q) == src]
                 if not src_items:
@@ -247,7 +276,6 @@ class UnifiedSearchClient:
                 for dst in STORE_NAMES:
                     if dst == src:
                         continue
-                    # dst'te tüm src_items mevcut mu?
                     if not all(dst in best_price[q] for q in src_items):
                         continue
 
@@ -260,7 +288,6 @@ class UnifiedSearchClient:
                         assignment = candidate
                         improved = True
 
-            # 2b. Lokal iyileştirme: her ürünü tek tek taşı
             for q, stores in item_options:
                 for store in stores:
                     if store == assignment[q]:
