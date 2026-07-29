@@ -134,6 +134,9 @@ Web demoyu canlıya aldığınızda kullanıcı trafiğini ve aratılan bileşen
 - **Kullanım:** `demo/templates/base.html` dosyasındaki `<head>` etiketleri arasına takip snippet'ını ekleyin.
 - **Avantaj:** Çerezsiz (cookie-free) ve KVKK/GDPR uyumlu kullanıcı davranışı analizi.
 
-### 3. Backend Arama Loglama (`logport` Entegrasyonu)
-- **Kullanım:** `demo/routes/views.py` içerisindeki `POST /search` endpoint'inde sorguları loglayarak bir Telegram kanalına veya Google Sheets tablosuna anlık aktarın.
-- **Avantaj:** Geliştiricilerin ve maker'ların en çok hangi donanımları (ESP32, Arduino, sensörler) arattığını canlı takip ederek pazar araştırması sağlama.
+### 3. Backend Arama Loglama (`logport` Telegram Entegrasyonu)
+- **Kullanım:** `demo/logport.py` içerisinden `POST /search` arama sorguları anlık olarak Telegram kanalına/grubuna iletilir.
+- **Ortam Değişkenleri:**
+  - `LOGPORT_TELEGRAM_TOKEN` (veya `TELEGRAM_BOT_TOKEN`)
+  - `LOGPORT_TELEGRAM_CHAT_ID`
+- **Avantaj:** Geliştiricilerin ve maker'ların en çok hangi donanımları (ESP32, Arduino, sensörler) arattığını Telegram üzerinden canlı takip etme imkanı.
