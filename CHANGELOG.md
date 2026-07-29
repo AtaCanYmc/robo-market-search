@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.1.0...v1.2.0) (2026-07-29)
+
+
+### ✨ Features
+
+* add favicon handling and Vercel serverless function entrypoint ([4a83617](https://github.com/AtaCanYmc/robo-market-search/commit/4a83617bf66ff262bd315e6d85fd5056de891da8))
+* add favicon handling and Vercel serverless function entrypoint ([d814eeb](https://github.com/AtaCanYmc/robo-market-search/commit/d814eebd6701728a5fad4867ca84828aef79af0a))
+* add Telegram notification integration for search logging in LogPort ([3bbea57](https://github.com/AtaCanYmc/robo-market-search/commit/3bbea57291c029d9f6c1314671184ee96d9e2dee))
+* add Vercel Analytics script and define store color mappings in … ([0c25746](https://github.com/AtaCanYmc/robo-market-search/commit/0c25746500d301cb646556f63990e8cc2929ba88))
+* add Vercel Analytics script and define store color mappings in views ([7f7525d](https://github.com/AtaCanYmc/robo-market-search/commit/7f7525d3cf901b353f732ee0df51642695a064fa))
+* enhance caching mechanism and improve async logging in LogPort ([59baa57](https://github.com/AtaCanYmc/robo-market-search/commit/59baa57ff9f92543a1f7285065e2143b24738d9f))
+* enhance caching mechanism and improve async logging in LogPort ([1b549a9](https://github.com/AtaCanYmc/robo-market-search/commit/1b549a934841f9163be96fcc48886b0c84dcf576))
+* implement Logport integration for anonymous search analytics logging ([4789d53](https://github.com/AtaCanYmc/robo-market-search/commit/4789d53b3365014a90051cadaabdf882d7070a2a))
+
 ## [1.1.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.0.1...v1.1.0) (2026-07-28)
 
 
