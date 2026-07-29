@@ -60,6 +60,14 @@ async def search(
         # Unified async arama (asyncio + önbellek katmanı)
         raw_products = await client.search_async(query=query, limit_per_store=limit)
 
+        # Logport Entegrasyonu (Anonim arama analytics loglaması)
+        try:
+            from logport import logport
+
+            logport.log_search(query=query, total_results=len(raw_products), store_filter=store_filter)
+        except Exception as log_exc:
+            logger.debug("Logport logging failed: %s", log_exc)
+
         # ── 1. Bulunan Tüm Marketlerin Listesi (Filtre Paneli İçin) ──
         all_stores = sorted({p.store for p in raw_products})
 

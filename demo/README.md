@@ -119,3 +119,21 @@ vercel
 - **Keyboard shortcut** — `/` tuşu arama kutusuna odaklanır
 - **Responsive** — Mobile-first, 1–3 sütun grid
 - **Fiyat özeti** — En ucuz / en pahalı / fark gösterimi
+
+---
+
+## 📊 Analitik ve Takip Stratejileri
+
+Web demoyu canlıya aldığınızda kullanıcı trafiğini ve aratılan bileşenleri izlemek için 3 farklı yaklaşım uygulayabilirsiniz:
+
+### 1. Platform İçi Analitik (Vercel Web Analytics)
+- **Kullanım:** Vercel Dashboard -> Proje Ayarları -> *Analytics* sekmesini aktif edin.
+- **Avantaj:** Sıfır kod değişikliği ile sayfa görüntülenmeleri, cihaz ve ülke istatistikleri.
+
+### 2. Frontend Takip (Umami / Plausible / GA4)
+- **Kullanım:** `demo/templates/base.html` dosyasındaki `<head>` etiketleri arasına takip snippet'ını ekleyin.
+- **Avantaj:** Çerezsiz (cookie-free) ve KVKK/GDPR uyumlu kullanıcı davranışı analizi.
+
+### 3. Backend Arama Loglama (`logport` Entegrasyonu)
+- **Kullanım:** `demo/routes/views.py` içerisindeki `POST /search` endpoint'inde sorguları loglayarak bir Telegram kanalına veya Google Sheets tablosuna anlık aktarın.
+- **Avantaj:** Geliştiricilerin ve maker'ların en çok hangi donanımları (ESP32, Arduino, sensörler) arattığını canlı takip ederek pazar araştırması sağlama.
