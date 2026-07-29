@@ -21,10 +21,18 @@ class SearchCache:
 
     def __init__(self, db_path: Optional[str] = None, default_ttl_seconds: int = 7200) -> None:
         if db_path is None:
-            # Varsayılan olarak kullanıcının cache dizininde sakla
-            cache_dir = Path.home() / ".cache" / "robo_market_search"
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            db_path = str(cache_dir / "search_cache.db")
+            # Varsayılan olarak kullanıcının cache dizininde sakla, read-only ortamlarda (Vercel/AWS Lambda) /tmp veya :memory:'ye düş
+            try:
+                cache_dir = Path.home() / ".cache" / "robo_market_search"
+                cache_dir.mkdir(parents=True, exist_ok=True)
+                db_path = str(cache_dir / "search_cache.db")
+            except (OSError, PermissionError):
+                try:
+                    tmp_dir = Path("/tmp") / "robo_market_search"
+                    tmp_dir.mkdir(parents=True, exist_ok=True)
+                    db_path = str(tmp_dir / "search_cache.db")
+                except (OSError, PermissionError):
+                    db_path = ":memory:"
 
         self.db_path = db_path
         self.default_ttl_seconds = default_ttl_seconds
