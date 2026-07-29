@@ -123,6 +123,13 @@ async def search(
                 "current_page": current_page,
                 "total_pages": total_pages,
                 "page_size": page_size,
+                "STORE_COLORS": {
+                    "Robotistan": "bg-red-500/15 text-red-400 border-red-500/30",
+                    "Robolink": "bg-blue-500/15 text-blue-400 border-blue-500/30",
+                    "Robo90": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+                    "Direnç.net": "bg-amber-500/15 text-amber-400 border-amber-500/30",
+                    "Direncnet": "bg-amber-500/15 text-amber-400 border-amber-500/30",
+                },
                 # Active filters state
                 "selected_stores": store_filter or [],
                 "stock_only": stock_only,
