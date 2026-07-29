@@ -8,7 +8,7 @@ import logging
 import math
 from typing import TYPE_CHECKING, List, Optional
 
-from fastapi import APIRouter, Form, Request, status
+from fastapi import APIRouter, BackgroundTasks, Form, Request, status
 from fastapi.responses import HTMLResponse
 
 if TYPE_CHECKING:
@@ -31,6 +31,7 @@ async def index(request: Request) -> HTMLResponse:
 @router.post("/search", response_class=HTMLResponse, include_in_schema=False)
 async def search(
     request: Request,
+    background_tasks: BackgroundTasks,
     query: str = Form(...),
     limit: int = Form(10),
     page: int = Form(1),
@@ -60,13 +61,13 @@ async def search(
         # Unified async arama (asyncio + önbellek katmanı)
         raw_products = await client.search_async(query=query, limit_per_store=limit)
 
-        # Logport Entegrasyonu (Anonim arama analytics loglaması)
+        # Logport Entegrasyonu (Tamamen asenkron arka plan görevi — HTTP cevabını geciktirmez)
         try:
             from logport import logport
 
-            logport.log_search(query=query, total_results=len(raw_products), store_filter=store_filter)
+            background_tasks.add_task(logport.log_search, query, len(raw_products), store_filter)
         except Exception as log_exc:
-            logger.debug("Logport logging failed: %s", log_exc)
+            logger.debug("Logport logging dispatch failed: %s", log_exc)
 
         # ── 1. Bulunan Tüm Marketlerin Listesi (Filtre Paneli İçin) ──
         all_stores = sorted({p.store for p in raw_products})

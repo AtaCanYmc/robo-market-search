@@ -14,6 +14,9 @@ import urllib.request
 logger = logging.getLogger("demo.logport")
 
 
+_background_tasks = set()
+
+
 class LogPort:
     """
     Kullanıcı arama sorgularını ve donanım tercihlerini loglayan ve isteğe bağlı
@@ -64,11 +67,14 @@ class LogPort:
             try:
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
-                    loop.run_in_executor(None, self._send_telegram_sync, msg)
+                    # Tamamen asenkron & non-blocking: cevabın dönmesini beklemez (fire-and-forget)
+                    task = loop.create_task(asyncio.to_thread(self._send_telegram_sync, msg))
+                    _background_tasks.add(task)
+                    task.add_done_callback(_background_tasks.discard)
                 else:
-                    self._send_telegram_sync(msg)
-            except Exception:
-                self._send_telegram_sync(msg)
+                    asyncio.run(asyncio.to_thread(self._send_telegram_sync, msg))
+            except Exception as exc:
+                logger.debug("Failed to dispatch async logport Telegram task: %s", exc)
 
 
 # Global LogPort instance
