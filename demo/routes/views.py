@@ -63,7 +63,7 @@ async def search(
 
         # Logport Entegrasyonu (Tamamen asenkron arka plan görevi — HTTP cevabını geciktirmez)
         try:
-            from logport import logport
+            from demo.logport import logport
 
             background_tasks.add_task(logport.log_search, query, len(raw_products), store_filter)
         except Exception as log_exc:

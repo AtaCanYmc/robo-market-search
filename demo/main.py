@@ -15,12 +15,23 @@ import logging
 from pathlib import Path
 import sys
 
-from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
-from routes.export import router as export_router
-from routes.health import router as health_router
-from routes.seo import router as seo_router
-from routes.views import router as views_router
+# Vercel Serverless environment Python path fix
+BASE_DIR = Path(__file__).parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
+# Append parent repo path if demo is run from subfolder
+REPO_ROOT = BASE_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from fastapi import FastAPI  # noqa: E402
+from fastapi.templating import Jinja2Templates  # noqa: E402
+
+from demo.routes.export import router as export_router  # noqa: E402
+from demo.routes.health import router as health_router  # noqa: E402
+from demo.routes.seo import router as seo_router  # noqa: E402
+from demo.routes.views import router as views_router  # noqa: E402
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -31,7 +42,6 @@ logging.basicConfig(
 logger = logging.getLogger("demo")
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-BASE_DIR = Path(__file__).parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 # ── Jinja2 Templates ─────────────────────────────────────────────────────────
