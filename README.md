@@ -196,13 +196,6 @@ pip install "robo-market-search[all]"
 
 ---
 
-## Web Demo Arayüzü & Özellikleri
-
-Projenin canlı ön izlemesini `demo/frontend` dizinindeki Vite + React + TypeScript + Tailwind CSS Single Page Application (SPA) ile deneyimleyebilirsiniz.
-
-- **Canlı Önyüz**: [http://localhost:3000](http://localhost:3000)
-- **Canlı REST API**: [https://robo-market-search.onrender.com](https://robo-market-search.onrender.com)
-
 ### Web Arayüz Özellikleri:
 - **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
 - **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
