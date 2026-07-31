@@ -8,20 +8,38 @@
 
 `robo_market_agent` katmanı kendi başına terminalden çalıştırılabilen `robo-agent` komut satırı aracına sahiptir.
 
-### Örnek Komutlar:
+### 🔑 API Key'leri Hafızaya Kaydetme (Bir kere kaydet, her zaman kullan)
+
+API anahtarınızı her komut çalıştırırken tekrar yazmamak için bir defaya mahsus hafızaya (`~/.config/robo-market-agent/config.json`) kaydedebilir veya varsayılan LLM sağlayıcısı belirleyebilirsiniz:
 
 ```bash
-# 1. Mock LLM sağlayıcısı ile hızlı deneme yapma (API Key gerektirmez)
-robo-agent "WiFi üzerinden 4 valfli otomatik sulama sistemi yapmak istiyorum" --provider mock
+# DeepSeek API Key'i kaydetme ve varsayılan yapma
+robo-agent config set --provider deepseek --api-key "sk-..." --default
 
-# 2. DeepSeek AI ile proje analizi ve sepet optimizasyonu
-robo-agent "ESP32 tabanlı uzaktan sıcaklık ve nem takip cihazı" --provider deepseek --api-key "sk-..."
+# OpenAI API Key kaydetme
+robo-agent config set --provider openai --api-key "sk-..."
 
-# 3. Groq (Llama 3.3 70B) ile ultra hızlı analiz
-robo-agent "Akıllı ev için hareket sensörlü ışık kontrol sistemi" --provider groq --api-key "gsk_..."
+# Groq API Key kaydetme
+robo-agent config set --provider groq --api-key "gsk_..."
 
-# 4. OpenAI (GPT-4o) ile çalıştırma
-robo-agent "Bluetooth kontrollü 2 tekerlekli robot araba" --provider openai --api-key "sk-..."
+# Kayıtlı konfigürasyonu ve gizlenmiş API key'leri görüntüleme
+robo-agent config show
+
+# Hafızayı temizleme
+robo-agent config clear
+```
+
+### Proje Analizi Çalıştırma:
+
+```bash
+# Kayıtlı varsayılan sağlayıcı ile doğrudan çalıştırma (API Key yazmaya gerek kalmaz)
+robo-agent "WiFi üzerinden 4 valfli otomatik sulama sistemi"
+
+# Farklı bir kayıtlı sağlayıcı seçerek çalıştırma
+robo-agent "ESP32 tabanlı uzaktan sıcaklık takip cihazı" --provider deepseek
+
+# Mock sağlayıcı ile çevrimdışı/ücretsiz test etme
+robo-agent "Bluetooth robot araba" --provider mock
 ```
 
 ---
@@ -68,26 +86,3 @@ Agent hiçbir LLM üreticisine doğrudan bağımlı değildir. Tüm entegrasyon 
 - **`DeepSeekProvider`**: DeepSeek-V3 ve DeepSeek-R1 (Chat & Reasoner) entegrasyonu.
 - **`OllamaProvider`**: Yerel bilgisayarınızda çalışan Llama 3 / Mistral entegrasyonu.
 - **`MockLLMProvider`**: İnternet/API key gerektirmeyen çevrimdışı birim testleri ve mock çalıştırma.
-
----
-
-## Dosya Yapısı
-
-```
-robo_market_agent/
-├── cli.py                 # robo-agent CLI komut satırı aracı
-├── agent.py               # Ana RoboMarketAgent orkestratör sınıfı
-├── models/                # Pydantic yapısal veri modelleri (ProjectRequirements, BOM, etc.)
-│   └── agent_models.py
-├── providers/             # LLM sağlayıcı sınıfları (Base, OpenAI, Anthropic, Gemini, Groq, DeepSeek, Ollama, Mock)
-├── pipeline/              # Bağımsız boru hattı adımları
-│   ├── base.py
-│   ├── project_understander.py
-│   ├── bom_generator.py
-│   ├── compatibility.py
-│   ├── component_searcher.py
-│   ├── normalizer.py
-│   ├── optimizer.py
-│   └── report_generator.py
-└── prompts/               # Kod içerisine gömülmeyen harici istem (prompt) şablonları (.txt)
-```

@@ -1,10 +1,14 @@
 """
 CLI interface for robo_market_agent.
 Allows users to run AI hardware project planning and shopping optimization directly from terminal.
+Provides configuration management to save LLM API keys locally.
 """
 
+import json
+import os
+from pathlib import Path
 import sys
-from typing import Optional
+from typing import Dict, Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -23,6 +27,9 @@ from robo_market_agent.providers import (
 )
 from robo_market_service import SearchService
 
+CONFIG_DIR = Path.home() / ".config" / "robo-market-agent"
+CONFIG_FILE = CONFIG_DIR / "config.json"
+
 app = typer.Typer(
     name="robo-agent",
     help="AI Hardware Agent - Understands project requirements, generates BOMs, checks compatibility, and optimizes shopping cart.",
@@ -30,20 +37,65 @@ app = typer.Typer(
 console = Console()
 
 
+def _load_config() -> Dict[str, str]:
+    if not CONFIG_FILE.exists():
+        return {}
+    try:
+        return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _save_config(config: Dict[str, str]) -> None:
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    CONFIG_FILE.write_text(json.dumps(config, indent=2), encoding="utf-8")
+
+
+def _get_api_key(provider_name: str, passed_key: str) -> str:
+    if passed_key:
+        return passed_key
+
+    # Check env vars
+    env_map = {
+        "openai": "OPENAI_API_KEY",
+        "anthropic": "ANTHROPIC_API_KEY",
+        "gemini": "GEMINI_API_KEY",
+        "groq": "GROQ_API_KEY",
+        "deepseek": "DEEPSEEK_API_KEY",
+    }
+    env_var = env_map.get(provider_name.lower())
+    if env_var and os.getenv(env_var):
+        return os.getenv(env_var, "")
+
+    # Check saved config
+    config = _load_config()
+    key_name = f"{provider_name.lower()}_api_key"
+    return config.get(key_name, "")
+
+
 def _get_provider(provider_name: str, api_key: str, model_name: Optional[str]):
     p_name = provider_name.lower().strip()
+    resolved_key = _get_api_key(p_name, api_key)
+
+    if p_name not in ("mock", "ollama") and not resolved_key:
+        console.print(f"[bold red]Hata:[/bold red] '{provider_name}' sağlayıcısı için API key bulunamadı!")
+        console.print(
+            f"[yellow]İpucu:[/bold yellow] 'robo-agent config set --provider {p_name} --api-key SIZIN_KEYINIZ' komutuyla hafızaya kaydedebilirsiniz."
+        )
+        sys.exit(1)
+
     if p_name == "openai":
-        return OpenAIProvider(api_key=api_key, model_name=model_name or "gpt-4o")
+        return OpenAIProvider(api_key=resolved_key, model_name=model_name or "gpt-4o")
     elif p_name == "anthropic":
-        return AnthropicProvider(api_key=api_key, model_name=model_name or "claude-3-5-sonnet-20241022")
+        return AnthropicProvider(api_key=resolved_key, model_name=model_name or "claude-3-5-sonnet-20241022")
     elif p_name == "gemini":
-        return GeminiProvider(api_key=api_key, model_name=model_name or "gemini-2.5-flash")
+        return GeminiProvider(api_key=resolved_key, model_name=model_name or "gemini-2.5-flash")
     elif p_name == "groq":
-        return GroqProvider(api_key=api_key, model_name=model_name or "llama-3.3-70b-versatile")
+        return GroqProvider(api_key=resolved_key, model_name=model_name or "llama-3.3-70b-versatile")
     elif p_name == "deepseek":
-        return DeepSeekProvider(api_key=api_key, model_name=model_name or "deepseek-chat")
+        return DeepSeekProvider(api_key=resolved_key, model_name=model_name or "deepseek-chat")
     elif p_name == "ollama":
-        return OllamaProvider(host=api_key or "http://localhost:11434", model_name=model_name or "llama3.1")
+        return OllamaProvider(host=resolved_key or "http://localhost:11434", model_name=model_name or "llama3.1")
     elif p_name == "mock":
         return MockLLMProvider()
     else:
@@ -53,13 +105,72 @@ def _get_provider(provider_name: str, api_key: str, model_name: Optional[str]):
         sys.exit(1)
 
 
+config_app = typer.Typer(name="config", help="API key ve konfigürasyon yönetimi komutları.")
+app.add_typer(config_app)
+
+
+@config_app.command("set")
+def config_set(
+    provider: str = typer.Option(
+        ..., "--provider", "-p", help="LLM Sağlayıcı adı (openai, anthropic, gemini, groq, deepseek, ollama)"
+    ),
+    api_key: str = typer.Option(..., "--api-key", "-k", help="Kaydedilecek API Key değeri"),
+    default: bool = typer.Option(False, "--default", "-d", help="Varsayılan sağlayıcı olarak ayarla"),
+):
+    """
+    Belirtilen LLM sağlayıcısının API Key değerini lokal hafızaya (~/.config/robo-market-agent/config.json) kaydeder.
+    """
+    config = _load_config()
+    p_name = provider.lower().strip()
+    config[f"{p_name}_api_key"] = api_key
+    if default:
+        config["default_provider"] = p_name
+
+    _save_config(config)
+    console.print(f"[bold green]✓[/bold green] '{p_name}' için API Key hafızaya başarıyla kaydedildi! ({CONFIG_FILE})")
+
+
+@config_app.command("show")
+def config_show():
+    """
+    Hafızadaki kayıtlı API key'leri ve varsayılan konfigürasyonu gösterir.
+    """
+    config = _load_config()
+    if not config:
+        console.print("[yellow]Henüz hafızada kayıtlı bir konfigürasyon bulunmuyor.[/yellow]")
+        console.print("[dim]Örnek kaydetme: robo-agent config set --provider deepseek --api-key SIZIN_KEYINIZ[/dim]")
+        return
+
+    table = Table(title=f"Kayıtlı Konfigürasyon ({CONFIG_FILE})")
+    table.add_column("Parametre", style="cyan")
+    table.add_column("Değer", style="green")
+
+    for k, v in config.items():
+        masked_v = v[:4] + "..." + v[-4:] if "api_key" in k and len(v) > 8 else v
+        table.add_row(k, masked_v)
+
+    console.print(table)
+
+
+@config_app.command("clear")
+def config_clear():
+    """
+    Hafızadaki tüm kayıtlı API key'leri siler.
+    """
+    if CONFIG_FILE.exists():
+        CONFIG_FILE.unlink()
+        console.print("[bold green]✓[/bold green] Hafızadaki konfigürasyon başarıyla temizlendi.")
+    else:
+        console.print("[yellow]Temizlenecek konfigürasyon bulunamadı.[/yellow]")
+
+
 @app.command()
 def run(
     prompt: str = typer.Argument(..., help="Yapmak istediğiniz donanım projesinin açıklaması"),
-    provider: str = typer.Option(
-        "mock", "--provider", "-p", help="LLM Sağlayıcı: openai, anthropic, gemini, groq, deepseek, ollama, mock"
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="LLM Sağlayıcı: openai, anthropic, gemini, groq, deepseek, ollama, mock"
     ),
-    api_key: str = typer.Option("", "--api-key", "-k", help="LLM API Anahtarı (Ortam değişkeni yoksa)"),
+    api_key: str = typer.Option("", "--api-key", "-k", help="LLM API Anahtarı (Komut anında geçmek için)"),
     model: Optional[str] = typer.Option(
         None, "--model", "-m", help="Model adı (Örn: gpt-4o, deepseek-chat, llama-3.3-70b-versatile)"
     ),
@@ -68,11 +179,17 @@ def run(
     """
     Donanım projenizi analiz eder, Malzeme Listesini (BOM) çıkartır, uyumluluğu denetler ve en ucuz sepet kombinasyonunu hesaplar.
     """
+    config = _load_config()
+    selected_provider = provider or config.get("default_provider") or "mock"
+
     console.print(
-        Panel(f"[bold cyan]Robo Market AI Agent[/bold cyan]\n[gray]Proje İstegi:[/gray] {prompt}", title="🤖 Donanım Asistanı")
+        Panel(
+            f"[bold cyan]Robo Market AI Agent[/bold cyan]\n[gray]Proje İstegi:[/gray] {prompt}\n[gray]Sağlayıcı:[/gray] [bold yellow]{selected_provider}[/bold yellow]",
+            title="🤖 Donanım Asistanı",
+        )
     )
 
-    llm_provider = _get_provider(provider, api_key, model)
+    llm_provider = _get_provider(selected_provider, api_key, model)
     search_service = SearchService(use_cache=not no_cache)
     agent = RoboMarketAgent(llm_provider=llm_provider, search_service=search_service)
 
