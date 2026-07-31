@@ -1,0 +1,7 @@
+Based on the structured project requirements below, generate a complete Bill of Materials (BOM) listing every required electronic component, microcontroller, sensor, actuator, power supply, and connector needed to build the project.
+
+Project Requirements:
+{requirements_json}
+
+Ensure generic searchable component names (e.g., "ESP32 DevKit", "4 Channel Relay", "12V Solenoid Valve", "Capacitive Soil Moisture Sensor", "12V 2A Power Supply").
+Respond ONLY with a JSON object conforming to the BOM schema.

@@ -2,6 +2,7 @@ from .direncnet.client import DirencnetClient
 from .robo90.client import Robo90Client
 from .robolink.client import RobolinkClient
 from .robotistan.client import RobotistanClient
+from .search.api import search, search_multiple, search_provider
 from .shared.models import (
     CartItemResult,
     CartSearchResult,
@@ -28,4 +29,7 @@ __all__ = [
     "SplitStoreGroup",
     "StoreCartSummary",
     "UnifiedSearchClient",
+    "search",
+    "search_multiple",
+    "search_provider",
 ]

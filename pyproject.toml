@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "robo-market-search"
-version = "1.2.0"
+version = "1.3.0"
 authors = [
     { name = "Ata Can", email = "atacanymc@gmail.com" },
 ]
-description = "A unified Python client library to search Robolink, Robotistan, Robo90, and Direncnet."
+description = "A unified Python library and AI Agent system to search Robolink, Robotistan, Robo90, and Direncnet."
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
@@ -16,13 +16,14 @@ dependencies = [
     "beautifulsoup4"
 ]
 license = { text = "Apache-2.0" }
-keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api", "mcp", "bot", "cli", "python", "library"]
+keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api", "mcp", "bot", "cli", "python", "library", "agent", "bom"]
 
 [project.optional-dependencies]
 cli = ["typer", "rich"]
 mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram"]
+agent = ["pydantic>=2.0"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0"]
 dev = [
     "pre-commit",
     "ruff",
@@ -41,19 +42,12 @@ robo-bot = "robo_market_search.bot.server:main"
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
 
 [tool.setuptools.packages.find]
-include = ["robo_market_search", "robo_market_search.*"]
+include = ["robo_market_search", "robo_market_search.*", "robo_market_service", "robo_market_service.*", "robo_market_agent", "robo_market_agent.*"]
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Ruff — Linter + Formatter
-# Docs: https://docs.astral.sh/ruff/
-# ─────────────────────────────────────────────────────────────────────────────
 [tool.ruff]
-# Python 3.8+ hedef (pyproject.toml requires-python ile eşleşmeli)
 target-version = "py38"
 line-length = 127
 indent-width = 4
-
-# Lint ve format'tan hariç tutulacak dizinler
 exclude = [
     ".git",
     ".venv",
@@ -61,70 +55,34 @@ exclude = [
     "dist",
     "build",
     "*.egg-info",
-    "examples",          # Örnek scriptler katı kurallara tabi değil
+    "examples",
 ]
 
 [tool.ruff.lint]
-# Aktif kural setleri:
-#   E/W  → pycodestyle (PEP 8)
-#   F    → Pyflakes (tanımsız isimler, kullanılmayan import vs.)
-#   I    → isort (import sıralaması)
-#   UP   → pyupgrade (eski Python syntaxını modernize et)
-#   B    → flake8-bugbear (olası hatalar)
-#   C4   → flake8-comprehensions (liste/dict/set comprehension iyileştirmeleri)
-#   SIM  → flake8-simplify (gereksiz karmaşıklık)
-#   TCH  → flake8-type-checking (TYPE_CHECKING bloğu önerileri)
-#   RUF  → Ruff'a özgü kurallar
 select = ["E", "W", "F", "I", "UP", "B", "C4", "SIM", "TCH", "RUF"]
-
 ignore = [
-    # Python 3.8 uyumluluğu: `list[...]` yerine `List[...]` kullanımı zorunlu
-    "UP006",  # Use `list` instead of `List`
-    "UP007",  # Use `X | Y` instead of `Optional[X]` — 3.10+ syntax
-    "UP045",  # Use `X | None` instead of `Optional[X]` — 3.10+ syntax (Python 3.8 target)
-    "UP035",  # `typing` importlarını `collections.abc`'ye taşı — gereksiz
-    # Uzun satırlar — mevcut kodda 127 karakter tolerans tanındı
+    "UP006",
+    "UP007",
+    "UP045",
+    "UP035",
     "E501",
-    # Bare except — scraper'larda makul (Ruff'ta E722)
     "E722",
-    # Kural çakışmaları
-    "RUF012",  # ClassVar annotation — dataclass'larda gürültü
-    # SIM kuralları: bazen okunabilirliği azaltıyor
-    "SIM108",  # Ternary ifade yerine if-else — scraper kodunda daha okunaklı
-    # B rule ince ayarları
-    "B904",   # raise ... from err — scraper except bloklarında zorunlu değil
-    # Türkçe karakter kuralları — proje kasıtlı olarak Türkçe yazılmıştır
-    "RUF001",  # String contains ambiguous Turkish dotless-i (ı)
-    "RUF002",  # Docstring contains ambiguous Turkish dotless-i (ı)
-    "RUF003",  # Comment contains ambiguous Turkish dotless-i (ı)
+    "RUF012",
+    "SIM108",
+    "B904",
+    "RUF001",
+    "RUF002",
+    "RUF003",
 ]
-
-# Otomatik düzeltilebilir kurallar (--fix ile aktif)
 fixable = ["ALL"]
 unfixable = []
 
-# Test/örnek dosyalarına özel esneklik
-[tool.ruff.lint.per-file-ignores]
-"examples/*" = ["ALL"]             # Örnekler kural dışı
-"demo/*" = [
-    "B008",  # FastAPI Form(...) dependency default calls
-]
-"robo_market_search/bot/*" = [
-    "B008",  # typer/aiogram decorator'larında do-not-call-in-defaults
-]
-"robo_market_search/cli/*" = [
-    "B008",  # Typer default fonksiyon argümanları
-    "UP",    # CLI kodu Python 3.8 uyumlu kalsın
-]
-
 [tool.ruff.lint.isort]
-# Import sıralama: stdlib → third-party → first-party
-known-first-party = ["robo_market_search"]
+known-first-party = ["robo_market_search", "robo_market_service", "robo_market_agent"]
 force-sort-within-sections = true
 split-on-trailing-comma = true
 
 [tool.ruff.format]
-# Black uyumlu format ayarları
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
@@ -132,73 +90,29 @@ line-ending = "lf"
 docstring-code-format = true
 docstring-code-line-length = 88
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Mypy — Statik Tip Kontrolü
-# Docs: https://mypy.readthedocs.io/
-# ─────────────────────────────────────────────────────────────────────────────
 [tool.mypy]
 python_version = "3.8"
 mypy_path = "."
-
-# ── Hata raporlama ───────────────────────────────────────────────────────────
-show_error_codes       = true   # Hata kodunu göster (örn: [assignment])
-show_column_numbers    = true   # Sütun numarası göster
-pretty                 = true   # Renkli + okunabilir çıktı
-error_summary          = false  # Özet satırını gizle
-
-# ── Genel tip katılığı ───────────────────────────────────────────────────────
-warn_return_any        = true   # Any döndüren fonksiyonlarda uyar
-warn_unused_configs    = true   # Kullanılmayan mypy konfigürasyonlarında uyar
-warn_redundant_casts   = true   # Gereksiz cast() çağrılarında uyar
-warn_unused_ignores    = false  # Kullanılmayan # type: ignore satırlarında uyar (isteğe bağlı)
-
-# ── Import kontrolü ──────────────────────────────────────────────────────────
-# Optional bağımlılıkların stubs olmayabileceği için esnek tut
+show_error_codes       = true
+show_column_numbers    = true
+pretty                 = true
+error_summary          = false
+warn_return_any        = true
+warn_unused_configs    = true
+warn_redundant_casts   = true
+warn_unused_ignores    = false
 ignore_missing_imports = true
+disallow_untyped_defs       = false
+disallow_incomplete_defs    = false
+check_untyped_defs          = true
+disallow_any_generics       = false
 
-# ── Tip tamamlığı gereksinimleri ─────────────────────────────────────────────
-# Mevcut kodda eksik anotasyonlar var; bunları aşamalı olarak ekleyeceğiz.
-# Şimdilik tam katılık yerine "no-untyped-def" sadece uyarı verir.
-disallow_untyped_defs       = false   # Tip eksik fonksiyon tanımları HATA değil
-disallow_incomplete_defs    = false   # Kısmi tip tanımları izin ver
-check_untyped_defs          = true    # Tip anotasyonu olmayan fonksiyonların içini de kontrol et
-disallow_any_generics       = false   # List, Dict gibi generics'te Any kabul et
-
-# ── Modül bazlı ayarlar ──────────────────────────────────────────────────────
-
-# Shared + Unified: en katı kontrol (temel veri modelleri + iş mantığı)
 [[tool.mypy.overrides]]
 module = [
     "robo_market_search.shared.*",
     "robo_market_search.unified.*",
+    "robo_market_service.*",
 ]
 disallow_untyped_defs    = true
 disallow_incomplete_defs = true
 warn_return_any          = true
-
-# Scraper modülleri: HTTP ve scraping nedeniyle `Any` daha yaygın
-[[tool.mypy.overrides]]
-module = [
-    "robo_market_search.robotistan.*",
-    "robo_market_search.robolink.*",
-    "robo_market_search.robo90.*",
-    "robo_market_search.direncnet.*",
-]
-disallow_untyped_defs = false
-ignore_missing_imports = true
-
-# CLI: Typer + Rich bağımlılıkları stubs eksik olabilir
-[[tool.mypy.overrides]]
-module = "robo_market_search.cli.*"
-disallow_untyped_defs = false
-ignore_missing_imports = true
-
-# MCP + Bot: Async + opsiyonel bağımlılıklar
-[[tool.mypy.overrides]]
-module = [
-    "robo_market_search.mcp.*",
-    "robo_market_search.bot.*",
-    "robo_market_search.agent.*",
-]
-disallow_untyped_defs = false
-ignore_missing_imports = true

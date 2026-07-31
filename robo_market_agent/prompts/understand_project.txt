@@ -1,0 +1,7 @@
+Analyze the following user project request and extract structured specifications:
+
+User Request:
+"{user_input}"
+
+Extract the project type, summary description, power requirements, wireless connectivity protocol, key required capabilities, and constraints.
+Respond ONLY with a JSON object conforming to the ProjectRequirements schema.

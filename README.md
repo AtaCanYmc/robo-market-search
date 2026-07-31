@@ -24,6 +24,38 @@ Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protoc
 - **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
 - **LLM/MCP Entegrasyonu**: Claude vb. LLM asistanlarına, projeniz için donanım/elektronik malzeme arama yeteneği kazandırır.
 
+## 3 Katmanlı Mimari (3-Layered Architecture)
+
+Proje 3 tam bağımsız mantıksal katmandan oluşur:
+
+```
+                            ┌───────────────────────────┐
+                            │    robo_market_agent      │
+                            │ (AI Layer: Requirements,  │
+                            │  BOM, Compatibility, Cart)│
+                            └─────────────┬─────────────┘
+                                          │
+                                          ▼
+                            ┌───────────────────────────┐
+                            │    robo_market_service    │
+                            │ (Search Service: Cache,   │
+                            │  Synonyms, Rank, Dedupe)  │
+                            └─────────────┬─────────────┘
+                                          │
+                                          ▼
+                            ┌───────────────────────────┐
+                            │    robo_market_search     │
+                            │ (Core Search Library:     │
+                            │  Zero AI Dependencies)    │
+                            └───────────────────────────┘
+```
+
+1. **`robo_market_search`**: Temel arama kütüphanesi. Sıfır yapay zeka bağımlılığına sahiptir. Doğrudan mağaza kazıyıcıları ve `search()`, `search_multiple()`, `search_provider()` gibi temel fonksiyonları sunar.
+2. **`robo_market_service`**: Arama servis katmanı. Paralel arama, yeniden deneme (retries), SQLite önbellek, elektronik terim eşanlamlı açılımı (synonym expansion), ürün tekilleştirme (deduplication) ve skorlama sıralaması sunar.
+3. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları (OpenAI, Anthropic, Gemini, Ollama, Mock) üzerinden 8 adımlı boru hattı (pipeline) çalıştırır:
+   - Project Understanding -> Requirement Extraction -> BOM Generation -> Compatibility Check -> Component Search -> Product Normalization -> Cart Optimization -> Final Markdown Report
+
+
 ## Ekosistem Mimarisi
 
 ```mermaid
