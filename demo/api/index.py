@@ -15,6 +15,9 @@ for p in (str(ROOT_DIR), str(DEMO_DIR)):
         sys.path.insert(0, p)
 
 try:
-    from demo.main import app
+    from demo.main import app as application
 except ModuleNotFoundError:
-    from main import app  # type: ignore[no-redef] # noqa: F401
+    from main import app as application  # type: ignore[no-redef]
+
+app = application
+handler = application
