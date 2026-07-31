@@ -28,10 +28,17 @@ if str(REPO_ROOT) not in sys.path:
 from fastapi import FastAPI  # noqa: E402
 from fastapi.templating import Jinja2Templates  # noqa: E402
 
-from demo.routes.export import router as export_router  # noqa: E402
-from demo.routes.health import router as health_router  # noqa: E402
-from demo.routes.seo import router as seo_router  # noqa: E402
-from demo.routes.views import router as views_router  # noqa: E402
+# Fallback imports for Vercel deployment where demo folder might be the task root or package root
+try:
+    from demo.routes.export import router as export_router
+    from demo.routes.health import router as health_router
+    from demo.routes.seo import router as seo_router
+    from demo.routes.views import router as views_router
+except ModuleNotFoundError:
+    from routes.export import router as export_router  # type: ignore[no-redef]
+    from routes.health import router as health_router  # type: ignore[no-redef]
+    from routes.seo import router as seo_router  # type: ignore[no-redef]
+    from routes.views import router as views_router  # type: ignore[no-redef]
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(

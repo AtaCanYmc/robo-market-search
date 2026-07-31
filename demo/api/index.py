@@ -14,4 +14,7 @@ for p in (str(ROOT_DIR), str(DEMO_DIR)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from demo.main import app  # noqa: F401, E402
+try:
+    from demo.main import app
+except ModuleNotFoundError:
+    from main import app  # type: ignore[no-redef] # noqa: F401
