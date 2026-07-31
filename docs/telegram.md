@@ -9,6 +9,12 @@ Robo Market Search includes a built-in Telegram Bot runner (`robo-bot`) powered 
 - **Interactive Cart Optimizer**: Send a list of parts to receive calculated store splits and shipping costs.
 - **Rich Formatting**: Clean Telegram Markdown V2 formatting.
 
+<div align="center">
+  <img src="../.github/screenshots/bot_example.jpeg" width="35%" alt="Telegram Bot Search" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="../.github/screenshots/bot_example_2.jpeg" width="35%" alt="Telegram Bot Cart" />
+</div>
+
 ---
 
 ## 🚀 Setup & Launching

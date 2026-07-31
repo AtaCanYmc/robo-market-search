@@ -224,14 +224,36 @@ pip install "robo-market-search[all]"
 - **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
 - **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
 - **Sepet Optimizasyonu**: Mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz etme.
+### Web Arayüz Özellikleri:
+- **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
+- **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
+- **Sepet Optimizasyonu**: Mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz etme.
 - **BYOK Yapay Zeka Ajanı**: Kendi OpenAI, Gemini, Claude veya Ollama API anahtarınızla donanım analizi yapma.
 - **Sonuçları İndirme (Export)**: Arama sonuçlarını **CSV**, **JSON**, **Markdown** formatlarında indirme veya **Panoya Kopyalama**.
+
+<br/>
+
+![Vite Web UI Arama Ekranı](.github/screenshots/web_demo_example.png)
+
+### 🤖 Yapay Zeka Donanım Ajanı Görsel Arayüzü (BYOK):
+
+<div align="center">
+  <img src=".github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Ajan Malzeme Listesi (BOM) Ekranı" />
+  &nbsp;
+  <img src=".github/screenshots/agent_donanim_uyumlulugu.png" width="48%" alt="Ajan Donanım Uyumluluğu Ekranı" />
+  <br/><br/>
+  <img src=".github/screenshots/agent_proje_ihtiyaclari.png" width="48%" alt="Ajan Proje İhtiyaçları Ekranı" />
+  &nbsp;
+  <img src=".github/screenshots/agent_example_cart.png" width="48%" alt="Ajan Sepet Bölüşümü Ekranı" />
+</div>
 
 ---
 
 ## Komut Satırı Arayüzü (CLI) Kullanımı
 
 Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz:
+
+![CLI Arama Ekranı](.github/screenshots/cli_example.png)
 
 ```bash
 # Temel arama (Tüm marketleri tarar, en ucuzdan pahalıya sıralar)
@@ -332,7 +354,7 @@ curl -X POST http://localhost:8000/api/v1/providers/robotistan \
 
 Projenin canlı ön izlemesini ve kullanıcı dostu web arayüzünü `demo/` dizinindeki FastAPI + HTMX uygulaması ile deneyimleyebilirsiniz.
 
-![Web Demo Görseli](.github/screenshots/web-demo-example.png)
+![Web Demo Görseli](.github/screenshots/web_demo_example.png)
 
 ### Web Arayüz Özellikleri:
 - **Canlı & Paralel Arama:** HTMX ile sayfa yenilenmeden hızlı sonuç gösterimi.

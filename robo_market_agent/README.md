@@ -14,6 +14,20 @@ Ajan hem CLI hem de REST API katmanında **Bring Your Own API Key (BYOK)** mimar
 
 ---
 
+## 📸 Ajan Görsel Arayüz Ekranları (Visual UI Screens)
+
+<div align="center">
+  <img src="../.github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Malzeme Listesi (BOM) Tab" />
+  &nbsp;
+  <img src="../.github/screenshots/agent_donanim_uyumlulugu.png" width="48%" alt="Donanım Uyumluluğu Tab" />
+  <br/><br/>
+  <img src="../.github/screenshots/agent_proje_ihtiyaclari.png" width="48%" alt="Proje İhtiyaçları Tab" />
+  &nbsp;
+  <img src="../.github/screenshots/agent_example_cart.png" width="48%" alt="Sepet Mağaza Bölüşümü Tab" />
+</div>
+
+---
+
 ## 🤖 Donanım Asistanı CLI Kullanımı (`robo-agent`)
 
 `robo_market_agent` katmanı kendi başına terminalden çalıştırılabilen `robo-agent` komut satırı aracına sahiptir.

@@ -2,6 +2,8 @@
 
 The `robo-search` and `robo-agent` command-line interfaces provide terminal commands for product searching, cart optimization, AI hardware analysis, and configuration management.
 
+![CLI Search Screenshot](../.github/screenshots/cli_example.png)
+
 ---
 
 ## ⌨️ `robo-search` (Product Search & Cart Optimization)

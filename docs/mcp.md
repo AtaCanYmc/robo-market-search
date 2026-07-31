@@ -10,6 +10,8 @@ Robo Market Search features an official **MCP (Model Context Protocol)** server 
 
 By connecting `robo-mcp`, your LLM assistant gains real-time access to Robotistan, Robolink, Robo90, and Direnç.net product inventories.
 
+![MCP Claude Desktop Integration](../.github/screenshots/mcp_example.png)
+
 ---
 
 ## 🚀 Installation & Integration

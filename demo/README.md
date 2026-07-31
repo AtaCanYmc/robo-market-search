@@ -21,6 +21,24 @@ Bu dizin, `robo-market-search` ekosisteminin web demo uygulamalarını ve servis
 
 ---
 
+## 📸 Ekran Görüntüleri (Screenshots)
+
+### 1. 🔍 Birleştirilmiş Arama (Unified Search)
+![Vite Web UI Arama Ekranı](../.github/screenshots/web_demo_example.png)
+
+### 2. 🤖 BYOK Yapay Zeka Donanım Ajanı Ekranları
+<div align="center">
+  <img src="../.github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Ajan Malzeme Listesi" />
+  &nbsp;
+  <img src="../.github/screenshots/agent_donanim_uyumlulugu.png" width="48%" alt="Ajan Donanım Uyumluluğu" />
+  <br/><br/>
+  <img src="../.github/screenshots/agent_proje_ihtiyaclari.png" width="48%" alt="Ajan Proje İhtiyaçları" />
+  &nbsp;
+  <img src="../.github/screenshots/agent_example_cart.png" width="48%" alt="Ajan Sepet Bölüşümü" />
+</div>
+
+---
+
 ## 🚀 Yerel Çalıştırma
 
 ### Yöntem 1: Docker Compose (Önerilen)

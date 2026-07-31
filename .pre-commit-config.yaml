@@ -22,8 +22,8 @@ repos:
       - id: check-toml                # TOML sözdizimi kontrolü
       - id: check-json                # JSON sözdizimi kontrolü
       - id: check-merge-conflict      # Birleşme çakışma işaretlerini engelle
-      - id: check-added-large-files   # 500KB+ dosyaları engelle
-        args: [--maxkb=500]
+      - id: check-added-large-files   # 1000KB+ dosyaları engelle
+        args: [--maxkb=1000]
       - id: check-case-conflict       # Büyük/küçük harf farklı ama aynı isim
       - id: debug-statements          # pdb/breakpoint satırlarını yakala
       - id: mixed-line-ending         # CRLF/LF tutarsızlığını önle
