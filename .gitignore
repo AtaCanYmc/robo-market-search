@@ -62,6 +62,11 @@ dmypy.json
 secrets.toml
 secrets.yaml
 
+# API Keys
+openai_api_key.txt
+gemini_api_key.txt
+anthropic_api_key.txt
+
 # ─────────────────────────────────────────────────────────────────────────────
 # IDEs & Editors
 # ─────────────────────────────────────────────────────────────────────────────
@@ -115,8 +120,14 @@ $RECYCLE.BIN/
 .directory
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Project-specific
+# Project-specific & Local SQLite Cache / Databases
 # ─────────────────────────────────────────────────────────────────────────────
+
+# SQLite Databases & Cache
+*.db
+*.sqlite
+*.sqlite3
+search_cache.db
 
 # Jupyter Notebooks (araştırma/deneme)
 .ipynb_checkpoints/
