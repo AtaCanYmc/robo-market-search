@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.3.0...v1.4.0) (2026-07-31)
+
+
+### ✨ Features
+
+* add Bring Your Own API Key (BYOK) support to AI Hardware Agent endpoints ([f44cbdc](https://github.com/AtaCanYmc/robo-market-search/commit/f44cbdcc1e6e6a9431d1a5d1775ef35d8cc99988))
+* add cart optimization functionality with CLI support ([5a46ea1](https://github.com/AtaCanYmc/robo-market-search/commit/5a46ea16f827ccecac9ecf53f474e8206dea902b))
+* add customizable shipping thresholds and settings to CartOptimizerTab ([d9a18ca](https://github.com/AtaCanYmc/robo-market-search/commit/d9a18cab0712a4a62f19bc0ee7cda2a1f6978f20))
+* add export functionality for product search results in various formats ([1b3917d](https://github.com/AtaCanYmc/robo-market-search/commit/1b3917d615da0b951bb0c7416cb602da09ea16a0))
+* add frontend components, API integration, and Docker setup for Robo Market Search ([bdec6f6](https://github.com/AtaCanYmc/robo-market-search/commit/bdec6f671b884f5059b273c261368c5521d3b8f6))
+* add installation script and binary release workflow for easier deployment ([40213c9](https://github.com/AtaCanYmc/robo-market-search/commit/40213c946dfac56aacde7457a656734666728432))
+* add requirements file with dependencies for FastAPI project ([4038cd7](https://github.com/AtaCanYmc/robo-market-search/commit/4038cd76d0e3d24e081b8e4ed37e7a3c19a4d85e))
+* enhance API configuration for production and add Docker support ([1d03bdd](https://github.com/AtaCanYmc/robo-market-search/commit/1d03bdda80d33d7b09c67475a5acb9a7d9a63024))
+* enhance ProductCard component with image URL normalization and error handling ([69c88de](https://github.com/AtaCanYmc/robo-market-search/commit/69c88de351ecbbcb54636b9ef8e9de7737590017))
+* implement API endpoints and services for product search, cart optimization, and AI agent integration ([5a2e949](https://github.com/AtaCanYmc/robo-market-search/commit/5a2e9495920dac180912a5448dd0a4189aadb81c))
+* normalize product names in API response and ProductCard component ([2585681](https://github.com/AtaCanYmc/robo-market-search/commit/2585681f1dfb58f8bb7676ac15d00a1f1e63b34f))
+* update Dockerfile for streamlined dependency installation and entry point adjustment ([830548a](https://github.com/AtaCanYmc/robo-market-search/commit/830548a64c8f4e6bfbf0065fc1da5e9733bd9950))
+* update installation commands for robo-market-search and add PostCSS configuration ([209ad7e](https://github.com/AtaCanYmc/robo-market-search/commit/209ad7edfb6c68d61ed113937a51388ca2eba5b1))
+* update README and add configuration files for Vercel and Render deployment ([7280328](https://github.com/AtaCanYmc/robo-market-search/commit/72803283aacda9bad5380929bea65400041a4a22))
+* update README to include BYOK support and enhance frontend features ([7690b08](https://github.com/AtaCanYmc/robo-market-search/commit/7690b08a2dc83acb6534af65b279cbcdf9593621))
+
+
+### 🐛 Bug Fixes
+
+* add local package reference to root requirements.txt for Vercel deployment ([960b085](https://github.com/AtaCanYmc/robo-market-search/commit/960b08533530a3c618dd30a3585512e379ecca85))
+* enforce @vercel/python builder in vercel.json to trigger pip install requirements.txt ([4e375c5](https://github.com/AtaCanYmc/robo-market-search/commit/4e375c540087de6c67075200a056d7aa727f75f8))
+* remove legacy builds array to eliminate Vercel CLI warning ([07ff7dc](https://github.com/AtaCanYmc/robo-market-search/commit/07ff7dc1c6e18e462226b5fff763e9a4042fb12b))
+
 ## [1.3.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.2.0...v1.3.0) (2026-07-31)
 
 
