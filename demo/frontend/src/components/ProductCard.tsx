@@ -105,7 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
 
         {/* Product Title */}
         <h3 className="text-sm font-semibold text-slate-100 group-hover:text-cyan-400 transition-colors line-clamp-2 mb-2 leading-snug">
-          {product.title}
+          {(product.title || '').split('||')[0].trim()}
         </h3>
       </div>
 

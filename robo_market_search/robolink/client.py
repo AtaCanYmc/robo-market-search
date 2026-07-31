@@ -89,9 +89,12 @@ class RobolinkClient:
                 if images:
                     image_url = images[0]
 
+                raw_name = itm.get("name", "Ürün Adı Yok")
+                clean_name = raw_name.split("||")[0].strip() if raw_name else "Ürün Adı Yok"
+
                 parsed_products.append(
                     Product(
-                        name=itm.get("name", "Ürün Adı Yok"),
+                        name=clean_name,
                         price=float(itm.get("price", 0.0)),
                         currency=itm.get("currency", "TL"),
                         url=full_url,
