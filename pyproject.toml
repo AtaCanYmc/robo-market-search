@@ -23,7 +23,8 @@ cli = ["typer", "rich"]
 mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
 agent = ["pydantic>=2.0", "typer", "rich"]
-all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0"]
+api = ["fastapi", "uvicorn[standard]", "pydantic-settings>=2.0"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0", "fastapi", "uvicorn[standard]", "pydantic-settings>=2.0"]
 dev = [
     "pre-commit",
     "ruff",
@@ -31,6 +32,7 @@ dev = [
     "types-beautifulsoup4",
     "pytest",
     "pytest-cov",
+    "httpx",
 ]
 
 [project.scripts]
@@ -38,12 +40,14 @@ robo-search = "robo_market_search.cli.main:app"
 robo-mcp = "robo_market_search.mcp.server:main"
 robo-bot = "robo_market_search.bot.server:main"
 robo-agent = "robo_market_agent.cli:app"
+robo-api = "robo_market_api.app.main:cli_main"
 
 [project.urls]
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
 
 [tool.setuptools.packages.find]
-include = ["robo_market_search", "robo_market_search.*", "robo_market_service", "robo_market_service.*", "robo_market_agent", "robo_market_agent.*"]
+include = ["robo_market_search", "robo_market_search.*", "robo_market_service", "robo_market_service.*", "robo_market_agent", "robo_market_agent.*", "robo_market_api", "robo_market_api.*"]
+
 
 [tool.ruff]
 target-version = "py38"
@@ -92,6 +96,9 @@ unfixable = []
     "UP",
 ]
 "robo_market_agent/cli.py" = [
+    "B008",
+]
+"robo_market_api/*" = [
     "B008",
 ]
 

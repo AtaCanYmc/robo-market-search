@@ -22,13 +22,18 @@ Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protoc
 - **Standart Veri Tipi**: Tüm sonuçlar, standart `Product` objesi olarak döner.
 - **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek (regex ile ana sayfalardan kazıyarak) kesintisiz çalışır.
 - **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
-- **LLM/MCP Entegrasyonu**: Claude vb. LLM asistanlarına, projeniz için donanım/elektronik malzeme arama yeteneği kazandırır.
+- **LLM/MCP Entegrasyonu**: Claude vb. LLM asistanlarına, pro## 4 Katmanlı Mimari (4-Layered Architecture)
 
-## 3 Katmanlı Mimari (3-Layered Architecture)
-
-Proje 3 tam bağımsız mantıksal katmandan oluşur:
+Proje tam bağımsız mantıksal katmanlardan oluşur:
 
 ```
+                            ┌───────────────────────────┐
+                            │      robo_market_api      │
+                            │ (REST API Layer: FastAPI, │
+                            │  OpenAPI, Uvicorn, CORS)  │
+                            └─────────────┬─────────────┘
+                                          │
+                                          ▼
                             ┌───────────────────────────┐
                             │    robo_market_agent      │
                             │ (AI Layer: Requirements,  │
@@ -46,12 +51,15 @@ Proje 3 tam bağımsız mantıksal katmandan oluşur:
                             ┌───────────────────────────┐
                             │    robo_market_search     │
                             │ (Core Search Library:     │
-                            │  Zero AI Dependencies)    │
+                            │  Zero AI/HTTP Dependencies│
                             └───────────────────────────┘
 ```
 
-1. **`robo_market_search`**: Temel arama kütüphanesi. Sıfır yapay zeka bağımlılığına sahiptir. Doğrudan mağaza kazıyıcıları ve `search()`, `search_multiple()`, `search_provider()` gibi temel fonksiyonları sunar.
-2. **`robo_market_service`**: Arama servis katmanı. Paralel arama, yeniden deneme (retries), SQLite önbellek, elektronik terim eşanlamlı açılımı (synonym expansion), ürün tekilleştirme (deduplication) ve skorlama sıralaması sunar.
+1. **`robo_market_api`**: Üretim ortamına hazır HTTP REST API katmanı. FastAPI, Pydantic v2, Swagger UI (`/docs`), ReDoc (`/redoc`) ve Docker desteği sunar.
+2. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları üzerinden 8 adımlı boru hattı çalıştırır.
+3. **`robo_market_service`**: Arama servis katmanı. Önbellek, eşanlamlı terim açılımı (synonyms) ve sıralama mantığı sunar.
+4. **`robo_market_search`**: Temel arama kütüphanesi. Sıfır HTTP/FastAPI bağımlılığına sahip saf Python SDK.
+ terim eşanlamlı açılımı (synonym expansion), ürün tekilleştirme (deduplication) ve skorlama sıralaması sunar.
 3. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları (OpenAI, Anthropic, Gemini, Ollama, Mock) üzerinden 8 adımlı boru hattı (pipeline) çalıştırır:
    - Project Understanding -> Requirement Extraction -> BOM Generation -> Compatibility Check -> Component Search -> Product Normalization -> Cart Optimization -> Final Markdown Report
 
@@ -187,6 +195,95 @@ robo-search "PLA Filament" --no-sort
 ```
 
 ---
+
+## REST API Sunucusu (`robo_market_api`)
+
+Production-ready FastAPI REST API katmanı ile `robo-market-search` özelliklerini HTTP servisleri olarak sunabilirsiniz.
+
+### 🚀 Çalıştırma
+
+#### 1. Yerel Olarak Sunucuyu Başlatma
+```bash
+# pip install "robo-market-search[api]" veya [all]
+robo-api
+```
+veya doğrudan Uvicorn ile:
+```bash
+uvicorn robo_market_api.app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+#### 2. Docker & Docker Compose ile Çalıştırma
+```bash
+docker compose up -d
+```
+
+### 📖 API Dokümantasyonu (Swagger & ReDoc)
+
+Sunucu çalışırken etkileşimli dokümantasyon sayfalarına erişebilirsiniz:
+- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **OpenAPI JSON**: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
+
+### 📌 Örnek Endpoint İletişimleri
+
+#### 🔹 Sağlık Kontrolü (`GET /health` veya `GET /api/v1/health`)
+```bash
+curl -X GET http://localhost:8000/api/v1/health
+```
+**Yanıt:**
+```json
+{
+  "status": "ok",
+  "version": "1.3.0"
+}
+```
+
+#### 🔹 Ürün Arama (`POST /api/v1/search`)
+```bash
+curl -X POST http://localhost:8000/api/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "ESP32", "limit": 3}'
+```
+**Yanıt:**
+```json
+{
+  "success": true,
+  "query": "ESP32",
+  "count": 3,
+  "products": [
+    {
+      "title": "ESP32-WROOM-32 Wi-Fi + Bluetooth Modülü",
+      "price": 145.50,
+      "formatted_price": "145,50 TL",
+      "url": "https://www.robotistan.com/esp32",
+      "store": "robotistan",
+      "in_stock": true
+    }
+  ]
+}
+```
+
+#### 🔹 Toplu Arama (`POST /api/v1/search/batch`)
+```bash
+curl -X POST http://localhost:8000/api/v1/search/batch \
+  -H "Content-Type: application/json" \
+  -d '{"queries": ["ESP32", "Relay 5V", "OLED 0.96"]}'
+```
+
+#### 🔹 Mağaza Sağlayıcıları (`GET /api/v1/providers`)
+```bash
+curl -X GET http://localhost:8000/api/v1/providers
+```
+
+#### 🔹 Belirli Bir Mağazada Arama (`POST /api/v1/providers/{provider}`)
+```bash
+curl -X POST http://localhost:8000/api/v1/providers/robotistan \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Arduino Uno"}'
+```
+
+---
+
 
 ## Web Demo Arayüzü
 
