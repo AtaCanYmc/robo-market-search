@@ -27,6 +27,30 @@ Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context P
 
 ---
 
+## 📖 Kapsamlı Dokümantasyon (Documentation Suite)
+
+Projenin tüm detayları kurumsal standartlarda hazırlanmış `docs/` dizininde yer almaktadır:
+
+| Doküman | Açıklama | Bağlantı |
+| :--- | :--- | :--- |
+| **🚀 Getting Started** | Hızlı başlangıç ve ekosistem özeti | [getting-started.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/getting-started.md) |
+| **🏛️ Mimari (Architecture)** | 4 Katmanlı mimari, ThreadPool ve akış şemaları | [architecture.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/architecture.md) |
+| **📦 Kurulum (Installation)** | `pipx`, `brew`, `curl`, `pip`, `docker` kurulum matrisi | [installation.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/installation.md) |
+| **⚙️ Konfigürasyon** | Ortam değişkenleri, kargo limitleri ve BYOK anahtar yönetimi | [configuration.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/configuration.md) |
+| **🐍 Python SDK** | `UnifiedSearchClient`, `RoboMarketAgent` API referansı | [sdk.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/sdk.md) |
+| **⌨️ CLI Referansı** | `robo-search` ve `robo-agent` terminal rehberi | [cli.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/cli.md) |
+| **🤖 MCP Sunucusu** | Claude Desktop, Cursor & VS Code MCP entegrasyonu | [mcp.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/mcp.md) |
+| **💬 Telegram Bot** | `robo-bot` kurulumu, BotFather & webhook rehberi | [telegram.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/telegram.md) |
+| **🚀 REST API** | FastAPI OpenAPI endpoints, BYOK HTTP başlıkları | [api.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/api.md) |
+| **🔌 Provider Geliştirme** | Yeni market kazıyıcısı (Scraper) ekleme rehberi | [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) |
+| **🛠️ Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` & CI/CD süreçleri | [development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/development.md) |
+| **❓ Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [troubleshooting.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/troubleshooting.md) |
+| **💡 SSS (FAQ)** | Sıkça sorulan sorular | [faq.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/faq.md) |
+| **🗺️ Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [roadmap.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/roadmap.md) |
+| **📐 Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [adr/](file:///Users/atacan/PycharmProjects/robo-market-search/docs/adr/) |
+
+---
+
 ## 4 Katmanlı Mimari (4-Layered Architecture)
 
 Proje tam bağımsız mantıksal katmanlardan oluşur:
