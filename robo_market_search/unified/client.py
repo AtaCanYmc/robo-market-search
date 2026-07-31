@@ -30,10 +30,10 @@ logger = logging.getLogger("robo_market_search.unified")
 STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet"]
 
 SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
-    "Robolink": ShippingInfo(flat_rate=39.90, free_shipping_min=250.0),
-    "Robotistan": ShippingInfo(flat_rate=34.90, free_shipping_min=200.0),
-    "Robo90": ShippingInfo(flat_rate=39.90, free_shipping_min=300.0),
-    "Direncnet": ShippingInfo(flat_rate=29.90, free_shipping_min=200.0),
+    "Robolink": ShippingInfo(flat_rate=39.90, free_shipping_min=1500.0),
+    "Robotistan": ShippingInfo(flat_rate=34.90, free_shipping_min=1500.0),
+    "Robo90": ShippingInfo(flat_rate=39.90, free_shipping_min=1500.0),
+    "Direncnet": ShippingInfo(flat_rate=29.90, free_shipping_min=1500.0),
 }
 
 

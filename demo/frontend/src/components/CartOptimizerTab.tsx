@@ -21,10 +21,10 @@ interface Thresholds {
 }
 
 const DEFAULT_THRESHOLDS: Thresholds = {
-  robotistan: 500,
-  robolink: 400,
-  robo90: 450,
-  direncnet: 600,
+  robotistan: 1500,
+  robolink: 1500,
+  robo90: 1500,
+  direncnet: 1500,
   shippingFee: 60,
 };
 
