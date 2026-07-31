@@ -95,6 +95,10 @@ unfixable = []
     "B008",
     "UP",
 ]
+"robo_market_search/cart/*" = [
+    "B008",
+    "UP",
+]
 "robo_market_agent/cli.py" = [
     "B008",
 ]
