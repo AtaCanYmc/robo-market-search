@@ -3,7 +3,6 @@ Step 7: Final Report Generator Step
 Formats and synthesizes complete agent results into markdown format.
 """
 
-from pathlib import Path
 from typing import Any, Dict
 
 from robo_market_agent.models.agent_models import (
@@ -14,8 +13,7 @@ from robo_market_agent.models.agent_models import (
     ProjectRequirements,
 )
 from robo_market_agent.pipeline.base import BasePipelineStep
-
-PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
+from robo_market_agent.prompts import get_prompt
 
 
 class ReportGeneratorStep(BasePipelineStep[Dict[str, Any], FinalAgentReport]):
@@ -29,8 +27,8 @@ class ReportGeneratorStep(BasePipelineStep[Dict[str, Any], FinalAgentReport]):
         comp: CompatibilityReport = input_data["compatibility"]
         opt: OptimizationResult = input_data["optimization"]
 
-        system_prompt = (PROMPTS_DIR / "system.txt").read_text(encoding="utf-8")
-        template = (PROMPTS_DIR / "summarize_report.txt").read_text(encoding="utf-8")
+        system_prompt = get_prompt("system.txt")
+        template = get_prompt("summarize_report.txt")
 
         prompt = template.format(
             requirements_summary=reqs.model_dump_json(indent=2),

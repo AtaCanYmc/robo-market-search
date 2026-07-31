@@ -2,12 +2,9 @@
 Step 3: Hardware Compatibility Validator Step
 """
 
-from pathlib import Path
-
 from robo_market_agent.models.agent_models import BOM, CompatibilityReport
 from robo_market_agent.pipeline.base import BasePipelineStep
-
-PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
+from robo_market_agent.prompts import get_prompt
 
 
 class CompatibilityCheckerStep(BasePipelineStep[BOM, CompatibilityReport]):
@@ -16,8 +13,8 @@ class CompatibilityCheckerStep(BasePipelineStep[BOM, CompatibilityReport]):
     """
 
     def execute(self, input_data: BOM) -> CompatibilityReport:
-        system_prompt = (PROMPTS_DIR / "system.txt").read_text(encoding="utf-8")
-        template = (PROMPTS_DIR / "compatibility_check.txt").read_text(encoding="utf-8")
+        system_prompt = get_prompt("system.txt")
+        template = get_prompt("compatibility_check.txt")
         prompt = template.format(bom_json=input_data.model_dump_json(indent=2))
 
         return self.llm.generate_structured(

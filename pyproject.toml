@@ -48,6 +48,9 @@ robo-api = "robo_market_api.app.main:cli_main"
 [tool.setuptools.packages.find]
 include = ["robo_market_search", "robo_market_search.*", "robo_market_service", "robo_market_service.*", "robo_market_agent", "robo_market_agent.*", "robo_market_api", "robo_market_api.*"]
 
+[tool.setuptools.package-data]
+"robo_market_agent" = ["prompts/*.txt", "prompts/*"]
+
 
 [tool.ruff]
 target-version = "py38"

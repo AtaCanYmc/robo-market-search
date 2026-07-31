@@ -2,12 +2,9 @@
 Step 1: Project Requirements Extractor Step
 """
 
-from pathlib import Path
-
 from robo_market_agent.models.agent_models import ProjectRequirements
 from robo_market_agent.pipeline.base import BasePipelineStep
-
-PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
+from robo_market_agent.prompts import get_prompt
 
 
 class ProjectUnderstanderStep(BasePipelineStep[str, ProjectRequirements]):
@@ -16,8 +13,8 @@ class ProjectUnderstanderStep(BasePipelineStep[str, ProjectRequirements]):
     """
 
     def execute(self, input_data: str) -> ProjectRequirements:
-        system_prompt = (PROMPTS_DIR / "system.txt").read_text(encoding="utf-8")
-        template = (PROMPTS_DIR / "understand_project.txt").read_text(encoding="utf-8")
+        system_prompt = get_prompt("system.txt")
+        template = get_prompt("understand_project.txt")
         prompt = template.format(user_input=input_data)
 
         return self.llm.generate_structured(
