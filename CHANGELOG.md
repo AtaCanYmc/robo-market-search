@@ -11,6 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.4.0...v1.5.0) (2026-07-31)
+
+
+### ✨ Features
+
+* **cart:** update default free shipping threshold to 1500 TL ([d0e2972](https://github.com/AtaCanYmc/robo-market-search/commit/d0e2972faad096d53c0fbc8d48d12d0a30d577b0))
+* enhance AgentTab with structured visual results and new response handling ([47941dc](https://github.com/AtaCanYmc/robo-market-search/commit/47941dc3f7abdb77ede0d87d9d5e867547992307))
+* implement prompt loading utilities with safe fallback defaults ([bbc35c1](https://github.com/AtaCanYmc/robo-market-search/commit/bbc35c17c6ef4706e0260ba0fe874ca2d3a8b53a))
+
+
+### 🐛 Bug Fixes
+
+* **deps:** include groq, openai, anthropic, google-generativeai, ollama SDKs ([7d2b368](https://github.com/AtaCanYmc/robo-market-search/commit/7d2b3683e177404d8d9f88fd5cd7fff4382c585a))
+* **docker:** invalidate pip cache and include MANIFEST.in in Docker builds ([e76db13](https://github.com/AtaCanYmc/robo-market-search/commit/e76db13da1438ab9aa87d70ef871f9af5d77078e))
+* **providers:** remove unnecessary blank line in response handling ([f15a513](https://github.com/AtaCanYmc/robo-market-search/commit/f15a513d08f775a79e0d1c18c1244b8437fb21de))
+
+
+### 📚 Documentation
+
+* add enterprise-grade documentation suite (architecture, sdk, cli, mcp, api, providers, adrs) ([9ab83d2](https://github.com/AtaCanYmc/robo-market-search/commit/9ab83d2f0549ff8bb19f90c7dc3d429284ea1192))
+* embed screenshots in readmes and documentation pages ([036cd5a](https://github.com/AtaCanYmc/robo-market-search/commit/036cd5a19bc3827f30d0c64a571351c0fdcd9641))
+* remove outdated web demo section from README ([585a659](https://github.com/AtaCanYmc/robo-market-search/commit/585a6593a9879d54906bf962ddc8a010554dbeb3))
+* remove outdated web demo section from README ([1d79fd1](https://github.com/AtaCanYmc/robo-market-search/commit/1d79fd1a2ac56a73e85295f2a32a407accf792b4))
+
 ## [1.4.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.3.0...v1.4.0) (2026-07-31)
 
 
