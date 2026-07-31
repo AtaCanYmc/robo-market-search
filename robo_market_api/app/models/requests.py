@@ -88,7 +88,7 @@ class OptimizeRequest(BaseModel):
 
 class AgentRequest(BaseModel):
     """
-    AI Agent analysis or BOM generation request.
+    AI Agent analysis or BOM generation request with Bring Your Own API Key (BYOK) support.
     """
 
     prompt: str = Field(
@@ -101,3 +101,18 @@ class AgentRequest(BaseModel):
         default=None, description="Optional project category", json_schema_extra={"example": "IoT / Smart Home"}
     )
     budget: Optional[float] = Field(default=None, description="Target budget in TRY", json_schema_extra={"example": 500.0})
+    api_key: Optional[str] = Field(
+        default=None,
+        description="Bring Your Own API Key (OpenAI, Gemini, Anthropic, DeepSeek, Groq)",
+        json_schema_extra={"example": "sk-proj-..."},
+    )
+    provider: Optional[str] = Field(
+        default=None,
+        description="LLM Provider choice: gemini, openai, anthropic, ollama, deepseek, groq, mock",
+        json_schema_extra={"example": "openai"},
+    )
+    model_name: Optional[str] = Field(
+        default=None,
+        description="Optional model name override (e.g. gpt-4o, gemini-2.0-flash, claude-3-5-sonnet-20241022)",
+        json_schema_extra={"example": "gpt-4o"},
+    )

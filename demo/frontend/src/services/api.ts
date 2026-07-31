@@ -88,12 +88,21 @@ export const api = {
     });
   },
 
-  analyzeAgent: async (prompt: string, project_type?: string): Promise<AgentResponse> => {
+  analyzeAgent: async (
+    prompt: string,
+    project_type?: string,
+    api_key?: string,
+    provider?: string,
+    model_name?: string
+  ): Promise<AgentResponse> => {
     return fetchJSON<AgentResponse>('/agent/analyze', {
       method: 'POST',
       body: JSON.stringify({
         prompt,
         project_type,
+        api_key,
+        provider,
+        model_name,
       }),
     });
   },
