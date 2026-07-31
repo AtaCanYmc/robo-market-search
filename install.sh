@@ -43,7 +43,7 @@ if pipx install "robo-market-search[all]" --force; then
     echo -e "${GREEN}[✔] Successfully installed robo-market-search[all] from PyPI!${NC}"
 else
     echo -e "${YELLOW}[!] PyPI install failed or not updated yet, trying direct GitHub installation...${NC}"
-    pipx install "git+https://github.com/AtaCanYmc/robo-market-search.git#egg=robo-market-search[all]" --force
+    pipx install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git" --force
 fi
 
 echo ""

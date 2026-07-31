@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir "git+https://github.com/AtaCanYmc/robo-market-search.git#egg=robo-market-search[all]"
+RUN pip install --no-cache-dir "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"
 
 COPY main.py ./main.py
 
