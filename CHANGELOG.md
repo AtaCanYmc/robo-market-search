@@ -11,6 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.2.0...v1.3.0) (2026-07-31)
+
+
+### ✨ Features
+
+* add configuration management for API keys in CLI, including set, show, and clear commands ([efefc2e](https://github.com/AtaCanYmc/robo-market-search/commit/efefc2eac54a6ee111b78114641e050b4331c4ce))
+* add DeepSeekProvider and GroqProvider implementations, update README and tests ([9a50c20](https://github.com/AtaCanYmc/robo-market-search/commit/9a50c20282924730ea1449a17220c023a5590538))
+* add initial project structure and core components for robo_market_agent ([b379518](https://github.com/AtaCanYmc/robo-market-search/commit/b3795188ae93b63547046305a7f005b1cc54bdb3))
+* add Vercel serverless function entrypoint and configuration for routing ([4e4fb8a](https://github.com/AtaCanYmc/robo-market-search/commit/4e4fb8a36b6a95884992511e0e03d01efef22705))
+* enhance CLI functionality and improve type casting in providers ([0a50f77](https://github.com/AtaCanYmc/robo-market-search/commit/0a50f771232653adfb0b43633a587c4912ba6f68))
+* enhance type checking in pre-commit configuration and update CI workflow for improved testing ([a56d158](https://github.com/AtaCanYmc/robo-market-search/commit/a56d1589ee73bdc0060d0914323c0e93581cc69e))
+* fix Python path for Vercel Serverless environment and update imports for demo module ([6404276](https://github.com/AtaCanYmc/robo-market-search/commit/64042762c05e2b1dfecf8e3e3119f31610ac1988))
+* fix Python path for Vercel Serverless environment and update imports for demo module ([f4bb2a5](https://github.com/AtaCanYmc/robo-market-search/commit/f4bb2a520db00fee966c14ed615028c1725fd233))
+* fix Python path for Vercel Serverless environment and update imports for demo module ([9c2dbc0](https://github.com/AtaCanYmc/robo-market-search/commit/9c2dbc09b730a6ec0732918b5c86edd5f2db8871))
+* update .gitignore and add initial README files for project structure ([04778b3](https://github.com/AtaCanYmc/robo-market-search/commit/04778b3146b8dd29868048a6a98da61dae774d33))
+* update dependencies to use latest versions and add new packages ([e2b4a5a](https://github.com/AtaCanYmc/robo-market-search/commit/e2b4a5a9f84b7d8ddadec7c8f9fb61b0a9e54fc7))
+* update import alias for application and adjust Vercel configuration for routing ([3f99366](https://github.com/AtaCanYmc/robo-market-search/commit/3f99366c71aeaf7fbb6e8e71d15513d0376fc810))
+
+
+### 🐛 Bug Fixes
+
+* add missing newline at end of requirements.txt ([9b4c82d](https://github.com/AtaCanYmc/robo-market-search/commit/9b4c82d1532e2d643bedf3bc2ff23702674ee4a6))
+* update robo-market-search dependency to remove version constraint ([2f7d7f1](https://github.com/AtaCanYmc/robo-market-search/commit/2f7d7f14853c4d465bf4f1e62b65f583422ff6bf))
+
 ## [1.2.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.1.0...v1.2.0) (2026-07-29)
 
 
