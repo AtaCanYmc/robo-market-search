@@ -1,8 +1,4 @@
 # Demo web sunucusu bağımlılıkları
-# Kullanım: pip install -e .. && pip install -r requirements.txt
-
-# Main library
--e ..
 
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
