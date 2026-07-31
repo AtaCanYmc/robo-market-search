@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md MANIFEST.in ./
 COPY robo_market_search ./robo_market_search
 COPY robo_market_service ./robo_market_service
 COPY robo_market_agent ./robo_market_agent
