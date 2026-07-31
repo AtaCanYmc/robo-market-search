@@ -8,7 +8,7 @@ import json
 import os
 from pathlib import Path
 import sys
-from typing import Dict, Optional
+from typing import Dict, Optional, cast
 
 from rich.console import Console
 from rich.panel import Panel
@@ -41,7 +41,10 @@ def _load_config() -> Dict[str, str]:
     if not CONFIG_FILE.exists():
         return {}
     try:
-        return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return cast("Dict[str, str]", data)
+        return {}
     except Exception:
         return {}
 

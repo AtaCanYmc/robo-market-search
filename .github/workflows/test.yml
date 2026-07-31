@@ -30,16 +30,16 @@ jobs:
           restore-keys: |
             pre-commit-${{ runner.os }}-
 
-      - name: Install pre-commit
+      - name: Install pre-commit & dependencies
         run: pip install pre-commit
 
-      - name: Run pre-commit (ruff lint + ruff format + mypy)
+      - name: Run pre-commit (ruff lint + ruff format + mypy across all layers)
         run: pre-commit run --all-files --show-diff-on-failure
         env:
           SKIP: conventional-pre-commit   # commit-msg hook — CI'da geçersiz
 
   # ──────────────────────────────────────────────────────────────────────────
-  # Multi-version Build & Install Test
+  # Multi-version Build & Test Suite
   # ──────────────────────────────────────────────────────────────────────────
   test:
     name: 🧪 Test (Python ${{ matrix.python-version }})
@@ -48,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false   # Bir versiyon başarısız olsa diğerleri devam etsin
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -66,18 +66,17 @@ jobs:
           restore-keys: |
             pip-${{ runner.os }}-${{ matrix.python-version }}-
 
-      - name: Install package with all optional dependencies
+      - name: Install package with all optional and dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[all]"
+          pip install -e ".[all,dev]"
 
-      - name: Verify import
-        run: python -c "import robo_market_search; print('✅ Import OK')"
-
-      - name: Run tests (if any)
+      - name: Verify package imports across all 3 layers
         run: |
-          if command -v pytest &> /dev/null || pip show pytest &> /dev/null; then
-            pytest --tb=short -q || true
-          else
-            echo "ℹ️  pytest bulunamadı, kurulum testi yeterli."
-          fi
+          python -c "import robo_market_search; print('✅ robo_market_search OK')"
+          python -c "import robo_market_service; print('✅ robo_market_service OK')"
+          python -c "import robo_market_agent; print('✅ robo_market_agent OK')"
+
+      - name: Run pytest suite
+        run: |
+          pytest --tb=short -v

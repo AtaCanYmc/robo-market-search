@@ -52,8 +52,9 @@ repos:
         additional_dependencies:
           - types-beautifulsoup4
           - types-requests
-        # Sadece ana paketi kontrol et; test/örnek dosyaları kapsam dışı
-        files: ^robo_market_search/
+          - pydantic
+        # Tüm modülleri (search, service, agent) tip kontrolüne tabi tut
+        files: ^(robo_market_search|robo_market_service|robo_market_agent)/
         types_or: [python, pyi]
 
   # ── 4. Conventional Commits zorunluluğu ────────────────────────────────
