@@ -6,11 +6,11 @@
   "rewrites": [
     {
       "source": "/api/v1/:path*",
-      "destination": "https://robo-market-search-api.onrender.com/api/v1/:path*"
+      "destination": "https://robo-market-search.onrender.com/api/v1/:path*"
     },
     {
       "source": "/health",
-      "destination": "https://robo-market-search-api.onrender.com/health"
+      "destination": "https://robo-market-search.onrender.com/health"
     },
     {
       "source": "/(.*)",

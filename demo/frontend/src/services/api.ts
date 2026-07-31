@@ -6,7 +6,14 @@ import {
   AgentResponse,
 } from '../types';
 
-const API_BASE = '/api/v1';
+const PRODUCTION_BACKEND = 'https://robo-market-search.onrender.com';
+
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api/v1' : `${PRODUCTION_BACKEND}/api/v1`);
+const HEALTH_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL.replace(/\/api\/v1\/?$/, '')}/health`
+  : import.meta.env.DEV
+  ? '/health'
+  : `${PRODUCTION_BACKEND}/health`;
 
 async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
@@ -28,7 +35,7 @@ async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T>
 
 export const api = {
   checkHealth: async () => {
-    return fetchJSON<{ status: string; version: string }>('/health');
+    return fetchJSON<{ status: string; version: string }>(HEALTH_URL);
   },
 
   search: async (

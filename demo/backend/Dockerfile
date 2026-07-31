@@ -1,3 +1,6 @@
+# Multi-stage Dockerfile for robo-market-search API (Render & Docker deployment)
+# Note: Ensure Docker Build Context or Root Directory is set to repository root "."
+
 FROM python:3.11-slim as builder
 
 WORKDIR /app
@@ -13,7 +16,6 @@ COPY robo_market_search ./robo_market_search
 COPY robo_market_service ./robo_market_service
 COPY robo_market_agent ./robo_market_agent
 COPY robo_market_api ./robo_market_api
-COPY demo/backend ./demo/backend
 
 RUN pip install --no-cache-dir --upgrade pip wheel setuptools
 RUN pip install --no-cache-dir ".[all]"
@@ -36,4 +38,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["python", "demo/backend/main.py"]
+CMD ["robo-api"]
