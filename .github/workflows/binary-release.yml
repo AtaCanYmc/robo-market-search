@@ -1,0 +1,61 @@
+name: 🚀 Build Standalone Executables (PyInstaller)
+
+on:
+  release:
+    types: [published, created]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-binary:
+    name: Build Binary (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset_name: robo-search-linux-x86_64
+          - os: macos-latest
+            asset_name: robo-search-macos-arm64
+          - os: macos-13
+            asset_name: robo-search-macos-x86_64
+          - os: windows-latest
+            asset_name: robo-search-windows-x64.exe
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller
+          python -m pip install -e ".[all]"
+
+      - name: Build Executable with PyInstaller
+        shell: bash
+        run: |
+          pyinstaller --noconfirm --onefile --name "${{ matrix.asset_name }}" \
+            --collect-all robo_market_search \
+            --collect-all robo_market_service \
+            --collect-all robo_market_agent \
+            --hidden-import typer \
+            --hidden-import rich \
+            --hidden-import curl_cffi \
+            robo_market_search/cli/main.py
+
+      - name: Upload Binary to Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release'
+        with:
+          files: dist/${{ matrix.asset_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

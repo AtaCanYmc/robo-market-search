@@ -118,18 +118,54 @@ Model"]
 
 ## Kurulum
 
-Sadece SDK (Kütüphane) özelliklerini kullanmak için:
+`robo-market-search` ihtiyacınıza göre farklı yöntemlerle kolayca kurulabilir:
+
+### 1. 🚀 `pipx` (CLI Araçları İçin Modern Standart - Önerilen)
+Python global ortamını kirletmeden CLI, MCP ve AI Ajan araçlarını izole sanal ortama kurar:
 
 ```bash
-pip install robo-market-search
+pipx install "robo-market-search[all]"
+```
+> Direct GitHub installation: `pipx install git+https://github.com/AtaCanYmc/robo-market-search.git`
+
+---
+
+### 2. 🍺 Homebrew Tap (macOS & Linux)
+macOS veya Linux üzerinde Homebrew kullanıyorsanız tek komutla kurabilirsiniz:
+
+```bash
+brew tap atacanymc/robo-market-search
+brew install robo-market-search
 ```
 
-CLI ve MCP özelliklerini de içeren **tüm ekosistemi** kurmak için:
+---
+
+### 3. ⚡ Tek Tıkla Kurulum Scripti (cURL / Shell)
+Otomatik bağımlılık kontrolü ve izole ortam kurulumu için terminalinizde çalıştırın:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash
+```
+
+---
+
+### 4. 💾 Bağımsız Executable Binary (Python Kurulumu Gerektirmez)
+Bilgisayarınızda Python kurulu değilse, [GitHub Releases](https://github.com/AtaCanYmc/robo-market-search/releases) sayfasından işletim sisteminize uygun derlenmiş dosyayı (`.exe` veya executable) indirip doğrudan çalıştırabilirsiniz.
+
+---
+
+### 5. 📦 Python SDK & Geliştirici Kurulumu (`pip`)
+Projenizde kütüphane/SDK olarak import edip kullanmak için:
+
+```bash
+# Sadece Core SDK (kazıyıcılar & birleştirilmiş arama)
+pip install robo-market-search
+
+# Tüm ekosistem (CLI + MCP + AI Agent)
 pip install "robo-market-search[all]"
 ```
-*(Sadece CLI için `[cli]`, sadece MCP için `[mcp]` seçeneklerini de kullanabilirsiniz.)*
+*(Sadece CLI için `[cli]`, sadece MCP için `[mcp]`, ajan için `[agent]` opsiyonlarını kullanabilirsiniz.)*
+
 
 ## Komut Satırı Arayüzü (CLI) Kullanımı
 

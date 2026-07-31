@@ -1,0 +1,11 @@
+# Aider Configuration Example
+# Copy this file to .aider.conf.yml or ~/.aider.conf.yml to customize Aider settings.
+
+# Default AI Model (e.g. Ollama local model, Anthropic Claude, OpenAI GPT-4o, etc.)
+model: ollama_chat/qwen2.5-coder
+
+# Auto-commits (set to false if you prefer manual commits)
+# auto-commits: false
+
+# Dark/Light mode theme
+# dark-mode: true
