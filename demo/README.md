@@ -1,142 +1,40 @@
-# Robo Market Search — Web Demo
+# Robo Market Search — Demo & Applications
 
-Tek parça (monolithic) FastAPI + Jinja2 + HTMX web demo uygulaması.
-Tailwind CSS CDN üzerinden dahil edilmiştir; derleme adımı yoktur.
+Bu dizin, `robo-market-search` ekosisteminin demo uygulamalarını barındırır. İki bağımsız katmana ayrılmıştır:
 
-![Web Demo Ekran Görüntüsü](../.github/screenshots/web-demo-example.png)
-
-## Dosya Ağacı
-
-```
-demo/
-├── main.py                      # FastAPI uygulaması ve tüm endpoint'ler
-├── requirements.txt             # Demo bağımlılıkları
-├── README.md                    # Bu dosya
-└── templates/
-    ├── base.html                # Ortak layout (nav, footer, CDN linkleri)
-    ├── index.html               # Ana arama sayfası (form + HTMX hookları)
-    └── partials/
-        ├── results.html         # HTMX partial — ürün kartları
-        └── error.html           # HTMX partial — hata mesajı
-```
-
-## Mimari Özeti
-
-| Katman       | Teknoloji        | Açıklama                                         |
-|--------------|------------------|--------------------------------------------------|
-| Backend      | FastAPI          | Async endpoint'ler, thread pool arama            |
-| Templating   | Jinja2           | Jinja2Templates via FastAPI                      |
-| Stil         | Tailwind CSS v3  | CDN üzerinden, derleme yok                       |
-| Dinamizm     | HTMX 1.9         | Form submit → partial HTML swap, indicator       |
-| Fontlar      | Google Fonts     | Inter (400–800)                                  |
-| Arama motoru | UnifiedSearchClient | Paralel scraping, ThreadPoolExecutor          |
-
-## Kurulum ve Çalıştırma
-
-### 1. Sanal ortam oluştur
-
-```bash
-cd demo/
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-```
-
-### 2. Ana paketi yükle (geliştirme modu)
-
-```bash
-pip install -e ..
-```
-
-### 3. Demo bağımlılıklarını yükle
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Geliştirme sunucusunu başlat
-
-```bash
-uvicorn main:app --reload --port 8000
-```
-
-Tarayıcıda aç: **http://localhost:8000**
-
-### 5. API dokümantasyonu (Swagger UI)
-
-**http://localhost:8000/api/docs**
+- **`frontend/`**: FastAPI + Jinja2 + HTMX tabanlı Web Demo Arayüzü (Port `3000`).
+- **`backend/`**: Production-ready `robo_market_api` REST Sunucusu (Port `8000`).
 
 ---
 
-## Üretim (Production) için
+## 🚀 Çalıştırma
 
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
-```
+### Yöntem 1: Docker Compose (Önerilen)
 
-## Docker ile Çalıştırma
-
-### 1. Docker Build & Run (Manuel)
-
-```bash
-# Proje kök dizininde imajı oluşturun:
-docker build -t robo-market-search-demo -f demo/Dockerfile .
-
-# Konteyneri başlatın:
-docker run -d -p 8000:8000 --name robo-demo robo-market-search-demo
-```
-
-### 2. Docker Compose ile (Kolay Yöntem)
+Tüm sistemi (Frontend + Backend) tek bir komutla ayağa kaldırabilirsiniz:
 
 ```bash
 cd demo/
 docker compose up -d
 ```
 
-Tarayıcıda açın: **http://localhost:8000**
-
-## Vercel ile Canlıya Alma (Deployment)
-
-### 1. Vercel CLI ile
-```bash
-# Proje kök dizininde veya demo/ klasöründe:
-npm i -g vercel
-vercel
-```
-
-### 2. GitHub Entegrasyonu ile
-1. Vercel Dashboard'da **New Project** oluşturun.
-2. `AtaCanYmc/robo-market-search` GitHub deposunu seçin.
-3. Root Directory olarak `demo` klasörünü ayarlayın.
-4. **Deploy** butonuna basın. Vercel `demo/vercel.json` yapılandırmasını otomatik algılayacaktır.
-
-## Özellikler
-
-- **Gerçek zamanlı arama** — Robotistan, Robolink, Robo90, Direnç.net
-- **Paralel scraping** — `ThreadPoolExecutor` üzerinde asenkron çalışır
-- **Skeleton loading** — HTMX indicator + Tailwind `animate-pulse` ile
-- **Staggered animasyon** — Kartlar birer birer belirerek girer
-- **Hızlı arama chips** — Örnek sorgular için tek tık
-- **Keyboard shortcut** — `/` tuşu arama kutusuna odaklanır
-- **Responsive** — Mobile-first, 1–3 sütun grid
-- **Fiyat özeti** — En ucuz / en pahalı / fark gösterimi
+- **Web Demo Arayüzü**: [http://localhost:3000](http://localhost:3000)
+- **REST API Sunucusu & Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 📊 Analitik ve Takip Stratejileri
+### Yöntem 2: Bağımsız Çalıştırma (Lokal)
 
-Web demoyu canlıya aldığınızda kullanıcı trafiğini ve aratılan bileşenleri izlemek için 3 farklı yaklaşım uygulayabilirsiniz:
+#### 🔹 Backend REST API'yi Başlatma
+```bash
+cd demo/backend/
+python main.py
+```
+*(Sunucu http://localhost:8000 üzerinde çalışacaktır)*
 
-### 1. Platform İçi Analitik (Vercel Web Analytics)
-- **Kullanım:** Vercel Dashboard -> Proje Ayarları -> *Analytics* sekmesini aktif edin.
-- **Avantaj:** Sıfır kod değişikliği ile sayfa görüntülenmeleri, cihaz ve ülke istatistikleri.
-
-### 2. Frontend Takip (Umami / Plausible / GA4)
-- **Kullanım:** `demo/templates/base.html` dosyasındaki `<head>` etiketleri arasına takip snippet'ını ekleyin.
-- **Avantaj:** Çerezsiz (cookie-free) ve KVKK/GDPR uyumlu kullanıcı davranışı analizi.
-
-### 3. Backend Arama Loglama (`logport` Telegram Entegrasyonu)
-- **Kullanım:** `demo/logport.py` içerisinden `POST /search` arama sorguları anlık olarak Telegram kanalına/grubuna iletilir.
-- **Ortam Değişkenleri:**
-  - `LOGPORT_TELEGRAM_TOKEN` (veya `TELEGRAM_BOT_TOKEN`)
-  - `LOGPORT_TELEGRAM_CHAT_ID`
-- **Avantaj:** Geliştiricilerin ve maker'ların en çok hangi donanımları (ESP32, Arduino, sensörler) arattığını Telegram üzerinden canlı takip etme imkanı.
+#### 🔹 Frontend Web UI'ı Başlatma
+```bash
+cd demo/frontend/
+uvicorn main:app --port 3000 --reload
+```
+*(Arayüz http://localhost:3000 üzerinde çalışacaktır)*

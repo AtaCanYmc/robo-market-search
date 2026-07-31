@@ -1,18 +1,41 @@
 version: '3.8'
 
 services:
-  web-demo:
+  backend:
     build:
       context: ..
-      dockerfile: demo/Dockerfile
-    container_name: robo-market-search-demo
+      dockerfile: demo/backend/Dockerfile
+    container_name: robo-market-api-backend
     ports:
       - "8000:8000"
     environment:
-      - PYTHONUNBUFFERED=1
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=*
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: demo/frontend/Dockerfile
+    container_name: robo-market-demo-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
       interval: 30s
       timeout: 5s
       retries: 3

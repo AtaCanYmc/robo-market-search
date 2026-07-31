@@ -147,3 +147,9 @@ token.txt
 tmp/
 temp/
 .aider*
+
+# Node.js / Frontend
+node_modules/
+dist/
+demo/frontend/node_modules/
+demo/frontend/dist/
