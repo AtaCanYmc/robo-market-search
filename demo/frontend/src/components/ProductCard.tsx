@@ -1,5 +1,5 @@
-import React from 'react';
-import { ExternalLink, Check, X, ShoppingBag } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, Check, X, ShoppingBag, Cpu } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -7,7 +7,38 @@ interface ProductCardProps {
   onAddToCart?: (product: Product) => void;
 }
 
+function normalizeImageUrl(url: string | undefined, store: string): string | null {
+  if (!url || !url.trim()) return null;
+  let trimmed = url.trim();
+
+  if (trimmed.startsWith('//')) {
+    return `https:${trimmed}`;
+  }
+
+  if (trimmed.startsWith('http://')) {
+    return trimmed.replace('http://', 'https://');
+  }
+
+  if (trimmed.startsWith('/')) {
+    const s = (store || '').toLowerCase();
+    const domain =
+      s === 'robotistan'
+        ? 'https://www.robotistan.com'
+        : s === 'robolink'
+        ? 'https://www.robolinkmarket.com'
+        : s === 'robo90'
+        ? 'https://www.robo90.com'
+        : s === 'direncnet'
+        ? 'https://www.direnc.net'
+        : '';
+    return domain ? `${domain}${trimmed}` : trimmed;
+  }
+
+  return trimmed;
+}
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+  const [imageError, setImageError] = useState(false);
   const storeNormalized = (product.store || '').toLowerCase();
 
   const storeBadgeColors: Record<string, string> = {
@@ -31,6 +62,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
       ? 'Direnç.net'
       : product.store;
 
+  const rawImage = product.image_url;
+  const imageUrl = normalizeImageUrl(rawImage, product.store);
+
   return (
     <div className="group bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-4 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-cyan-950/20">
       <div>
@@ -50,19 +84,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
           )}
         </div>
 
-        {/* Product Image Fallback or Display */}
-        {product.image_url ? (
-          <div className="w-full h-36 mb-3 rounded-xl overflow-hidden bg-slate-950/60 flex items-center justify-center p-2 border border-slate-850">
+        {/* Product Image Container */}
+        <div className="w-full h-36 mb-3 rounded-xl overflow-hidden bg-slate-950/70 flex items-center justify-center p-2 border border-slate-800/80 relative">
+          {imageUrl && !imageError ? (
             <img
-              src={product.image_url}
+              src={imageUrl}
               alt={product.title}
+              loading="lazy"
+              referrerPolicy="no-referrer"
               className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-              onError={(e) => {
-                (e.target as HTMLElement).style.display = 'none';
-              }}
+              onError={() => setImageError(true)}
             />
-          </div>
-        ) : null}
+          ) : (
+            <div className="flex flex-col items-center justify-center text-slate-600 gap-1 select-none">
+              <Cpu className="w-8 h-8 text-slate-700 group-hover:text-cyan-500/50 transition-colors" />
+              <span className="text-[10px] font-medium text-slate-600">Görsel Bulunamadı</span>
+            </div>
+          )}
+        </div>
 
         {/* Product Title */}
         <h3 className="text-sm font-semibold text-slate-100 group-hover:text-cyan-400 transition-colors line-clamp-2 mb-2 leading-snug">
