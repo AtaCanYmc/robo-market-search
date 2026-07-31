@@ -12,32 +12,44 @@
 </div>
 
 <br/>
-Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python istemci kütüphanesi.
+Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python kütüphanesi ve ekosistemi.
 
-Ayrıca yerleşik **CLI (Komut Satırı)** aracı ve **MCP (Model Context Protocol)** sunucusu özelliklerine sahiptir.
+Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context Protocol)** sunucusu, **Yapay Zeka Donanım Ajanı (BYOK destekli)** ve **Vite + React Web Önyüzü** içerir.
 
 ## Özellikler
 - **Unified Search (Birleştirilmiş Arama)**: 4 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
 - **Sepet Optimizasyonu & Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
-- **Standart Veri Tipi**: Tüm sonuçlar, standart `Product` objesi olarak döner.
-- **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek (regex ile ana sayfalardan kazıyarak) kesintisiz çalışır.
+- **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) otonom donanım analizi ve BOM listesi çıkarma.
+- **Vite + React + Tailwind SPA Önyüz**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV/JSON/Markdown/Clipboard** formatlarında tek tıkla dışa aktarma.
+- **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek kesintisiz çalışır.
 - **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
-- **LLM/MCP Entegrasyonu**: Claude vb. LLM asistanlarına, pro## 4 Katmanlı Mimari (4-Layered Architecture)
+- **LLM/MCP Entegrasyonu**: Claude Desktop, Antigravity ve VS Code Cline/RooCode asistanlarına canlı mağaza fiyat sorgulama yeteneği.
+
+---
+
+## 4 Katmanlı Mimari (4-Layered Architecture)
 
 Proje tam bağımsız mantıksal katmanlardan oluşur:
 
 ```
                             ┌───────────────────────────┐
+                            │      Applications / UI    │
+                            │ (Vite Web UI, CLI, Bot,   │
+                            │  MCP Server, Mobile Apps) │
+                            └─────────────┬─────────────┘
+                                          │
+                                          ▼
+                            ┌───────────────────────────┐
                             │      robo_market_api      │
                             │ (REST API Layer: FastAPI, │
-                            │  OpenAPI, Uvicorn, CORS)  │
+                            │  OpenAPI, BYOK Headers)   │
                             └─────────────┬─────────────┘
                                           │
                                           ▼
                             ┌───────────────────────────┐
                             │    robo_market_agent      │
                             │ (AI Layer: Requirements,  │
-                            │  BOM, Compatibility, Cart)│
+                            │  BOM, BYOK Providers)     │
                             └─────────────┬─────────────┘
                                           │
                                           ▼
@@ -55,28 +67,32 @@ Proje tam bağımsız mantıksal katmanlardan oluşur:
                             └───────────────────────────┘
 ```
 
-1. **`robo_market_api`**: Üretim ortamına hazır HTTP REST API katmanı. FastAPI, Pydantic v2, Swagger UI (`/docs`), ReDoc (`/redoc`) ve Docker desteği sunar.
-2. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları üzerinden 8 adımlı boru hattı çalıştırır.
+1. **`robo_market_api`**: Üretim ortamına hazır HTTP REST API katmanı. FastAPI, Pydantic v2, Swagger UI (`/docs`), ReDoc (`/redoc`) ve Bring Your Own API Key (BYOK) desteği sunar.
+2. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama, Mock) üzerinden 7 adımlı boru hattı çalıştırır.
 3. **`robo_market_service`**: Arama servis katmanı. Önbellek, eşanlamlı terim açılımı (synonyms) ve sıralama mantığı sunar.
-4. **`robo_market_search`**: Temel arama kütüphanesi. Sıfır HTTP/FastAPI bağımlılığına sahip saf Python SDK.
- terim eşanlamlı açılımı (synonym expansion), ürün tekilleştirme (deduplication) ve skorlama sıralaması sunar.
-3. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları (OpenAI, Anthropic, Gemini, Ollama, Mock) üzerinden 8 adımlı boru hattı (pipeline) çalıştırır:
-   - Project Understanding -> Requirement Extraction -> BOM Generation -> Compatibility Check -> Component Search -> Product Normalization -> Cart Optimization -> Final Markdown Report
+4. **`robo_market_search`**: Temel arama kütüphanesi. Sıfır HTTP/FastAPI/AI bağımlılığına sahip saf Python SDK.
 
+---
 
 ## Ekosistem Mimarisi
 
 ```mermaid
 graph TB
-    subgraph Clients["🖥️  İstemciler"]
+    subgraph Clients["🖥️ İstemciler & Uygulamalar"]
         direction LR
+        WEB["🌐 Vite Web UI<br/><code>demo/frontend</code>"]
         PY["🐍 Python SDK"]
-        CLI["⌨️  CLI<br/><code>robo-search</code>"]
+        CLI["⌨️ CLI<br/><code>robo-search</code>"]
         MCP["🤖 MCP Sunucusu<br/><code>robo-mcp</code>"]
         BOT["💬 Telegram Bot<br/><code>robo-bot</code>"]
     end
 
-    subgraph Core["⚙️  Çekirdek Kütüphane"]
+    subgraph API["🚀 REST API & AI Ajanı"]
+        REST["robo_market_api<br/><code>FastAPI</code>"]
+        AGENT["robo_market_agent<br/><code>BYOK LLM Providers</code>"]
+    end
+
+    subgraph Core["⚙️ Çekirdek Arama Kütüphanesi"]
         UC["UnifiedSearchClient"]
         subgraph Scrapers["Market İstemcileri (Paralel Thread'ler)"]
             direction LR
@@ -85,10 +101,8 @@ graph TB
             R3["Robo90Client"]
             R4["DirencnetClient"]
         end
-        TK["🔑 Dinamik Token
-Yenileyici"]
-        MD["📦 Product
-Model"]
+        TK["🔑 Dinamik Token Yenileyici"]
+        MD["📦 Product Model"]
     end
 
     subgraph Markets["🛒 Türkiye Elektronik Pazarları"]
@@ -99,10 +113,14 @@ Model"]
         M4["direnc.net"]
     end
 
+    WEB --> REST
     PY  --> UC
     CLI --> UC
     MCP --> UC
     BOT --> UC
+
+    REST --> AGENT
+    AGENT --> UC
 
     UC --> R1 & R2 & R3 & R4
     R1 <-.->|token yenileme| TK
@@ -116,13 +134,16 @@ Model"]
     R4 -->|HTTP / scrape| M4
 
     R1 & R2 & R3 & R4 --> MD
-    MD -->|"ucuzdan pahalıya sıralı\nProduct listesi"| UC
+    MD -->|"ucuzdan pahalıya sıralı Product listesi"| UC
 
-    style Clients  fill:#1e293b,stroke:#38bdf8,color:#e2e8f0
-    style Core     fill:#0f172a,stroke:#818cf8,color:#e2e8f0
-    style Markets  fill:#1e293b,stroke:#34d399,color:#e2e8f0
+    style Clients fill:#1e293b,stroke:#38bdf8,color:#e2e8f0
+    style API     fill:#1e1b4b,stroke:#818cf8,color:#e2e8f0
+    style Core    fill:#0f172a,stroke:#6366f1,color:#e2e8f0
+    style Markets fill:#1e293b,stroke:#34d399,color:#e2e8f0
     style Scrapers fill:#0f172a,stroke:#818cf8,color:#c7d2fe
 ```
+
+---
 
 ## Kurulum
 
@@ -134,7 +155,7 @@ Python global ortamını kirletmeden CLI, MCP ve AI Ajan araçlarını izole san
 ```bash
 pipx install "robo-market-search[all]"
 ```
-> Direct GitHub installation: `pipx install git+https://github.com/AtaCanYmc/robo-market-search.git`
+> Direct GitHub installation: `pipx install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"`
 
 ---
 
@@ -169,28 +190,40 @@ Projenizde kütüphane/SDK olarak import edip kullanmak için:
 # Sadece Core SDK (kazıyıcılar & birleştirilmiş arama)
 pip install robo-market-search
 
-# Tüm ekosistem (CLI + MCP + AI Agent)
+# Tüm ekosistem (REST API + CLI + MCP + AI Agent)
 pip install "robo-market-search[all]"
 ```
-*(Sadece CLI için `[cli]`, sadece MCP için `[mcp]`, ajan için `[agent]` opsiyonlarını kullanabilirsiniz.)*
 
+---
+
+## Web Demo Arayüzü & Özellikleri
+
+Projenin canlı ön izlemesini `demo/frontend` dizinindeki Vite + React + TypeScript + Tailwind CSS Single Page Application (SPA) ile deneyimleyebilirsiniz.
+
+- **Canlı Önyüz**: [http://localhost:3000](http://localhost:3000)
+- **Canlı REST API**: [https://robo-market-search.onrender.com](https://robo-market-search.onrender.com)
+
+### Web Arayüz Özellikleri:
+- **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
+- **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
+- **Sepet Optimizasyonu**: Mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz etme.
+- **BYOK Yapay Zeka Ajanı**: Kendi OpenAI, Gemini, Claude veya Ollama API anahtarınızla donanım analizi yapma.
+- **Sonuçları İndirme (Export)**: Arama sonuçlarını **CSV**, **JSON**, **Markdown** formatlarında indirme veya **Panoya Kopyalama**.
+
+---
 
 ## Komut Satırı Arayüzü (CLI) Kullanımı
 
-Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz. CLI aracı `typer` ve `rich` kullanılarak geliştirilmiştir ve sonuçları terminalinizde şık, renkli bir tablo formatında sunar.
-
-![CLI Örnek Çıktı](.github/screenshots/cli_example.png)
-
-### Örnek Komutlar:
+Uygulamayı `[cli]` veya `[all]` etiketiyle kurduktan sonra terminalden anında arama yapabilirsiniz:
 
 ```bash
 # Temel arama (Tüm marketleri tarar, en ucuzdan pahalıya sıralar)
 robo-search "ESP32-WROOM"
 
-# Limit belirterek arama (Market başına maksimum 3 ürün getirir, ekran kirliliğini önler)
+# Limit belirterek arama
 robo-search "Arduino Uno" --limit 3
 
-# Fiyat sıralamasını devreden çıkararak ham sonuçları listeleme
+# Fiyat sıralamasını devreden çıkarma
 robo-search "PLA Filament" --no-sort
 ```
 
@@ -202,9 +235,8 @@ Production-ready FastAPI REST API katmanı ile `robo-market-search` özellikleri
 
 ### 🚀 Çalıştırma
 
-#### 1. Yerel Olarak Sunucuyu Başlatma
 ```bash
-# pip install "robo-market-search[api]" veya [all]
+# REST API başlatma
 robo-api
 ```
 veya doğrudan Uvicorn ile:
@@ -212,14 +244,8 @@ veya doğrudan Uvicorn ile:
 uvicorn robo_market_api.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-#### 2. Docker & Docker Compose ile Çalıştırma
-```bash
-docker compose up -d
-```
-
 ### 📖 API Dokümantasyonu (Swagger & ReDoc)
 
-Sunucu çalışırken etkileşimli dokümantasyon sayfalarına erişebilirsiniz:
 - **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 - **OpenAPI JSON**: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)

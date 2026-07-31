@@ -1,6 +1,16 @@
-# `robo_market_agent` — AI Agent Layer & CLI Tool
+# `robo_market_agent` — AI Agent Layer & Bring Your Own API Key (BYOK)
 
 `robo_market_agent`, projenin **Yapay Zeka ve LLM Orkestrasyon Katmanıdır**. Kullanıcının serbest metin formatındaki donanım projesi isteklerini anlar, Malzeme Listesi (BOM) oluşturur, uyumluluk kontrollerini yapar, `robo_market_service` üzerinden ürünleri aratır ve alışveriş sepetini optimize eder.
+
+---
+
+## 🔑 Bring Your Own API Key (BYOK) Desteği
+
+Ajan hem CLI hem de REST API katmanında **Bring Your Own API Key (BYOK)** mimarisini destekler. Kullanıcılar kendi API anahtarlarını istekle birlikte gönderebilir:
+
+- **HTTP Başlıkları (Headers)**: `X-API-Key`, `X-OpenAI-API-Key`, `X-Gemini-API-Key`, `X-Anthropic-API-Key`, `X-Provider`
+- **İstek Gövdesi (Request Body)**: `{ "prompt": "...", "api_key": "sk-...", "provider": "openai" }`
+- **Yerel Hafıza**: `~/.config/robo-market-agent/config.json` veya Web UI `localStorage`
 
 ---
 
@@ -9,8 +19,6 @@
 `robo_market_agent` katmanı kendi başına terminalden çalıştırılabilen `robo-agent` komut satırı aracına sahiptir.
 
 ### 🔑 API Key'leri Hafızaya Kaydetme (Bir kere kaydet, her zaman kullan)
-
-API anahtarınızı her komut çalıştırırken tekrar yazmamak için bir defaya mahsus hafızaya (`~/.config/robo-market-agent/config.json`) kaydedebilir veya varsayılan LLM sağlayıcısı belirleyebilirsiniz:
 
 ```bash
 # DeepSeek API Key'i kaydetme ve varsayılan yapma
@@ -32,7 +40,7 @@ robo-agent config clear
 ### Proje Analizi Çalıştırma:
 
 ```bash
-# Kayıtlı varsayılan sağlayıcı ile doğrudan çalıştırma (API Key yazmaya gerek kalmaz)
+# Kayıtlı varsayılan sağlayıcı ile doğrudan çalıştırma
 robo-agent "WiFi üzerinden 4 valfli otomatik sulama sistemi"
 
 # Farklı bir kayıtlı sağlayıcı seçerek çalıştırma
@@ -44,7 +52,7 @@ robo-agent "Bluetooth robot araba" --provider mock
 
 ---
 
-## 8 Adımlı Boru Hattı (Pipeline Workflow)
+## 7 Adımlı Boru Hattı (Pipeline Workflow)
 
 Agent aşağıdaki adımları sırasıyla ve bağımsız sınıflar (`BasePipelineStep`) halinde çalıştırır:
 
@@ -81,8 +89,8 @@ Agent hiçbir LLM üreticisine doğrudan bağımlı değildir. Tüm entegrasyon 
 
 - **`OpenAIProvider`**: GPT-4o, GPT-4o-mini entegrasyonu.
 - **`AnthropicProvider`**: Claude 3.5 Sonnet entegrasyonu.
-- **`GeminiProvider`**: Gemini 2.5 Flash entegrasyonu.
-- **`GroqProvider`**: Llama 3.3 70B, Mixtral ultra hızlı Groq Cloud entegrasyonu.
-- **`DeepSeekProvider`**: DeepSeek-V3 ve DeepSeek-R1 (Chat & Reasoner) entegrasyonu.
-- **`OllamaProvider`**: Yerel bilgisayarınızda çalışan Llama 3 / Mistral entegrasyonu.
+- **`GeminiProvider`**: Gemini 2.0 Flash entegrasyonu.
+- **`GroqProvider`**: Llama 3.3 70B ultra hızlı Groq Cloud entegrasyonu.
+- **`DeepSeekProvider`**: DeepSeek-V3 ve DeepSeek-R1 entegrasyonu.
+- **`OllamaProvider`**: Yerel bilgisayarınızda çalışan Llama 3 / Qwen2.5-Coder entegrasyonu.
 - **`MockLLMProvider`**: İnternet/API key gerektirmeyen çevrimdışı birim testleri ve mock çalıştırma.
