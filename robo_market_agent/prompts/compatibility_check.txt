@@ -1,0 +1,12 @@
+Review the following Bill of Materials (BOM) for electrical, mechanical, voltage compatibility, missing power components, missing motor drivers, or pinout conflicts.
+
+Bill of Materials:
+{bom_json}
+
+Identify issues such as:
+1. Voltage mismatches (e.g. 5V logic connected directly to 12V relays without transistors/optocouplers).
+2. Missing power supplies or voltage regulators (e.g. 12V valve present but only 5V supply listed).
+3. Duplicate or redundant development boards.
+4. Impossible combinations or missing connectors/cables.
+
+Respond ONLY with a JSON object conforming to the CompatibilityReport schema.

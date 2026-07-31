@@ -1,0 +1,15 @@
+Summarize the project shopping recommendation report for the user into a clear Markdown document.
+
+Project Requirements:
+{requirements_summary}
+
+BOM Components:
+{bom_summary}
+
+Compatibility Status:
+{compatibility_summary}
+
+Cart Optimization Results:
+{optimization_summary}
+
+Format the summary nicely with headers, bullet points, price breakdowns per store, and direct links to products.
