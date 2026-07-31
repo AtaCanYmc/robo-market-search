@@ -1,6 +1,32 @@
-import React, { useState } from 'react';
-import { ShoppingBag, Plus, Trash2, Calculator, CheckCircle2, Truck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  ShoppingBag,
+  Plus,
+  Trash2,
+  Calculator,
+  CheckCircle2,
+  Truck,
+  Sliders,
+  RotateCcw,
+  Check,
+} from 'lucide-react';
 import { api } from '../services/api';
+
+interface Thresholds {
+  robotistan: number;
+  robolink: number;
+  robo90: number;
+  direncnet: number;
+  shippingFee: number;
+}
+
+const DEFAULT_THRESHOLDS: Thresholds = {
+  robotistan: 500,
+  robolink: 400,
+  robo90: 450,
+  direncnet: 600,
+  shippingFee: 60,
+};
 
 export const CartOptimizerTab: React.FC = () => {
   const [items, setItems] = useState<string[]>([
@@ -11,6 +37,31 @@ export const CartOptimizerTab: React.FC = () => {
   const [newItem, setNewItem] = useState('');
   const [loading, setLoading] = useState(false);
   const [optimizationResult, setOptimizationResult] = useState<any | null>(null);
+
+  // User-configurable shipping thresholds
+  const [thresholds, setThresholds] = useState<Thresholds>(DEFAULT_THRESHOLDS);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('ROBO_SHIPPING_THRESHOLDS');
+    if (saved) {
+      try {
+        setThresholds(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const saveThresholds = (newT: Thresholds) => {
+    setThresholds(newT);
+    localStorage.setItem('ROBO_SHIPPING_THRESHOLDS', JSON.stringify(newT));
+  };
+
+  const resetThresholds = () => {
+    saveThresholds(DEFAULT_THRESHOLDS);
+  };
 
   const addItem = () => {
     if (newItem.trim() && !items.includes(newItem.trim())) {
@@ -38,6 +89,13 @@ export const CartOptimizerTab: React.FC = () => {
     }
   };
 
+  const stores = [
+    { id: 'robotistan', name: 'Robotistan', color: 'text-blue-400 border-blue-500/30' },
+    { id: 'robolink', name: 'Robolink', color: 'text-orange-400 border-orange-500/30' },
+    { id: 'robo90', name: 'Robo90', color: 'text-purple-400 border-purple-500/30' },
+    { id: 'direncnet', name: 'Direnç.net', color: 'text-emerald-400 border-emerald-500/30' },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="text-center pt-4 pb-2">
@@ -48,8 +106,102 @@ export const CartOptimizerTab: React.FC = () => {
           Sepet <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Optimizasyonu</span>
         </h1>
         <p className="text-slate-400 max-w-lg mx-auto text-xs sm:text-sm mt-2">
-          Gerekli parçalarınız için mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz ederek en ucuz sepet kombinasyonunu hesaplar.
+          Gerekli parçalarınız için özel kargo sınırlarınızı ayarlayın ve en ucuz sepet kombinasyonunu hesaplayın.
         </p>
+      </div>
+
+      {/* Customizable Free Shipping Thresholds Accordion */}
+      <div className="max-w-3xl mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Truck className="w-4 h-4 text-emerald-400" />
+            <h3 className="font-bold text-slate-200 text-xs sm:text-sm">
+              Mağaza Ücretsiz Kargo Limitleri & Ücret Ayarları
+            </h3>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={resetThresholds}
+              className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-850 transition-all"
+              title="Varsayılan Sınırları Yükle"
+            >
+              <RotateCcw className="w-3 h-3" /> Sıfırla
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowSettings(!showSettings)}
+              className="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 transition-all"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              {showSettings ? 'Ayarları Gizle' : 'Limitleri Düzenle'}
+            </button>
+          </div>
+        </div>
+
+        {/* Editable Inputs */}
+        {showSettings && (
+          <div className="pt-3 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+            {stores.map((s) => (
+              <div key={s.id} className="space-y-1 bg-slate-950/70 p-2.5 rounded-xl border border-slate-850">
+                <label className="text-[11px] font-semibold text-slate-300 block truncate">
+                  {s.name} Ücretsiz Kargo:
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={thresholds[s.id as keyof Thresholds]}
+                    onChange={(e) =>
+                      saveThresholds({
+                        ...thresholds,
+                        [s.id]: Math.max(0, parseFloat(e.target.value) || 0),
+                      })
+                    }
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-100 text-xs font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">TL</span>
+                </div>
+              </div>
+            ))}
+
+            <div className="space-y-1 bg-slate-950/70 p-2.5 rounded-xl border border-slate-850">
+              <label className="text-[11px] font-semibold text-slate-300 block truncate">
+                Sabit Kargo Ücreti:
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={thresholds.shippingFee}
+                  onChange={(e) =>
+                    saveThresholds({
+                      ...thresholds,
+                      shippingFee: Math.max(0, parseFloat(e.target.value) || 0),
+                    })
+                  }
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-100 text-xs font-mono focus:outline-none focus:border-emerald-500"
+                />
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">TL</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Current Active Thresholds Pills */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="text-[11px] text-slate-400">Aktif Limitler:</span>
+          {stores.map((s) => (
+            <span
+              key={s.id}
+              className={`text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-950 border ${s.color}`}
+            >
+              {s.name}: {thresholds[s.id as keyof Thresholds]} TL
+            </span>
+          ))}
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-950 border text-slate-300 border-slate-700">
+            Kargo: {thresholds.shippingFee} TL
+          </span>
+        </div>
       </div>
 
       <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -123,10 +275,12 @@ export const CartOptimizerTab: React.FC = () => {
               </div>
 
               <div className="space-y-2 text-slate-300">
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-850">
-                  <div className="font-semibold text-slate-200 mb-1">Mağaza Bölüşüm Stratejisi:</div>
+                <div className="p-3 rounded-xl bg-slate-950 border border-slate-850 space-y-2">
+                  <div className="font-semibold text-slate-200 text-xs flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" /> Kargo Sınırları Analizi:
+                  </div>
                   <p className="text-slate-400 leading-relaxed text-[11px]">
-                    Ürünler Robotistan ve Robolink mağazaları arasında bölünerek ücretsiz kargo limitlerini aşacak şekilde gruplandırıldı.
+                    Belirlediğiniz kargo limitlerine ({thresholds.robotistan} TL Robotistan, {thresholds.robolink} TL Robolink, {thresholds.robo90} TL Robo90, {thresholds.direncnet} TL Direnç.net) göre sepetiniz bölümlendirildi.
                   </p>
                 </div>
               </div>
