@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Search, SlidersHorizontal, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import {
+  Search,
+  SlidersHorizontal,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  Download,
+  FileSpreadsheet,
+  FileText,
+  Copy,
+  Check,
+  ChevronDown,
+} from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { Product } from '../types';
 import { api } from '../services/api';
@@ -20,6 +32,8 @@ export const SearchTab: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const sampleQueries = ['ESP32-WROOM', 'Arduino Uno', 'Relay 5V', 'OLED 0.96', 'L298N Motor Sürücü'];
 
@@ -74,6 +88,74 @@ export const SearchTab: React.FC = () => {
   } else {
     filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
   }
+
+  // Export handlers
+  const exportAsJSON = () => {
+    const blob = new Blob([JSON.stringify(filteredProducts, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `robo-market-search-${query.trim().toLowerCase()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  };
+
+  const exportAsCSV = () => {
+    const headers = ['Ürün Adı', 'Fiyat (TL)', 'Mağaza', 'Stok Durumu', 'Ürün Linki'];
+    const rows = filteredProducts.map((p) => [
+      `"${(p.title || '').replace(/"/g, '""')}"`,
+      p.price,
+      `"${p.store}"`,
+      p.in_stock ? 'Stokta Var' : 'Stokta Yok',
+      `"${p.url}"`,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `robo-market-search-${query.trim().toLowerCase()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  };
+
+  const exportAsMarkdown = () => {
+    const lines = [
+      `# Robo Market Search — "${query.trim()}"`,
+      ``,
+      `| Ürün Adı | Fiyat | Mağaza | Stok | Link |`,
+      `| --- | --- | --- | --- | --- |`,
+      ...filteredProducts.map(
+        (p) =>
+          `| ${(p.title || '').replace(/\|/g, '-')} | ${p.formatted_price || `${p.price} TL`} | ${p.store} | ${
+            p.in_stock ? 'Stokta Var' : 'Stokta Yok'
+          } | [Mağazaya Git](${p.url}) |`
+      ),
+    ];
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `robo-market-search-${query.trim().toLowerCase()}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  };
+
+  const copyToClipboard = () => {
+    const lines = [
+      `Robo Market Search — "${query.trim()}"`,
+      ...filteredProducts.map(
+        (p) => `- ${p.title} | ${p.formatted_price || `${p.price} TL`} | ${p.store} | ${p.url}`
+      ),
+    ].join('\n');
+    navigator.clipboard.writeText(lines);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    setShowExportMenu(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -228,10 +310,60 @@ export const SearchTab: React.FC = () => {
       {/* Product Results */}
       {!loading && searched && (
         <div>
+          {/* Header & Export Actions */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-slate-300">
               Arama Sonuçları ({filteredProducts.length} Ürün Bulundu)
             </h2>
+
+            {filteredProducts.length > 0 && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowExportMenu(!showExportMenu)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-400 text-xs font-medium transition-all shadow-sm"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Dışa Aktar
+                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                </button>
+
+                {/* Export Dropdown Menu */}
+                {showExportMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 py-1.5 text-xs text-slate-200">
+                    <button
+                      onClick={exportAsCSV}
+                      className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 transition-colors"
+                    >
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                      Excel / CSV İndir (.csv)
+                    </button>
+                    <button
+                      onClick={exportAsJSON}
+                      className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-blue-400" />
+                      JSON İndir (.json)
+                    </button>
+                    <button
+                      onClick={exportAsMarkdown}
+                      className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-purple-400" />
+                      Markdown Tablosu (.md)
+                    </button>
+                    <div className="border-t border-slate-800 my-1" />
+                    <button
+                      onClick={copyToClipboard}
+                      className="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center gap-2 transition-colors text-cyan-400"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copied ? 'Panoya Kopyalandı!' : 'Panoya Kopyala'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {filteredProducts.length === 0 ? (
