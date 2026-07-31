@@ -3,6 +3,7 @@ Cache service layer for robo_market_service.
 Wraps underlying SQLite search cache engine.
 """
 
+import sqlite3
 from typing import List, Optional
 
 from robo_market_search.shared.cache import SearchCache
@@ -15,6 +16,7 @@ class ServiceCache:
     """
 
     def __init__(self, db_path: str = "search_cache.db", default_ttl_seconds: int = 7200) -> None:
+        self.db_path = db_path
         self._cache = SearchCache(db_path=db_path, default_ttl_seconds=default_ttl_seconds)
 
     def get(self, query: str, limit: int = 10) -> Optional[List[Product]]:
@@ -24,4 +26,7 @@ class ServiceCache:
         self._cache.set(query, limit, products)
 
     def clear(self) -> None:
-        self._cache.clear()
+        """Clear cache database table."""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("DELETE FROM search_cache")
+            conn.commit()

@@ -2,7 +2,7 @@
 Anthropic Provider implementation for BaseLLMProvider.
 """
 
-from typing import Type, TypeVar
+from typing import Type, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -48,4 +48,4 @@ class AnthropicProvider(BaseLLMProvider):
             system=system_prompt,
             messages=[{"role": "user", "content": prompt}],
         )
-        return response.content[0].text
+        return cast("str", response.content[0].text)

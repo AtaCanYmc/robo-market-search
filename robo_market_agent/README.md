@@ -1,6 +1,28 @@
-# `robo_market_agent` — AI Agent Layer
+# `robo_market_agent` — AI Agent Layer & CLI Tool
 
 `robo_market_agent`, projenin **Yapay Zeka ve LLM Orkestrasyon Katmanıdır**. Kullanıcının serbest metin formatındaki donanım projesi isteklerini anlar, Malzeme Listesi (BOM) oluşturur, uyumluluk kontrollerini yapar, `robo_market_service` üzerinden ürünleri aratır ve alışveriş sepetini optimize eder.
+
+---
+
+## 🤖 Donanım Asistanı CLI Kullanımı (`robo-agent`)
+
+`robo_market_agent` katmanı kendi başına terminalden çalıştırılabilen `robo-agent` komut satırı aracına sahiptir.
+
+### Örnek Komutlar:
+
+```bash
+# 1. Mock LLM sağlayıcısı ile hızlı deneme yapma (API Key gerektirmez)
+robo-agent "WiFi üzerinden 4 valfli otomatik sulama sistemi yapmak istiyorum" --provider mock
+
+# 2. DeepSeek AI ile proje analizi ve sepet optimizasyonu
+robo-agent "ESP32 tabanlı uzaktan sıcaklık ve nem takip cihazı" --provider deepseek --api-key "sk-..."
+
+# 3. Groq (Llama 3.3 70B) ile ultra hızlı analiz
+robo-agent "Akıllı ev için hareket sensörlü ışık kontrol sistemi" --provider groq --api-key "gsk_..."
+
+# 4. OpenAI (GPT-4o) ile çalıştırma
+robo-agent "Bluetooth kontrollü 2 tekerlekli robot araba" --provider openai --api-key "sk-..."
+```
 
 ---
 
@@ -53,6 +75,7 @@ Agent hiçbir LLM üreticisine doğrudan bağımlı değildir. Tüm entegrasyon 
 
 ```
 robo_market_agent/
+├── cli.py                 # robo-agent CLI komut satırı aracı
 ├── agent.py               # Ana RoboMarketAgent orkestratör sınıfı
 ├── models/                # Pydantic yapısal veri modelleri (ProjectRequirements, BOM, etc.)
 │   └── agent_models.py
@@ -67,36 +90,4 @@ robo_market_agent/
 │   ├── optimizer.py
 │   └── report_generator.py
 └── prompts/               # Kod içerisine gömülmeyen harici istem (prompt) şablonları (.txt)
-```
-
----
-
-## Kullanım Örneği
-
-### DeepSeek Provider ile Çalıştırma:
-```python
-from robo_market_agent import RoboMarketAgent
-from robo_market_agent.providers import DeepSeekProvider
-from robo_market_service import SearchService
-
-llm = DeepSeekProvider(api_key="sk-...", model_name="deepseek-chat")
-service = SearchService(use_cache=True)
-
-agent = RoboMarketAgent(llm_provider=llm, search_service=service)
-report = agent.run("WiFi üzerinden 4 valfli otomatik sulama sistemi yapmak istiyorum.")
-print(report.summary_markdown)
-```
-
-### Groq Provider ile Çalıştırma:
-```python
-from robo_market_agent import RoboMarketAgent
-from robo_market_agent.providers import GroqProvider
-from robo_market_service import SearchService
-
-llm = GroqProvider(api_key="gsk_...", model_name="llama-3.3-70b-versatile")
-service = SearchService(use_cache=True)
-
-agent = RoboMarketAgent(llm_provider=llm, search_service=service)
-report = agent.run("WiFi üzerinden 4 valfli otomatik sulama sistemi yapmak istiyorum.")
-print(report.summary_markdown)
 ```

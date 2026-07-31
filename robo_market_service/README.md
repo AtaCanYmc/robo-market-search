@@ -40,7 +40,7 @@ service = SearchService(use_cache=True)
 request = ServiceSearchRequest(
     query="solenoid valve",
     limit_per_store=5,
-    expand_synonyms=True  # "selenoid vana", "su vanası 12v" vb. otomatik genişletir
+    expand_synonyms=True,  # "selenoid vana", "su vanası 12v" vb. otomatik genişletir
 )
 
 result = service.search_single(request)

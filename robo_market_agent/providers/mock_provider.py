@@ -25,13 +25,13 @@ class MockLLMProvider(BaseLLMProvider):
         if model_name in self.responses:
             data = self.responses[model_name]
             if isinstance(data, BaseModel):
-                return data
+                return data  # type: ignore[return-value]
             elif isinstance(data, dict):
                 return response_model.model_validate(data)
 
         # Smart defaults if no custom response provided
         if model_name == "ProjectRequirements":
-            return response_model(
+            res = response_model(
                 project_type="Automated Irrigation System",
                 description="WiFi-controlled smart plant watering system",
                 power_source="12V Power Supply",
@@ -39,10 +39,11 @@ class MockLLMProvider(BaseLLMProvider):
                 key_features=["Moisture sensing", "Automated valve control", "WiFi remote control"],
                 constraints=["Waterproof sensors", "Relay isolation"],
             )
+            return res
         elif model_name == "BOM":
             from robo_market_agent.models.agent_models import Component
 
-            return response_model(
+            res = response_model(
                 project_name="Automated Irrigation System",
                 components=[
                     Component(name="ESP32 DevKit", quantity=1, specifications="WiFi/Bluetooth MCU", category="MCU"),
@@ -60,10 +61,11 @@ class MockLLMProvider(BaseLLMProvider):
                 ],
                 notes="Assembly requires basic soldering and wiring.",
             )
+            return res
         elif model_name == "CompatibilityReport":
             from robo_market_agent.models.agent_models import CompatibilityIssue, IssueSeverity
 
-            return response_model(
+            res = response_model(
                 is_compatible=True,
                 issues=[
                     CompatibilityIssue(
@@ -75,6 +77,7 @@ class MockLLMProvider(BaseLLMProvider):
                 ],
                 recommendations=["Include a buck converter or power module if powering ESP32 directly from 12V."],
             )
+            return res
 
         # Fallback empty construction
         return response_model.model_validate({})

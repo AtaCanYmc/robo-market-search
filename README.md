@@ -326,7 +326,9 @@ result = client.cart_search(queries=["ESP32", "L298N", "HC-SR04"])
 
 # 1. Tüm mağazaların sepete özel toplamı ve kargo ücretleri
 for summary in result.store_summaries:
-    print(f"[{summary.store}] Ürün: {summary.total_price} TL | Kargo: {summary.shipping_cost} TL | Toplam: {summary.total_with_shipping} TL")
+    print(
+        f"[{summary.store}] Ürün: {summary.total_price} TL | Kargo: {summary.shipping_cost} TL | Toplam: {summary.total_with_shipping} TL"
+    )
 
 # 2. Mağazalar arası en ucuz bölünmüş sepet kombinasyonu (Optimal Split)
 if result.best_split:

@@ -3,7 +3,9 @@ Groq Provider implementation for BaseLLMProvider.
 """
 
 from typing import Type, TypeVar
+
 from pydantic import BaseModel
+
 from robo_market_agent.providers.base import BaseLLMProvider
 
 T = TypeVar("T", bound=BaseModel)
@@ -29,10 +31,12 @@ class GroqProvider(BaseLLMProvider):
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
-        messages.append({
-            "role": "user",
-            "content": f"{prompt}\n\nPlease output ONLY valid JSON matching this schema:\n{schema_json}",
-        })
+        messages.append(
+            {
+                "role": "user",
+                "content": f"{prompt}\n\nPlease output ONLY valid JSON matching this schema:\n{schema_json}",
+            }
+        )
 
         response = client.chat.completions.create(
             model=self.model_name,

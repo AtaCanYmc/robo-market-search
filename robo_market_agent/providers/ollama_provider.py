@@ -2,7 +2,7 @@
 Ollama Provider implementation for BaseLLMProvider.
 """
 
-from typing import Type, TypeVar
+from typing import Type, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -55,4 +55,4 @@ class OllamaProvider(BaseLLMProvider):
         messages.append({"role": "user", "content": prompt})
 
         res = client.chat(model=self.model_name, messages=messages)
-        return res["message"]["content"]
+        return cast("str", res["message"]["content"])

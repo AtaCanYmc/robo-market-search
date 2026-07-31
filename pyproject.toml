@@ -22,7 +22,7 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 cli = ["typer", "rich"]
 mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-agent = ["pydantic>=2.0"]
+agent = ["pydantic>=2.0", "typer", "rich"]
 all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0"]
 dev = [
     "pre-commit",
@@ -37,6 +37,7 @@ dev = [
 robo-search = "robo_market_search.cli.main:app"
 robo-mcp = "robo_market_search.mcp.server:main"
 robo-bot = "robo_market_search.bot.server:main"
+robo-agent = "robo_market_agent.cli:app"
 
 [project.urls]
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
@@ -73,9 +74,26 @@ ignore = [
     "RUF001",
     "RUF002",
     "RUF003",
+    "TC001",
 ]
 fixable = ["ALL"]
 unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*" = ["ALL"]
+"demo/*" = [
+    "B008",
+]
+"robo_market_search/bot/*" = [
+    "B008",
+]
+"robo_market_search/cli/*" = [
+    "B008",
+    "UP",
+]
+"robo_market_agent/cli.py" = [
+    "B008",
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["robo_market_search", "robo_market_service", "robo_market_agent"]

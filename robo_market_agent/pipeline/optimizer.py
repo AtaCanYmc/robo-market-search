@@ -39,7 +39,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
             and (not best_split or best_single.total_with_shipping <= best_split.grand_total)
         ):
             # Single store recommendation
-            items: List[ShoppingCartItem] = []
+            single_items: List[ShoppingCartItem] = []
             for cart_item in best_single.items:
                 if cart_item.product:
                     comp_name = cart_item.query
@@ -48,7 +48,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
                         if item_sr.component.name == comp_name:
                             qty = item_sr.component.quantity
                             break
-                    items.append(
+                    single_items.append(
                         ShoppingCartItem(
                             component_name=comp_name,
                             quantity=qty,
@@ -61,7 +61,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
                     )
             sg = StoreGroup(
                 store=best_single.store,
-                items=items,
+                items=single_items,
                 subtotal=best_single.total_price,
                 shipping_cost=best_single.shipping_cost,
                 total=best_single.total_with_shipping,
@@ -80,7 +80,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
             store_groups: List[StoreGroup] = []
             total_ship = 0.0
             for grp in best_split.groups:
-                items: List[ShoppingCartItem] = []
+                split_items: List[ShoppingCartItem] = []
                 for assign in grp.items:
                     comp_name = assign.query
                     qty = 1
@@ -88,7 +88,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
                         if item_sr.component.name == comp_name:
                             qty = item_sr.component.quantity
                             break
-                    items.append(
+                    split_items.append(
                         ShoppingCartItem(
                             component_name=comp_name,
                             quantity=qty,
@@ -103,7 +103,7 @@ class ShoppingOptimizerStep(BasePipelineStep[List[ComponentSearchResult], Optimi
                 store_groups.append(
                     StoreGroup(
                         store=grp.store,
-                        items=items,
+                        items=split_items,
                         subtotal=grp.subtotal,
                         shipping_cost=grp.shipping,
                         total=grp.total,

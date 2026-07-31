@@ -3,7 +3,7 @@ Core functional search interface for robo_market_search.
 Zero AI dependencies - direct search helper functions.
 """
 
-from typing import Dict, List
+from typing import Dict, List, cast
 
 from robo_market_search.direncnet.client import DirencnetClient
 from robo_market_search.robo90.client import Robo90Client
@@ -73,11 +73,11 @@ def search_provider(provider: str, query: str, limit: int = 10) -> List[Product]
     client_cls = _CLIENT_MAP[key]
     client = client_cls()
     if key == "robotistan":
-        return client.search_component(query, limit, 1)
+        return cast("List[Product]", client.search_component(query, limit, 1))
     elif key == "robo90":
-        return client.search_component(query, 1, 1)[:limit]
+        return cast("List[Product]", client.search_component(query, 1, 1)[:limit])
     else:
-        return client.search_component(query, limit)
+        return cast("List[Product]", client.search_component(query, limit))
 
 
 __all__ = ["search", "search_multiple", "search_provider"]

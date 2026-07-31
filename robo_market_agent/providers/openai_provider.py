@@ -2,7 +2,7 @@
 OpenAI Provider implementation for BaseLLMProvider.
 """
 
-from typing import Type, TypeVar
+from typing import Type, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -33,7 +33,7 @@ class OpenAIProvider(BaseLLMProvider):
             messages=messages,
             response_format=response_model,
         )
-        return response.choices[0].message.parsed
+        return cast("T", response.choices[0].message.parsed)
 
     def generate_text(self, prompt: str, system_prompt: str = "") -> str:
         try:
@@ -51,4 +51,4 @@ class OpenAIProvider(BaseLLMProvider):
             model=self.model_name,
             messages=messages,
         )
-        return response.choices[0].message.content or ""
+        return cast("str", response.choices[0].message.content or "")
