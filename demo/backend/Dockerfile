@@ -1,7 +1,4 @@
-# Multi-stage Dockerfile for robo-market-search API (Render & Docker deployment)
-# Note: Ensure Docker Build Context or Root Directory is set to repository root "."
-
-FROM python:3.11-slim as builder
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -11,22 +8,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml README.md ./
-COPY robo_market_search ./robo_market_search
-COPY robo_market_service ./robo_market_service
-COPY robo_market_agent ./robo_market_agent
-COPY robo_market_api ./robo_market_api
+# Copy backend requirements & install dependencies + robo-market-search package
+COPY requirements.txt ./
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir "git+https://github.com/AtaCanYmc/robo-market-search.git#egg=robo-market-search[all]"
 
-RUN pip install --no-cache-dir --upgrade pip wheel setuptools
-RUN pip install --no-cache-dir ".[all]"
-
-FROM python:3.11-slim as runner
-
-WORKDIR /app
-
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
-COPY --from=builder /app /app
+COPY main.py ./main.py
 
 ENV HOST=0.0.0.0
 ENV PORT=8000
@@ -38,4 +26,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["robo-api"]
+CMD ["python", "main.py"]
