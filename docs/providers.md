@@ -52,7 +52,7 @@ class MotorobitClient:
             if resp.status_code != 200:
                 logger.warning(f"[{self.STORE_NAME}] HTTP {resp.status_code} returned.")
                 return []
-            
+
             return self._parse_html(resp.text, limit)
         except Exception as e:
             logger.error(f"[{self.STORE_NAME}] Error searching '{query}': {e}")
