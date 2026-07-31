@@ -2,12 +2,12 @@
 
 Bu dizin, `robo-market-search` ekosisteminin demo uygulamalarını barındırır. İki bağımsız katmana ayrılmıştır:
 
-- **`frontend/`**: FastAPI + Jinja2 + HTMX tabanlı Web Demo Arayüzü (Port `3000`).
+- **`frontend/`**: Vite + React + TypeScript + Tailwind CSS tabanlı Web Önyüzü (Port `3000`).
 - **`backend/`**: Production-ready `robo_market_api` REST Sunucusu (Port `8000`).
 
 ---
 
-## 🚀 Çalıştırma
+## 🚀 Yerel Çalıştırma
 
 ### Yöntem 1: Docker Compose (Önerilen)
 
@@ -18,7 +18,7 @@ cd demo/
 docker compose up -d
 ```
 
-- **Web Demo Arayüzü**: [http://localhost:3000](http://localhost:3000)
+- **Web Önyüzü**: [http://localhost:3000](http://localhost:3000)
 - **REST API Sunucusu & Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
@@ -35,6 +35,24 @@ python main.py
 #### 🔹 Frontend Web UI'ı Başlatma
 ```bash
 cd demo/frontend/
-uvicorn main:app --port 3000 --reload
+npm run dev
 ```
 *(Arayüz http://localhost:3000 üzerinde çalışacaktır)*
+
+---
+
+## 🌐 Canlıya Dağıtım (Cloud Deployment)
+
+### 1. Frontend (Vercel)
+Vite önyüzü `demo/frontend/vercel.json` yapılandırması ile Vercel üzerinde tek tıkla canlıya alınabilir:
+- Root Directory: `demo/frontend`
+- Framework Preset: `Vite`
+- Output Directory: `dist`
+- API Proxy: `/api/v1/*` istekleri Render üzerindeki backend'e otomatik yönlendirilir.
+
+### 2. Backend (Render)
+FastAPI REST API `render.yaml` yapılandırması ile Render üzerinde Web Service olarak yayınlanır:
+- Environment: `Python 3.11`
+- Build Command: `pip install -e ".[all]"`
+- Start Command: `uvicorn robo_market_api.app.main:app --host 0.0.0.0 --port $PORT`
+- Healthcheck Endpoint: `/health`

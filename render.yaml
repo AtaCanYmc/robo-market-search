@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: robo-market-search-api
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -e ".[all]"
+    startCommand: uvicorn robo_market_api.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: LOG_LEVEL
+        value: INFO
+      - key: CORS_ORIGINS
+        value: "*"
+    healthCheckPath: /health
