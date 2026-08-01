@@ -1,14 +1,27 @@
+import logging
 import re
-from typing import List, Optional
+from typing import List, Optional, Set
 import uuid
 
 from curl_cffi import requests
 
+from robo_market_search.providers.base import BaseStore, StoreCapability
+from robo_market_search.providers.registry import register_store
 from robo_market_search.shared.constants import ROBOTISTAN_FALLBACK_TOKEN
 from robo_market_search.shared.models import Product
 
+logger = logging.getLogger("robo_market_search.robotistan")
 
-class RobotistanClient:
+
+@register_store
+class RobotistanClient(BaseStore):
+    name: str = "Robotistan"
+    capabilities: Set[StoreCapability] = {
+        StoreCapability.SEARCH,
+        StoreCapability.STOCK_STATUS,
+        StoreCapability.IMAGE_URL,
+    }
+
     def __init__(self, fallback_token: Optional[str] = None) -> None:
         if fallback_token is None:
             fallback_token = ROBOTISTAN_FALLBACK_TOKEN
@@ -20,54 +33,45 @@ class RobotistanClient:
             "Referer": "https://www.robotistan.com/",
         }
 
-        # Segmentify için her başlatmada benzersiz bir session/user id üretmek engelleri aşmak için faydalıdır.
         self.session_id = str(uuid.uuid4())
         self.user_id = str(uuid.uuid4())
-
-        # Dinamik token bulma
         self.client_token = self._find_current_token(fallback_token)
 
     def _find_current_token(self, fallback_token: str) -> str:
         """
         Ana sayfaya gidip Segmentify için gereken güncel apiKey değerini dinamik olarak çeker.
-        Bulamazsa fallback_token kullanır.
         """
         try:
             response = requests.get("https://www.robotistan.com/", headers=self.headers, impersonate="safari15_5")
             response.raise_for_status()
 
-            # HTML içerisinde 'apikey': '...' arıyoruz
             match = re.search(r"'apikey'\s*:\s*'([^']+)'", response.text)
             if match:
                 token = match.group(1)
-                print(f"[RobotistanClient] Robotistan için güncel token bulundu: {token}")
+                logger.debug("Robotistan güncel token bulundu: %s", token)
                 return token
 
-            # Bulunamazsa cdn linki içerisindeki url path'inden deneyelim
             match = re.search(r"cdn\.segmentify\.com/([^/]+)/segmentify\.js", response.text)
             if match:
                 token = match.group(1)
-                print(f"[RobotistanClient] Robotistan için güncel token bulundu (cdn linkinden): {token}")
+                logger.debug("Robotistan güncel token bulundu (cdn linkinden): %s", token)
                 return token
 
         except Exception as e:
-            print(f"[Hata] Token aranırken hata oluştu: {e}")
+            logger.warning("Robotistan token aranırken hata oluştu: %s", e)
 
-        print("[RobotistanClient] Dinamik token bulunamadı, fallback token kullanılıyor.")
+        logger.debug("Robotistan dinamik token bulunamadı, fallback token kullanılıyor.")
         return fallback_token
+
+    def search(self, query: str, limit: int = 10) -> List[Product]:
+        return self.search_component(query=query, limit=limit, page=1)
 
     def search_component(self, query: str, limit: int = 200, page: int = 1) -> List[Product]:
         """
         Robotistan üzerinde Segmentify altyapısı kullanılarak arama yapar.
-
-        :arg query: Arama kelimesi
-        :arg limit: Kaç ürün döneceği (Segmentify API'sine gönderilir, ancak gerçek dönen ürün sayısı farklı olabilir)
-        :arg page: Hangi sayfanın döneceği (Segmentify API'sine gönderilir, ancak gerçek dönen ürünler farklı olabilir)
         """
         api_url = f"https://per2.segmentify.com/add/events/v1.json?apiKey={self.client_token}"
 
-        # Segmentify v1 yapısı genellikle bir array kabul eder.
-        # İletilen örnek payload'a uygun olarak güncellenmiştir.
         payload = [
             {
                 "name": "SEARCH",
@@ -86,7 +90,7 @@ class RobotistanClient:
                 "type": "faceted",
                 "ordering": {"page": page, "sort": "BEST_MATCH"},
                 "filters": [],
-                "count": limit,  # Eklenebilir, limit belirlemek için faydalıdır
+                "count": limit,
             }
         ]
 
@@ -126,10 +130,10 @@ class RobotistanClient:
                             in_stock=item.get("inStock", True),
                         )
                     )
-                return parsed_products
+                return parsed_products[:limit]
             else:
                 return []
 
         except Exception as e:
-            print(f"[RobotistanClient] Arama yapılırken hata oluştu: {e}")
+            logger.error("Robotistan aramasında hata oluştu: %s", e)
             return []

@@ -1,115 +1,118 @@
 # Python SDK Reference
 
-The `robo_market_search` Python SDK allows developers to perform concurrent product searches, cart optimization, and hardware AI analysis directly inside Python applications.
+The `robo_market_search` Python SDK provides a unified **Commerce Search Framework** for developers to perform concurrent product searches, event-driven logging, cart optimization, and hardware AI analysis directly inside Python applications.
 
 ---
 
-## 📦 Core Classes Overview
+## 📦 Core Imports Overview
 
 ```python
-from robo_market_search import UnifiedSearchClient, Product, CartSearchResult
+from robo_market_search import (
+    Client,                  # Convenient alias for UnifiedSearchClient
+    UnifiedSearchClient,
+    Product,
+    CartSearchResult,
+    RoboMarketError,        # Base Exception
+    CaptchaDetectedError,
+    RateLimitError,
+)
 from robo_market_service import SearchService
 from robo_market_agent import RoboMarketAgent
 ```
 
 ---
 
-## 1. `UnifiedSearchClient`
+## 1. Quick Start (`Client`)
 
-`UnifiedSearchClient` is the primary interface for querying stores concurrently.
+`Client` is the primary 3-line entry point for querying stores concurrently:
 
-### Constructor
 ```python
-UnifiedSearchClient(
-    use_cache: bool = True,
-    cache_ttl_seconds: int = 7200
-)
+from robo_market_search import Client
+
+client = Client()
+products = client.search("ESP32", limit_per_store=5)
+
+for p in products:
+    print(f"[{p.store}] {p.name} - {p.price} {p.currency}")
 ```
-
-### Methods
-
-#### `search(query: str, limit_per_store: int = 10, stores: List[str] = None) -> List[Product]`
-Searches all four stores in parallel, filters results, and sorts products from lowest to highest price.
-
-- **Parameters**:
-  - `query` (`str`): Product keyword (e.g. `"ESP32-WROOM"`).
-  - `limit_per_store` (`int`, optional): Maximum products to fetch per store (default `10`).
-  - `stores` (`List[str]`, optional): Specific store names to query (default all: `["Robolink", "Robotistan", "Robo90", "Direncnet"]`).
-- **Returns**: `List[Product]`
-
-#### `cart_search(queries: List[str], limit_per_store: int = 5, shipping_overrides: Dict[str, ShippingInfo] = None) -> CartSearchResult`
-Performs multi-item component searching and evaluates store shipping thresholds to calculate single-store and split-cart optimization.
-
-- **Parameters**:
-  - `queries` (`List[str]`): List of component names to purchase.
-  - `limit_per_store` (`int`): Candidates fetched per store per component.
-  - `shipping_overrides` (`Dict[str, ShippingInfo]`): Custom store shipping rules.
-- **Returns**: `CartSearchResult`
 
 ---
 
-## 2. `Product` Data Model
+## 2. Event Hooks & Extensions (`EventDispatcher`)
+
+Register callbacks to inspect HTTP requests, parsed products, error events, or search results:
+
+```python
+from robo_market_search import Client
+
+client = Client()
+
+# Event listeners
+@client.on_request
+def log_request(store_name: str, query: str):
+    print(f"Searching {store_name} for '{query}'...")
+
+@client.on_product
+def inspect_product(product):
+    if product.price < 50.0:
+        print(f"Bargain alert: {product.name} at {product.price} TL")
+
+@client.on_error
+def handle_store_error(store_name: str, exc: Exception):
+    print(f"Error on {store_name}: {exc}")
+
+products = client.search("Arduino Uno")
+```
+
+---
+
+## 3. Exception Handling Hierarchy
+
+Catch granular errors mapped automatically by the framework:
+
+```python
+from robo_market_search import Client, CaptchaDetectedError, RateLimitError, RoboMarketError
+
+client = Client()
+
+try:
+    results = client.search("ESP32-WROOM")
+except CaptchaDetectedError as e:
+    print(f"Bot protection triggered on store {e.store}: {e}")
+except RateLimitError as e:
+    print(f"Rate limited on {e.store}: {e}")
+except RoboMarketError as e:
+    print(f"General search error: {e}")
+```
+
+---
+
+## 4. Cart Optimization (`cart_search`)
+
+```python
+results = client.cart_search(
+    queries=["ESP32 WROOM", "OLED Display 0.96", "DHT22 Sensor"],
+    limit_per_store=5
+)
+
+best_label, best_total = results.best_overall()
+print(f"Optimal Purchase Plan: {best_label} -> Total: {best_total} TL")
+```
+
+---
+
+## 5. `Product` Data Model
 
 Represents a normalized e-commerce product returned from any store scraper.
 
 ```python
-class Product(BaseModel):
+@dataclass
+class Product:
     name: str                   # Cleaned product title
     price: float                # Product price in TL
-    currency: str = "TL"        # Currency code
+    currency: str = "TL"        # Currency code ("TL")
     store: str                  # Store name ("Robotistan", "Robolink", "Robo90", "Direncnet")
     url: str                    # Direct URL to product page
-    image_url: Optional[str]    # Direct image CDN URL
-    in_stock: Optional[bool]    # Availability status (True, False, None)
-    sku: Optional[str]          # Stock Keeping Unit if available
-```
-
----
-
-## 3. `RoboMarketAgent`
-
-High-level AI Agent for hardware project analysis, BOM extraction, and compatibility validation.
-
-```python
-from robo_market_agent import RoboMarketAgent
-
-agent = RoboMarketAgent(
-    provider="openai",        # "openai", "gemini", "anthropic", "deepseek", "groq", "ollama", "mock"
-    api_key="sk-..."          # LLM API key
-)
-
-report = agent.run(
-    user_input="WiFi connected plant watering system with 4 valves and OLED display",
-    project_type="IoT / Akıllı Ev"
-)
-
-print(report.summary_markdown)
-```
-
----
-
-## 💡 Code Examples
-
-### Basic Parallel Search
-
-```python
-from robo_market_search import UnifiedSearchClient
-
-client = UnifiedSearchClient()
-products = client.search("OLED Display", limit_per_store=3)
-
-for p in products:
-    print(f"{p.store:12} | {p.name[:35]:35} | {p.price:7.2f} TL | Stock: {p.in_stock}")
-```
-
-### Cart Optimization
-
-```python
-from robo_market_search import UnifiedSearchClient
-
-client = UnifiedSearchClient()
-cart_res = client.cart_search(["ESP32-WROOM", "Relay 5V", "OLED Display 0.96"])
-
-label, cheapest_total = cart_res.best_overall()
-print(f"Optimal Strategy: {label} (Total: {cheapest_total:.2f} TL)")
+    image_url: str = ""         # Thumbnail CDN URL
+    in_stock: bool = True       # Availability status
 ```

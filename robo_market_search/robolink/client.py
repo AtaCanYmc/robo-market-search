@@ -1,29 +1,39 @@
 import json
+import logging
 import re
-from typing import List
+from typing import List, Set
 
 from curl_cffi import requests
 
+from robo_market_search.providers.base import BaseStore, StoreCapability
+from robo_market_search.providers.registry import register_store
 from robo_market_search.shared.constants import ROBOLINK_FALLBACK_TOKEN
 from robo_market_search.shared.models import Product
 
+logger = logging.getLogger("robo_market_search.robolink")
 
-class RobolinkClient:
-    def __init__(self):
+
+@register_store
+class RobolinkClient(BaseStore):
+    name: str = "Robolink"
+    capabilities: Set[StoreCapability] = {
+        StoreCapability.SEARCH,
+        StoreCapability.STOCK_STATUS,
+        StoreCapability.IMAGE_URL,
+    }
+
+    def __init__(self) -> None:
         self.base_site_url = "https://www.robolinkmarket.com"
         self.api_url = "https://api.aisearch.app/sites/2924/v1/search/query"
 
-        # Gerçek tarayıcı başlıkları
         self.headers = {"Accept": "*/*", "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8", "Referer": self.base_site_url}
         self.client_token = self._find_current_token()
 
-    def _find_current_token(self):
+    def _find_current_token(self) -> str:
         """
         Sitenin kaynak kodundan aisearch JS dosyasını bulur ve token'ı doğrudan içinden çıkarır.
-        Bu yöntem Playwright (tarayıcı) kullanmadan çok daha hızlı ve garantili çalışır.
         """
         try:
-            # 1. Ana sayfadan aisearch.app JS dosyasının URL'sini bul
             response = requests.get(
                 self.base_site_url + "?search_provider=aisearch", headers=self.headers, impersonate="safari15_5"
             )
@@ -33,32 +43,32 @@ class RobolinkClient:
             if js_url_match:
                 js_url = js_url_match.group(1)
 
-                # 2. JS dosyasını indir
                 js_response = requests.get(js_url, headers=self.headers, impersonate="safari15_5")
                 js_content = js_response.text
 
-                # 3. 2924 (Robolink site id) ile eşleşen token'ı bul: V2.init("2924", "TOKEN", ...)
                 token_match = re.search(r'\("2924"\s*,\s*"([^"]+)"', js_content)
                 if token_match:
                     actual_token = token_match.group(1)
-                    print(f"[RobolinkClient] JS içinden güncel token bulundu: {actual_token}")
+                    logger.debug("Robolink JS içinden güncel token bulundu: %s", actual_token)
                     return actual_token
                 else:
-                    print("[RobolinkClient] aisearch JS dosyası bulundu ancak token ayıklanamadı.")
+                    logger.debug("Robolink aisearch JS dosyası bulundu ancak token ayıklanamadı.")
             else:
-                print("[RobolinkClient] aisearch JS URL'si sayfa kaynağında bulunamadı.")
+                logger.debug("Robolink aisearch JS URL'si sayfa kaynağında bulunamadı.")
 
         except Exception as e:
-            print(f"[RobolinkClient] Token aranırken hata oluştu: {e}")
+            logger.warning("Robolink token aranırken hata oluştu: %s", e)
 
-        print("[RobolinkClient] Dinamik token bulunamadı, fallback token kullanılıyor.")
+        logger.debug("Robolink dinamik token bulunamadı, fallback token kullanılıyor.")
         return ROBOLINK_FALLBACK_TOKEN
+
+    def search(self, query: str, limit: int = 10) -> List[Product]:
+        return self.search_component(query=query, limit=limit)
 
     def search_component(self, query: str, limit: int = 5) -> List[Product]:
         """
         Dinamik token ile API üzerinden arama yapar.
         """
-        # URL'de %2C encode hatasını önlemek için dict formatında temiz parametreler
         params = {
             "query": query,
             "expand": "product,filter,popularCategories,recommendation",
@@ -70,7 +80,6 @@ class RobolinkClient:
         }
 
         try:
-            # API isteğinde de taklit (impersonate) kullanıyoruz
             response = requests.get(self.api_url, headers=self.headers, params=params, impersonate="safari15_5")
             response.raise_for_status()
             text = response.text
@@ -83,7 +92,6 @@ class RobolinkClient:
                 url_path = itm.get("url", "")
                 full_url = url_path if url_path.startswith("http") else f"{self.base_site_url}/{url_path}"
 
-                # Image URL parsing
                 image_url = ""
                 images = itm.get("images", [])
                 if images:
@@ -105,5 +113,5 @@ class RobolinkClient:
                 )
             return parsed_products
         except Exception as e:
-            print(f"[RobolinkClient] Arama yapılırken hata oluştu: {e}")
+            logger.error("Robolink aramasında hata oluştu: %s", e)
             return []

@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document details the software architecture, design principles, concurrency model, and data flow of **Robo Market Search**.
+This document details the software architecture, design principles, concurrency model, plugin system, and data flow of **Robo Market Search** as a unified **Commerce Search Framework**.
 
 ---
 
@@ -39,17 +39,20 @@ The project is structured into four decoupled logical layers:
                                           ▼
                             ┌───────────────────────────┐
                             │    robo_market_search     │
-                            │ (Core Search Library:     │
-                            │  Zero AI/HTTP Dependencies│
+                            │ (Commerce Search Framework│
+                            │  BaseStore, Registry, HTTP│
+                            │  Engine, Event Dispatcher)│
                             └───────────────────────────┘
 ```
 
-### 1. Core Library Layer (`robo_market_search`)
-- Pure Python SDK with zero web framework or AI dependencies.
-- Contains individual store clients (`RobolinkClient`, `RobotistanClient`, `Robo90Client`, `DirencnetClient`).
-- Implements `ThreadPoolExecutor` for concurrent requests across stores.
-- Features dynamic token refreshers (`TokenFetcher`) that extract CSRF/auth tokens from Javascript bundles when e-commerce APIs update.
-- Implements cart optimization algorithms for split-cart and store shipping threshold optimization.
+### 1. Commerce Search Framework Core Layer (`robo_market_search`)
+- Pure Python SDK with zero heavy web or AI dependencies.
+- **BaseStore Abstract Interface & Capabilities**: Standardized contract (`BaseStore`) and capabilities matrix (`StoreCapability`).
+- **Store Registry**: Pluggable provider registry (`default_registry`, `@register_store`) allowing 3rd-party store extensions via PRs.
+- **Centralized HTTP Engine (`HTTPClient`)**: TLS impersonation (`curl_cffi`), automatic exponential backoff retries for 403/429/timeouts, and custom exception mapping.
+- **Event Hook System (`EventDispatcher`)**: Hook system supporting `on_request`, `on_product`, `on_error`, and `on_result` callbacks.
+- **Exception Hierarchy (`RoboMarketError`)**: Granular error types (`NetworkError`, `CaptchaDetectedError`, `RateLimitError`, `StoreUnavailableError`, `ParsingError`, `TimeoutError`).
+- **Cart & Split Cart Optimizer**: Algorithmic optimization for single-store and multi-store split purchases with shipping cost thresholds.
 
 ### 2. Search Service Layer (`robo_market_service`)
 - Provides in-memory and disk caching with configurable TTL (default 2 hours).
@@ -67,64 +70,45 @@ The project is structured into four decoupled logical layers:
 
 ---
 
-## ⚡ Concurrency & Scraper Model
+## ⚡ Concurrency & Scraper Pipeline
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
     participant CLI as CLI / API / SDK
-    participant Unified as UnifiedSearchClient
+    participant Client as Client (UnifiedSearchClient)
+    participant Events as EventDispatcher
     participant TP as ThreadPoolExecutor
-    participant R1 as RobotistanClient
-    participant R2 as RobolinkClient
-    participant R3 as Robo90Client
-    participant R4 as DirencnetClient
+    participant Registry as StoreRegistry
+    participant Stores as BaseStore Providers
 
     User->>CLI: Search("ESP32-WROOM")
-    CLI->>Unified: search(query="ESP32-WROOM", limit=5)
-    Unified->>TP: Dispatch parallel search tasks
-    par Concurrent Fetching
-        TP->>R1: fetch("ESP32-WROOM")
-        TP->>R2: fetch("ESP32-WROOM")
-        TP->>R3: fetch("ESP32-WROOM")
-        TP->>R4: fetch("ESP32-WROOM")
+    CLI->>Client: search(query="ESP32-WROOM", limit=5)
+    Client->>Events: emit_request(store, query)
+    Client->>TP: Dispatch parallel search tasks across registered stores
+    par Concurrent Fetching & Pipeline
+        TP->>Stores: BaseStore.search("ESP32-WROOM")
+        Note over Stores: Fetch -> Validate -> Parse -> Normalize
     end
-    R1-->>TP: Return Product list [Robotistan]
-    R2-->>TP: Return Product list [Robolink]
-    R3-->>TP: Return Product list [Robo90]
-    R4-->>TP: Return Product list [Direncnet]
-    TP-->>Unified: Aggregate 4 lists
-    Unified->>Unified: Sort combined products (Price Ascending)
-    Unified-->>CLI: Return sorted Product list
+    Stores-->>TP: Return Product list
+    TP-->>Client: Aggregate store results
+    Client->>Events: emit_product(p) & emit_result(query, results)
+    Client->>Client: Sort combined products (Price Ascending)
+    Client-->>CLI: Return sorted Product list
     CLI-->>User: Render Rich Table / JSON Response
 ```
 
 ---
 
-## 🔑 Dynamic Token Refresh Architecture
-
-E-commerce stores (e.g. Robotistan, Robolink) frequently update CSRF or authorization tokens embedded in frontend JavaScript bundles.
+## 🛡️ Exception Hierarchy
 
 ```
-                    ┌───────────────────────────────┐
-                    │ Store API returns 401 / 403   │
-                    └───────────────┬───────────────┘
-                                    │
-                                    ▼
-                    ┌───────────────────────────────┐
-                    │ TokenFetcher fetches store HTML│
-                    └───────────────┬───────────────┘
-                                    │
-                                    ▼
-                    ┌───────────────────────────────┐
-                    │ Regex / BS4 extracts new token│
-                    └───────────────┬───────────────┘
-                                    │
-                                    ▼
-                    ┌───────────────────────────────┐
-                    │ Token saved & Request retried │
-                    └───────────────────────────────┘
+RoboMarketError
+├── NetworkError
+│   ├── StoreUnavailableError
+│   ├── CaptchaDetectedError
+│   ├── RateLimitError
+│   └── TimeoutError
+└── ParsingError
 ```
-
-This guarantees zero-downtime scraping even when stores refresh frontend security tokens.

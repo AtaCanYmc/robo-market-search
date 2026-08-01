@@ -1,134 +1,95 @@
-# Provider Development Guide
+# Provider Development & Framework Plugin Guide
 
-This guide explains how to add support for a new e-commerce store (e.g. `Motorobit`, `KartalOtomasyon`, `Ozdisan`) to **Robo Market Search**.
+This guide explains how to add support for a new e-commerce store provider (e.g. `Motorobit`, `Robitshop`, `KartalOtomasyon`, `Ozdisan`) to **Robo Market Search** using the modular **BaseStore** plugin architecture.
 
 ---
 
 ## 🏗️ Provider Architecture
 
-Every store provider inherits from `BaseStoreClient` (or implements the standard client interface):
+Every store provider inherits from `BaseStore` and registers itself with `@register_store`:
 
 ```
-Store Provider Request Pipeline:
-User Query ➔ Search URL ➔ HTTP Request (curl_cffi / Token) ➔ HTML / JSON Response ➔ BeautifulSoup / Regex Parser ➔ Normalized Product List
+Store Provider Pipeline:
+Fetch HTML/JSON ➔ Validate Response ➔ Parse Items ➔ Normalize to Product ➔ Filter & Sort
 ```
 
 ---
 
 ## 🛠️ Step-by-Step Tutorial: Adding a New Store Client
 
-### Step 1: Create a new file in `robo_market_search/<store_name>/client.py`
+### Step 1: Create a new class extending `BaseStore`
 
 ```python
 """
-New Store Scraper Client for Motorobit
+Store Scraper Client for Motorobit
 """
 
 import logging
-from typing import List, Optional
-from bs4 import BeautifulSoup
+from typing import List, Set
 from curl_cffi import requests
 
+from robo_market_search.providers.base import BaseStore, StoreCapability
+from robo_market_search.providers.registry import register_store
 from robo_market_search.shared.models import Product
 
 logger = logging.getLogger("robo_market_search.motorobit")
 
-class MotorobitClient:
+
+@register_store
+class MotorobitClient(BaseStore):
     """
     Motorobit.com scraper client.
     """
 
-    STORE_NAME = "Motorobit"
-    BASE_URL = "https://www.motorobit.com"
+    name: str = "Motorobit"
+    capabilities: Set[StoreCapability] = {
+        StoreCapability.SEARCH,
+        StoreCapability.STOCK_STATUS,
+        StoreCapability.IMAGE_URL,
+    }
 
     def __init__(self, timeout: int = 10) -> None:
         self.timeout = timeout
-        self.session = requests.Session(impersonate="chrome")
+        self.base_url = "https://www.motorobit.com/arama"
 
     def search(self, query: str, limit: int = 10) -> List[Product]:
-        url = f"{self.BASE_URL}/arama?q={query}"
+        """
+        Execute search and return normalized Product dataclasses.
+        """
+        params = {"q": query}
         try:
-            resp = self.session.get(url, timeout=self.timeout)
-            if resp.status_code != 200:
-                logger.warning(f"[{self.STORE_NAME}] HTTP {resp.status_code} returned.")
-                return []
-
+            resp = requests.get(
+                self.base_url,
+                params=params,
+                timeout=self.timeout,
+                impersonate="safari15_5",
+            )
+            resp.raise_for_status()
             return self._parse_html(resp.text, limit)
         except Exception as e:
-            logger.error(f"[{self.STORE_NAME}] Error searching '{query}': {e}")
+            logger.error("[%s] Error searching '%s': %s", self.name, query, e)
             return []
 
-    def _parse_html(self, html: str, limit: int) -> List[Product]:
-        soup = BeautifulSoup(html, "html.parser")
-        products: List[Product] = []
-
-        for card in soup.select(".product-item")[:limit]:
-            name_el = card.select_one(".product-title")
-            price_el = card.select_one(".product-price")
-            link_el = card.select_one("a[href]")
-
-            if not name_el or not price_el:
-                continue
-
-            name = name_el.text.strip()
-            # Clean title tags like || metadata
-            name = name.split("||")[0].strip()
-
-            price_raw = price_el.text.replace(".", "").replace(",", ".").replace("TL", "").strip()
-            try:
-                price = float(price_raw)
-            except ValueError:
-                continue
-
-            link = link_el["href"] if link_el else ""
-            if link and not link.startswith("http"):
-                link = f"{self.BASE_URL}{link}"
-
-            products.append(
-                Product(
-                    name=name,
-                    price=price,
-                    store=self.STORE_NAME,
-                    url=link,
-                    in_stock=True
-                )
-            )
-
-        return products
+    def _parse_html(self, html_content: str, limit: int) -> List[Product]:
+        products = []
+        # Parse products into Product dataclasses...
+        return products[:limit]
 ```
 
----
-
-### Step 2: Register Provider in `UnifiedSearchClient`
-
-In `robo_market_search/unified/client.py`:
-
-1. Import your new client:
-   ```python
-   from robo_market_search.motorobit.client import MotorobitClient
-   ```
-
-2. Add to `STORE_NAMES` and default shipping rules:
-   ```python
-   STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet", "Motorobit"]
-
-   SHIPPING_DEFAULTS["Motorobit"] = ShippingInfo(flat_rate=35.0, free_shipping_min=1500.0)
-   ```
-
-3. Instantiate in `UnifiedSearchClient.__init__`.
-
----
-
-### Step 3: Write Unit Tests
-
-Add a new test file in `tests/test_motorobit.py`:
+### Step 2: Register & Query Stores Dynamically
 
 ```python
-import pytest
-from robo_market_search.motorobit.client import MotorobitClient
+from robo_market_search.providers.registry import default_registry
 
-def test_motorobit_search():
-    client = MotorobitClient()
-    results = client.search("ESP32", limit=2)
-    assert isinstance(results, list)
+# List registered stores
+print(default_registry.list_stores())
+# Output: ['Robotistan', 'Direncnet', 'Robo90', 'Robolink', 'Motorobit']
+
+# Retrieve store class
+store_cls = default_registry.get("Motorobit")
+store_instance = store_cls()
+
+# Check capabilities
+if store_instance.supports(StoreCapability.STOCK_STATUS):
+    print("Motorobit supports stock checks!")
 ```

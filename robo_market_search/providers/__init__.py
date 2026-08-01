@@ -2,14 +2,13 @@
 Store Providers export module for robo_market_search.
 """
 
-from robo_market_search.direncnet.client import DirencnetClient
-from robo_market_search.robo90.client import Robo90Client
-from robo_market_search.robolink.client import RobolinkClient
-from robo_market_search.robotistan.client import RobotistanClient
+from robo_market_search.providers.base import BaseStore, StoreCapability
+from robo_market_search.providers.registry import StoreRegistry, default_registry, register_store
 
 __all__ = [
-    "DirencnetClient",
-    "Robo90Client",
-    "RobolinkClient",
-    "RobotistanClient",
+    "BaseStore",
+    "StoreCapability",
+    "StoreRegistry",
+    "default_registry",
+    "register_store",
 ]

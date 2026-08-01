@@ -1,5 +1,5 @@
 """
-Unified search client with async support (asyncio/aiohttp/threadpool) and SQLite caching.
+Unified search client with async support (asyncio/aiohttp/threadpool), SQLite caching, event hooks, and store capability resolution.
 """
 
 from __future__ import annotations
@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import logging
+import time
 from typing import Dict, List, Optional, Tuple
 
 from robo_market_search.direncnet.client import DirencnetClient
@@ -14,6 +15,7 @@ from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
 from robo_market_search.shared.cache import SearchCache
+from robo_market_search.shared.events import EventDispatcher
 from robo_market_search.shared.models import (
     CartItemResult,
     CartSearchResult,
@@ -40,6 +42,7 @@ SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
 class UnifiedSearchClient:
     """
     Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı ve önbellekli arama yapar.
+    Sözleşmeli BaseStore mimarisi ve Event Dispatcher altyapısını destekler.
     """
 
     def __init__(self, use_cache: bool = True, cache_ttl_seconds: int = 7200) -> None:
@@ -49,16 +52,30 @@ class UnifiedSearchClient:
         self.direncnet = DirencnetClient()
         self.use_cache = use_cache
         self.cache = SearchCache(default_ttl_seconds=cache_ttl_seconds) if use_cache else None
+        self.events = EventDispatcher()
+
+    # Convenience Hook Registrations
+    def on_request(self, callback):
+        return self.events.on_request(callback)
+
+    def on_product(self, callback):
+        return self.events.on_product(callback)
+
+    def on_error(self, callback):
+        return self.events.on_error(callback)
+
+    def on_result(self, callback):
+        return self.events.on_result(callback)
 
     async def search_async(self, query: str, limit_per_store: int = 10) -> List[Product]:
         """
         Asenkron (asyncio) arama metodu. 4 marketi asyncio.gather ile eşzamanlı tarar.
-        Önbellek kontrolü içerir.
         """
         if self.use_cache and self.cache:
             cached = self.cache.get(query, limit_per_store)
             if cached is not None:
                 logger.info("Cache HIT for query=%r limit=%d", query, limit_per_store)
+                self.events.emit_result(query, cached)
                 return cached
 
         loop = asyncio.get_event_loop()
@@ -66,17 +83,25 @@ class UnifiedSearchClient:
         from typing import Callable
 
         async def _fetch(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
+            self.events.emit_request(store_name, query)
+            start_time = time.perf_counter()
             try:
-                return await loop.run_in_executor(None, fn)
+                prods = await loop.run_in_executor(None, fn)
+                elapsed = (time.perf_counter() - start_time) * 1000
+                logger.debug("Store: %s Elapsed: %.1fms Products: %d", store_name, elapsed, len(prods))
+                for p in prods:
+                    self.events.emit_product(p)
+                return prods
             except Exception as exc:
                 logger.error("Error searching %s: %s", store_name, exc)
+                self.events.emit_error(store_name, exc)
                 return []
 
         tasks = [
-            _fetch("Robolink", lambda: self.robolink.search_component(query, limit_per_store)),
-            _fetch("Robotistan", lambda: self.robotistan.search_component(query, limit_per_store, 1)),
-            _fetch("Robo90", lambda: self.robo90.search_component(query, 1, 1)[:limit_per_store]),
-            _fetch("Direncnet", lambda: self.direncnet.search_component(query, limit_per_store)),
+            _fetch("Robolink", lambda: self.robolink.search(query, limit_per_store)),
+            _fetch("Robotistan", lambda: self.robotistan.search(query, limit_per_store)),
+            _fetch("Robo90", lambda: self.robo90.search(query, limit_per_store)),
+            _fetch("Direncnet", lambda: self.direncnet.search(query, limit_per_store)),
         ]
 
         store_results_list = await asyncio.gather(*tasks)
@@ -90,6 +115,7 @@ class UnifiedSearchClient:
         if self.use_cache and self.cache and results:
             self.cache.set(query, limit_per_store, results)
 
+        self.events.emit_result(query, results)
         return results
 
     def search(self, query: str, limit_per_store: int = 10) -> List[Product]:
@@ -100,35 +126,44 @@ class UnifiedSearchClient:
             cached = self.cache.get(query, limit_per_store)
             if cached is not None:
                 logger.info("Cache HIT for query=%r limit=%d", query, limit_per_store)
+                self.events.emit_result(query, cached)
                 return cached
 
         results: List[Product] = []
 
+        def _run_store(store_name: str, fn):
+            self.events.emit_request(store_name, query)
+            start_time = time.perf_counter()
+            prods = fn()
+            elapsed = (time.perf_counter() - start_time) * 1000
+            logger.debug("Store: %s Elapsed: %.1fms Products: %d", store_name, elapsed, len(prods))
+            for p in prods:
+                self.events.emit_product(p)
+            return prods
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             future_to_store = {
-                executor.submit(self.robolink.search_component, query, limit_per_store): "Robolink",
-                executor.submit(self.robotistan.search_component, query, limit_per_store, 1): "Robotistan",
-                executor.submit(self.robo90.search_component, query, 1, 1): "Robo90",
-                executor.submit(self.direncnet.search_component, query, limit_per_store): "Direncnet",
+                executor.submit(_run_store, "Robolink", lambda: self.robolink.search(query, limit_per_store)): "Robolink",
+                executor.submit(_run_store, "Robotistan", lambda: self.robotistan.search(query, limit_per_store)): "Robotistan",
+                executor.submit(_run_store, "Robo90", lambda: self.robo90.search(query, limit_per_store)): "Robo90",
+                executor.submit(_run_store, "Direncnet", lambda: self.direncnet.search(query, limit_per_store)): "Direncnet",
             }
 
             for future in concurrent.futures.as_completed(future_to_store):
                 store_name = future_to_store[future]
                 try:
                     store_results = future.result()
-
-                    if store_name == "Robo90" and len(store_results) > limit_per_store:
-                        store_results = store_results[:limit_per_store]
-
                     results.extend(store_results)
                 except Exception as exc:
                     logger.error("%s aramasında sorun oluştu: %s", store_name, exc)
+                    self.events.emit_error(store_name, exc)
 
         results.sort(key=lambda x: x.price)
 
         if self.use_cache and self.cache and results:
             self.cache.set(query, limit_per_store, results)
 
+        self.events.emit_result(query, results)
         return results
 
     @staticmethod

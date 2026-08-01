@@ -37,12 +37,13 @@ Projenin tüm detayları kurumsal standartlarda hazırlanmış `docs/` dizininde
 | **🏛️ Mimari (Architecture)** | 4 Katmanlı mimari, ThreadPool ve akış şemaları | [architecture.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/architecture.md) |
 | **📦 Kurulum (Installation)** | `pipx`, `brew`, `curl`, `pip`, `docker` kurulum matrisi | [installation.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/installation.md) |
 | **⚙️ Konfigürasyon** | Ortam değişkenleri, kargo limitleri ve BYOK anahtar yönetimi | [configuration.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/configuration.md) |
-| **🐍 Python SDK** | `UnifiedSearchClient`, `RoboMarketAgent` API referansı | [sdk.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/sdk.md) |
+| **🐍 Python SDK** | `Client`, `UnifiedSearchClient`, `RoboMarketAgent` API referansı | [sdk.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/sdk.md) |
 | **⌨️ CLI Referansı** | `robo-search` ve `robo-agent` terminal rehberi | [cli.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/cli.md) |
 | **🤖 MCP Sunucusu** | Claude Desktop, Cursor & VS Code MCP entegrasyonu | [mcp.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/mcp.md) |
 | **💬 Telegram Bot** | `robo-bot` kurulumu, BotFather & webhook rehberi | [telegram.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/telegram.md) |
 | **🚀 REST API** | FastAPI OpenAPI endpoints, BYOK HTTP başlıkları | [api.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/api.md) |
-| **🔌 Provider Geliştirme** | Yeni market kazıyıcısı (Scraper) ekleme rehberi | [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) |
+| **🔌 Store Plugin Geliştirme** | `BaseStore` ve `@register_store` ile yeni market eklentisi yazma rehberi | [plugin-development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/plugin-development.md) |
+| **🔌 Provider Rehberi** | Yerleşik mağaza kazıyıcıları ve mimarisi | [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) |
 | **🛠️ Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` & CI/CD süreçleri | [development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/development.md) |
 | **❓ Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [troubleshooting.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/troubleshooting.md) |
 | **💡 SSS (FAQ)** | Sıkça sorulan sorular | [faq.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/faq.md) |
@@ -473,13 +474,39 @@ sequenceDiagram
 ## Hızlı Başlangıç (Python SDK / Birleştirilmiş Arama)
 
 ```python
-from robo_market_search import UnifiedSearchClient
+from robo_market_search import Client
 
-client = UnifiedSearchClient()
+# 3 satırda hızlı arama (Client alias)
+client = Client()
 products = client.search(query="arduino", limit_per_store=5)
 
 for p in products:
     print(f"[{p.store}] {p.name} - {p.price} {p.currency} (Stok: {p.in_stock})")
+```
+
+### Event Hooks ve Özel Hata Yakalama
+
+```python
+from robo_market_search import Client, CaptchaDetectedError, RateLimitError
+
+client = Client()
+
+# Event dinleyicileri ekleme
+@client.on_request
+def on_req(store, q):
+    print(f"[{store}] '{q}' araması başlatılıyor...")
+
+@client.on_product
+def on_prod(p):
+    if p.price < 50.0:
+        print(f"Fırsat Ürün: {p.name} ({p.price} TL)")
+
+try:
+    products = client.search("ESP32-WROOM")
+except CaptchaDetectedError as e:
+    print(f"Bot engeli takıldı ({e.store}): {e}")
+except RateLimitError as e:
+    print(f"İstek limiti aşıldı ({e.store}): {e}")
 ```
 
 ## Bireysel Market Araması
