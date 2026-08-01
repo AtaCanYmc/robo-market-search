@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.5.0...v1.6.0) (2026-08-01)
+
+
+### ✨ Features
+
+* implement BaseStore interface and custom exceptions for store providers ([8b3442f](https://github.com/AtaCanYmc/robo-market-search/commit/8b3442f83627d963db1601324b150ade0f5bcf97))
+
+
+### ♻️  Code Refactoring
+
+* enhance type hints for callback functions and improve code readability ([1fff8c4](https://github.com/AtaCanYmc/robo-market-search/commit/1fff8c4a22f910baca24ba9f803d58c0f71048e8))
+
 ## [1.5.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.4.0...v1.5.0) (2026-07-31)
 
 
