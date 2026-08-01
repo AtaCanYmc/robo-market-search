@@ -8,14 +8,20 @@ import asyncio
 import concurrent.futures
 import logging
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 from robo_market_search.direncnet.client import DirencnetClient
 from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
 from robo_market_search.shared.cache import SearchCache
-from robo_market_search.shared.events import EventDispatcher
+from robo_market_search.shared.events import (
+    ErrorCallback,
+    EventDispatcher,
+    ProductCallback,
+    RequestCallback,
+    ResultCallback,
+)
 from robo_market_search.shared.models import (
     CartItemResult,
     CartSearchResult,
@@ -55,16 +61,16 @@ class UnifiedSearchClient:
         self.events = EventDispatcher()
 
     # Convenience Hook Registrations
-    def on_request(self, callback):
+    def on_request(self, callback: RequestCallback) -> RequestCallback:
         return self.events.on_request(callback)
 
-    def on_product(self, callback):
+    def on_product(self, callback: ProductCallback) -> ProductCallback:
         return self.events.on_product(callback)
 
-    def on_error(self, callback):
+    def on_error(self, callback: ErrorCallback) -> ErrorCallback:
         return self.events.on_error(callback)
 
-    def on_result(self, callback):
+    def on_result(self, callback: ResultCallback) -> ResultCallback:
         return self.events.on_result(callback)
 
     async def search_async(self, query: str, limit_per_store: int = 10) -> List[Product]:
@@ -79,8 +85,6 @@ class UnifiedSearchClient:
                 return cached
 
         loop = asyncio.get_event_loop()
-
-        from typing import Callable
 
         async def _fetch(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
             self.events.emit_request(store_name, query)
@@ -131,7 +135,7 @@ class UnifiedSearchClient:
 
         results: List[Product] = []
 
-        def _run_store(store_name: str, fn):
+        def _run_store(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
             self.events.emit_request(store_name, query)
             start_time = time.perf_counter()
             prods = fn()
@@ -144,7 +148,9 @@ class UnifiedSearchClient:
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             future_to_store = {
                 executor.submit(_run_store, "Robolink", lambda: self.robolink.search(query, limit_per_store)): "Robolink",
-                executor.submit(_run_store, "Robotistan", lambda: self.robotistan.search(query, limit_per_store)): "Robotistan",
+                executor.submit(
+                    _run_store, "Robotistan", lambda: self.robotistan.search(query, limit_per_store)
+                ): "Robotistan",
                 executor.submit(_run_store, "Robo90", lambda: self.robo90.search(query, limit_per_store)): "Robo90",
                 executor.submit(_run_store, "Direncnet", lambda: self.direncnet.search(query, limit_per_store)): "Direncnet",
             }

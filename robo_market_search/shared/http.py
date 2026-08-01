@@ -23,7 +23,9 @@ logger = logging.getLogger("robo_market_search.http")
 DEFAULT_TIMEOUT = 10
 DEFAULT_MAX_RETRIES = 3
 DEFAULT_BACKOFF_FACTOR = 0.5
-DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+DEFAULT_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 
 
 class HTTPClient:
@@ -101,7 +103,9 @@ class HTTPClient:
                 retries += 1
                 if retries <= self.max_retries:
                     sleep_time = self.backoff_factor * (2 ** (retries - 1))
-                    logger.warning("Retry %d/%d for %s due to %s. Sleeping %.2fs", retries, self.max_retries, url, err, sleep_time)
+                    logger.warning(
+                        "Retry %d/%d for %s due to %s. Sleeping %.2fs", retries, self.max_retries, url, err, sleep_time
+                    )
                     time.sleep(sleep_time)
                 else:
                     raise err
@@ -121,7 +125,9 @@ class HTTPClient:
                 retries += 1
                 if retries <= self.max_retries:
                     sleep_time = self.backoff_factor * (2 ** (retries - 1))
-                    logger.warning("Network error retry %d/%d for %s. Sleeping %.2fs", retries, self.max_retries, url, sleep_time)
+                    logger.warning(
+                        "Network error retry %d/%d for %s. Sleeping %.2fs", retries, self.max_retries, url, sleep_time
+                    )
                     time.sleep(sleep_time)
                 else:
                     raise last_exception
