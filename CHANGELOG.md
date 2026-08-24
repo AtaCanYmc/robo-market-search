@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.8.2](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.1...v1.8.2) (2026-08-24)
+
+
+### 🐛 Bug Fixes
+
+* refactor header update in client.py for improved readability ([3a07459](https://github.com/AtaCanYmc/robo-market-search/commit/3a07459a7d15d74c65ad8adf7aa02d37334fc569))
+* update client.py to improve request handling and add fallback strategy for product search ([9503695](https://github.com/AtaCanYmc/robo-market-search/commit/9503695577b2847a79cb7ae6949370fbdf73050d))
+
 ## [1.8.1](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.0...v1.8.1) (2026-08-24)
 
 
