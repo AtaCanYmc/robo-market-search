@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.6.0...v1.7.0) (2026-08-24)
+
+
+### ✨ Features
+
+* add favicon and web app manifest for improved branding and mobile support ([cd8f84c](https://github.com/AtaCanYmc/robo-market-search/commit/cd8f84c7152fbacec4f833d4928390da00e5bc09))
+* enhance JSON parsing and stock availability checks in client.py ([c3e7b80](https://github.com/AtaCanYmc/robo-market-search/commit/c3e7b80fde975a17ecb12a763cc8d18fd6028313))
+* enhance UI components and improve accessibility in various files ([21e8bdb](https://github.com/AtaCanYmc/robo-market-search/commit/21e8bdbf5a6e1d8e193d42618af2c3ded47200d4))
+
+
+### 🐛 Bug Fixes
+
+* add missing newline at end of site.webmanifest ([4d7bef3](https://github.com/AtaCanYmc/robo-market-search/commit/4d7bef32946f65bb34292622d8b3a59750b0b4e4))
+* improve condition for product limit check in client.py ([a12052c](https://github.com/AtaCanYmc/robo-market-search/commit/a12052c5fe6677ff16a08b8b5f49a081cf9926d9))
+
 ## [1.6.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.5.0...v1.6.0) (2026-08-01)
 
 
