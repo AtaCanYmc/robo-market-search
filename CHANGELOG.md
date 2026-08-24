@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.8.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.7.0...v1.8.0) (2026-08-24)
+
+
+### ✨ Features
+
+* implement theme context and toggle functionality for dark/light mode ([f761851](https://github.com/AtaCanYmc/robo-market-search/commit/f7618517b5fb700404674f7f72c7c6a23c78827a))
+* update version to 1.8.0 and enhance UI components in Navbar ([9b055c5](https://github.com/AtaCanYmc/robo-market-search/commit/9b055c5265ad2e7aa2123ffae597609fd2084250))
+
 ## [1.7.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.6.0...v1.7.0) (2026-08-24)
 
 
