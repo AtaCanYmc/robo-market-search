@@ -53,7 +53,10 @@ class DirencnetClient(BaseStore):
                 for match in matches:
                     clean_json = match.replace("\\'", "'").replace('\\"', '"').replace("\\\\", "\\")
                     try:
-                        item = json.loads(clean_json)
+                        try:
+                            item = json.loads(clean_json, strict=False)
+                        except json.JSONDecodeError:
+                            item = json.loads(match, strict=False)
 
                         url_path = item.get("url", "")
                         full_url = url_path if url_path.startswith("http") else f"https://www.direnc.net/{url_path}"
@@ -68,6 +71,17 @@ class DirencnetClient(BaseStore):
                         if "image" in item:
                             image_url = item["image"]
 
+                        stock_val = item.get("quantity")
+                        if stock_val is None:
+                            stock_val = item.get("stockAmount")
+                        if stock_val is None:
+                            stock_val = item.get("stock")
+
+                        try:
+                            in_stock = float(stock_val) > 0 if stock_val is not None else True
+                        except (ValueError, TypeError):
+                            in_stock = True
+
                         all_products.append(
                             Product(
                                 name=item.get("name", "Ürün Adı Yok"),
@@ -76,7 +90,7 @@ class DirencnetClient(BaseStore):
                                 url=full_url,
                                 image_url=image_url,
                                 store="Direncnet",
-                                in_stock=item.get("stockAmount", 1) > 0 or item.get("stock", 1) > 0,
+                                in_stock=in_stock,
                             )
                         )
 
