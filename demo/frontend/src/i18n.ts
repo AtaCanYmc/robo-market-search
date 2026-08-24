@@ -106,7 +106,7 @@ export const translations: Record<Language, Translations> = {
   tr: {
     // Common / Global
     appName: "ROBO MARKET SEARCH",
-    appVersion: "v1.3 PRO",
+    appVersion: "v1.8 PRO",
     appSubtitle: "Kurumsal Bileşen Tedarik & Donanım Arayüzü",
     systemStatus: "SİSTEM:",
     systemOnline: "ÇEVRİMİÇİ",
@@ -207,7 +207,7 @@ export const translations: Record<Language, Translations> = {
   en: {
     // Common / Global
     appName: "ROBO MARKET SEARCH",
-    appVersion: "v1.3 PRO",
+    appVersion: "v1.8 PRO",
     appSubtitle: "Enterprise Sourcing & Hardware Procurement Terminal",
     systemStatus: "SYSTEM:",
     systemOnline: "ONLINE",

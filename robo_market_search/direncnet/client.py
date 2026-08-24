@@ -36,7 +36,7 @@ class DirencnetClient(BaseStore):
         page = 1
 
         while True:
-            params = {"arama": "", "q": query, "stock": "1", "link": "arama", "pg": page}
+            params = {"arama": "", "q": query, "link": "arama", "pg": page}
 
             try:
                 response = requests.get(self.base_url, params=params, headers=self.headers, impersonate="safari15_5")
