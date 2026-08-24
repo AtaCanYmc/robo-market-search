@@ -65,13 +65,15 @@ class DirencnetClient(BaseStore):
             if not response_text:
                 loader_params = {"arama": "", "q": query, "link": "arama", "pg": page}
                 loader_headers = dict(self.headers)
-                loader_headers.update({
-                    "Accept": "*/*",
-                    "X-Requested-With": "XMLHttpRequest",
-                    "Referer": f"https://www.direnc.net/arama?q={query}",
-                    "Sec-Fetch-Dest": "empty",
-                    "Sec-Fetch-Mode": "cors",
-                })
+                loader_headers.update(
+                    {
+                        "Accept": "*/*",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Referer": f"https://www.direnc.net/arama?q={query}",
+                        "Sec-Fetch-Dest": "empty",
+                        "Sec-Fetch-Mode": "cors",
+                    }
+                )
                 try:
                     response = session.get(self.loader_url, params=loader_params, headers=loader_headers, timeout=10)
                     if response.status_code == 200 and "PRODUCT_DATA.push" in response.text:
