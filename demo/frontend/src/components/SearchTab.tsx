@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -20,8 +20,10 @@ import {
 import { ProductCard } from './ProductCard';
 import { Product } from '../types';
 import { api } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 export const SearchTab: React.FC = () => {
+  const { t } = useTheme();
   const [query, setQuery] = useState('ESP32-WROOM');
   const [limit, setLimit] = useState(10);
   const [sortBy, setSortBy] = useState<'price_asc' | 'price_desc' | 'name_asc'>('price_asc');
@@ -42,28 +44,33 @@ export const SearchTab: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [executionLogs, setExecutionLogs] = useState<string[]>([]);
 
-  const sampleQueries = ['ESP32-WROOM', 'Arduino Uno', 'Relay 5V', 'OLED 0.96', 'L298N Motor Sürücü', 'STM32F103C8T6'];
+  const sampleQueries = ['ESP32-WROOM', 'Arduino Uno', 'Relay 5V', 'OLED 0.96', 'L298N', 'STM32F103'];
 
   const addLog = (msg: string) => {
     const time = new Date().toISOString().split('T')[1].slice(0, 8);
     setExecutionLogs((prev) => [...prev, `[${time}] ${msg}`]);
   };
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault();
-    if (!query.trim()) return;
+    const q = searchQuery || query;
+    if (!q.trim()) return;
+
+    if (searchQuery) {
+      setQuery(searchQuery);
+    }
 
     setLoading(true);
     setError(null);
     setSearched(true);
     setExecutionLogs([]);
 
-    addLog(`INITIATING COMPONENT INDEX QUERY FOR '${query.trim().toUpperCase()}'...`);
+    addLog(`INITIATING COMPONENT INDEX QUERY FOR '${q.trim().toUpperCase()}'...`);
     addLog(`CONNECTING TO VENDOR CLUSTERS (ROBOTISTAN, ROBOLINK, ROBO90, DIRENCNET)...`);
 
     try {
       const isPriceAsc = sortBy === 'price_asc';
-      const res = await api.search(query.trim(), limit, isPriceAsc, true);
+      const res = await api.search(q.trim(), limit, isPriceAsc, true);
 
       if (res.success && res.products) {
         addLog(`QUERY EXECUTED SUCCESSFULLY. ${res.products.length} MPN RECORD(S) RETRIEVED.`);
@@ -80,6 +87,11 @@ export const SearchTab: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // Auto-execute initial search on mount
+  useEffect(() => {
+    handleSearch(undefined, 'ESP32-WROOM');
+  }, []);
 
   const toggleStore = (store: string) => {
     setSelectedStores((prev) =>
@@ -148,9 +160,9 @@ export const SearchTab: React.FC = () => {
       `| --- | --- | --- | --- | --- |`,
       ...filteredProducts.map(
         (p) =>
-          `| ${(p.title || '').replace(/\|/g, '-')} | ${p.formatted_price || `${p.price} TL`} | ${p.store} | ${
-            p.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK'
-          } | [Source Link](${p.url}) |`
+          `| ${p.title} | ${p.price.toFixed(2)} TL | ${p.store} | ${
+            p.in_stock ? 'IN STOCK' : 'OUT OF STOCK'
+          } | [Link](${p.url}) |`
       ),
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8;' });
@@ -164,309 +176,313 @@ export const SearchTab: React.FC = () => {
   };
 
   const copyToClipboard = () => {
-    const lines = [
-      `Robo Market Search Index — "${query.trim()}"`,
-      ...filteredProducts.map(
-        (p) => `- ${p.title} | ${p.formatted_price || `${p.price} TL`} | ${p.store} | ${p.url}`
-      ),
-    ].join('\n');
-    navigator.clipboard.writeText(lines);
+    const text = filteredProducts
+      .map((p) => `${p.title} - ${p.price.toFixed(2)} TL [${p.store}] -> ${p.url}`)
+      .join('\n');
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     setShowExportMenu(false);
   };
 
+  const storesList = [
+    { id: 'robotistan', name: 'ROBOTISTAN' },
+    { id: 'robolink', name: 'ROBOLINK' },
+    { id: 'robo90', name: 'ROBO90' },
+    { id: 'direncnet', name: 'DIRENCNET' },
+  ];
+
   return (
     <div className="space-y-6 font-sans">
       {/* Hero Headline */}
-      <div className="text-center pt-2 pb-1 space-y-1.5">
+      <div className="text-center pt-2 pb-1 space-y-1.5 font-mono">
         <div className="inline-flex items-center gap-1.5 bg-blue-600/10 border border-blue-500/30 rounded px-2.5 py-1 text-blue-400 text-xs font-mono font-medium uppercase tracking-wider">
-          <Terminal className="w-3.5 h-3.5" /> GLOBAL COMPONENT INDEX & MPN MATRICES
+          <Terminal className="w-3.5 h-3.5" /> {t('searchTitle')}
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 font-mono uppercase tracking-tight">
-          INDUSTRIAL COMPONENT SOURCING MATRIX
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-100 dark:text-slate-100 light:text-slate-900 font-mono uppercase tracking-tight">
+          {t('searchTitle')}
         </h1>
-        <p className="text-slate-400 max-w-xl mx-auto text-xs font-sans">
-          Real-time multi-vendor index querying across Robotistan, Robolink, Robo90, and Direnç.net.
+        <p className="text-slate-400 dark:text-slate-400 light:text-slate-600 max-w-xl mx-auto text-xs font-sans">
+          {t('searchSubtitle')}
         </p>
       </div>
 
       {/* Main Search Form */}
-      <form onSubmit={handleSearch} className="max-w-4xl mx-auto space-y-3 font-mono">
+      <form onSubmit={(e) => handleSearch(e)} className="max-w-4xl mx-auto space-y-3 font-mono">
         <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="ENTER MPN OR PART KEYWORD (e.g. ESP32-WROOM, STM32F103, RELAY 5V)..."
-            className="w-full bg-[#131822] border border-slate-800 rounded-lg pl-11 pr-32 py-3 text-slate-100 text-xs font-mono placeholder-slate-600 focus:outline-none focus:border-blue-500/80 shadow-lg shadow-black/40 transition-all uppercase tracking-wider"
+            placeholder={t('searchPlaceholder')}
+            className="w-full bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded-lg pl-10 pr-28 py-2.5 text-slate-100 dark:text-slate-100 light:text-slate-900 text-xs font-mono placeholder-slate-500 focus:outline-none focus:border-blue-500/80 shadow-lg transition-all uppercase tracking-wider"
           />
           <button
             type="submit"
             disabled={loading}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider px-5 py-2 rounded transition-all disabled:opacity-50 flex items-center gap-1.5 shadow"
+            className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider px-4 py-1.5 rounded transition-all disabled:opacity-50 flex items-center gap-1 shadow cursor-pointer"
           >
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-            EXECUTE
+            {t('execute')}
           </button>
         </div>
 
         {/* Quick Sample Queries */}
-        <div className="flex items-center gap-1.5 flex-wrap text-xs text-slate-400 justify-center font-mono">
-          <span className="text-slate-500 text-[11px]">QUICK INDEX:</span>
+        <div className="flex items-center gap-1.5 flex-wrap text-xs text-slate-400 dark:text-slate-400 light:text-slate-600 justify-center font-mono">
+          <span className="text-slate-500 text-[10px]">{t('quickIndex')}</span>
           {sampleQueries.map((sq) => (
             <button
               key={sq}
               type="button"
-              onClick={() => {
-                setQuery(sq);
-              }}
-              className="px-2 py-0.5 rounded bg-[#131822] border border-slate-800 text-slate-300 text-[11px] hover:border-blue-500/50 hover:text-blue-300 transition-all"
+              onClick={() => handleSearch(undefined, sq)}
+              className="px-2 py-0.5 rounded bg-[#131822] dark:bg-[#131822] light:bg-slate-200 border border-slate-800 dark:border-slate-800 light:border-slate-300 text-slate-300 dark:text-slate-300 light:text-slate-800 text-[11px] hover:border-blue-500/50 hover:text-blue-400 transition-all cursor-pointer"
             >
               {sq}
             </button>
           ))}
         </div>
 
-        {/* Filters Bar */}
-        <div className="bg-[#131822] border border-slate-800 rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-          {/* Left: Store Checkboxes */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-slate-400 font-semibold flex items-center gap-1 text-[11px]">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" /> VENDORS:
-            </span>
-            {[
-              { id: 'robotistan', name: 'ROBOTISTAN' },
-              { id: 'robolink', name: 'ROBOLINK' },
-              { id: 'robo90', name: 'ROBO90' },
-              { id: 'direncnet', name: 'DIRENCNET' },
-            ].map((store) => (
-              <label key={store.id} className="inline-flex items-center gap-1.5 cursor-pointer text-slate-300 select-none text-[11px]">
+        {/* Controls & Filter Bar */}
+        <div className="bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded-lg p-3 space-y-2 text-xs">
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800 dark:border-slate-800 light:border-slate-200">
+            {/* Vendor Filter Checkboxes */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <SlidersHorizontal className="w-3 h-3 text-blue-400" /> {t('vendors')}
+              </span>
+              {storesList.map((s) => {
+                const checked = selectedStores.includes(s.id);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => toggleStore(s.id)}
+                    className={`px-2 py-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer ${
+                      checked
+                        ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 border-blue-500/50'
+                        : 'bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-100 text-slate-500 dark:text-slate-500 light:text-slate-400 border-slate-800 dark:border-slate-800 light:border-slate-300 line-through'
+                    }`}
+                  >
+                    {s.name}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Sort & Stock Filters */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <label className="flex items-center gap-1 cursor-pointer text-slate-300 dark:text-slate-300 light:text-slate-700 text-[11px]">
                 <input
                   type="checkbox"
-                  checked={selectedStores.includes(store.id)}
-                  onChange={() => toggleStore(store.id)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500/20 bg-[#0B0F17]"
+                  checked={stockOnly}
+                  onChange={(e) => setStockOnly(e.target.checked)}
+                  className="rounded border-slate-800 text-blue-600 focus:ring-0 bg-[#0B0F17]"
                 />
-                <span>{store.name}</span>
+                <span>{t('inStockOnly')}</span>
               </label>
-            ))}
-          </div>
 
-          {/* Right: Limits & Sorting */}
-          <div className="flex flex-wrap items-center gap-3 text-[11px]">
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-400">LIMIT:</span>
-              <div className="flex gap-1">
+              <div className="flex items-center gap-1">
+                <span className="text-slate-500 text-[10px] font-bold uppercase">{t('limit')}</span>
                 {[5, 10, 20].map((val) => (
                   <button
                     key={val}
                     type="button"
                     onClick={() => setLimit(val)}
-                    className={`px-2 py-0.5 rounded font-mono text-[10px] border transition-all ${
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono border cursor-pointer ${
                       limit === val
-                        ? 'bg-blue-600/20 border-blue-500/60 text-blue-300 font-bold'
-                        : 'border-slate-800 text-slate-400 hover:border-slate-700'
+                        ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 border-blue-500/50 font-bold'
+                        : 'border-slate-800 dark:border-slate-800 light:border-slate-300 text-slate-500'
                     }`}
                   >
                     {val}
                   </button>
                 ))}
               </div>
-            </div>
 
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-400">SORT:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-[#0B0F17] border border-slate-800 rounded px-2 py-0.5 text-slate-300 focus:outline-none focus:border-blue-500 text-[11px] font-mono"
+                className="bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-100 border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded px-2 py-0.5 text-slate-300 dark:text-slate-300 light:text-slate-800 text-[11px] font-mono focus:outline-none"
               >
-                <option value="price_asc">PRICE: LOW ➔ HIGH</option>
-                <option value="price_desc">PRICE: HIGH ➔ LOW</option>
-                <option value="name_asc">TITLE: A ➔ Z</option>
+                <option value="price_asc">{t('priceLowHigh')}</option>
+                <option value="price_desc">{t('priceHighLow')}</option>
+                <option value="name_asc">{t('nameAZ')}</option>
               </select>
             </div>
-
-            <label className="inline-flex items-center gap-1.5 cursor-pointer text-slate-300 select-none text-[11px]">
-              <input
-                type="checkbox"
-                checked={stockOnly}
-                onChange={(e) => setStockOnly(e.target.checked)}
-                className="rounded border-slate-700 text-blue-600 focus:ring-blue-500/20 bg-[#0B0F17]"
-              />
-              <span>IN STOCK ONLY</span>
-            </label>
           </div>
         </div>
       </form>
 
-      {/* Terminal Execution Logs */}
+      {/* Real-time Execution Log Feed */}
       {executionLogs.length > 0 && (
-        <div className="max-w-4xl mx-auto bg-[#0B0F17] border border-slate-800 rounded-lg p-3 font-mono text-[11px] text-blue-400 space-y-1 shadow-inner">
-          <div className="text-[10px] text-slate-500 border-b border-slate-850 pb-1 mb-1 font-bold flex items-center gap-1">
-            <Terminal className="w-3 h-3 text-slate-400" /> EXECUTION STREAM LOGS:
+        <div className="max-w-4xl mx-auto bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-900 border border-slate-800 rounded-lg p-3 font-mono text-[11px] text-blue-400 space-y-1 shadow-inner">
+          <div className="text-[10px] text-slate-500 border-b border-slate-850 pb-1 mb-1 font-bold flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              <Terminal className="w-3 h-3 text-slate-400" /> {t('logStream')}
+            </span>
+            <button onClick={() => setExecutionLogs([])} className="hover:text-slate-300">
+              <X className="w-3 h-3" />
+            </button>
           </div>
-          {executionLogs.map((log, i) => (
-            <div key={i} className="leading-tight">{log}</div>
+          {executionLogs.map((log, idx) => (
+            <div key={idx} className="leading-tight">{log}</div>
           ))}
         </div>
       )}
 
-      {/* Error Alert */}
+      {/* Error Banner */}
       {error && (
-        <div className="max-w-4xl mx-auto p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 font-mono text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+        <div className="max-w-4xl mx-auto p-3.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 font-mono text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Loading Skeletons */}
-      {loading && (
-        <div className="max-w-4xl mx-auto space-y-2">
-          {[1, 2, 3, 4].map((idx) => (
-            <div key={idx} className="bg-[#131822] border border-slate-800 rounded-lg p-3 h-12 animate-pulse flex items-center justify-between">
-              <div className="h-4 bg-slate-800 rounded w-1/3" />
-              <div className="h-4 bg-slate-800 rounded w-1/6" />
-              <div className="h-4 bg-slate-800 rounded w-1/6" />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Product Results Data Grid Matrix */}
-      {!loading && searched && (
-        <div className="max-w-4xl mx-auto space-y-3 font-sans">
-          {/* Header & Controls */}
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-            <div className="flex items-center gap-2 font-mono">
-              <h2 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                INDEX RESULTS ({filteredProducts.length} RECORDS FOUND)
+      {/* Results Matrix Header & Controls */}
+      {searched && (
+        <div className="max-w-4xl mx-auto space-y-3 font-mono">
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800 dark:border-slate-800 light:border-slate-200">
+            <div>
+              <h2 className="font-extrabold text-slate-100 dark:text-slate-100 light:text-slate-900 text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2">
+                <Cpu className="w-4 h-4 text-blue-400" />
+                {t('indexResults')} ({filteredProducts.length} {t('recordsFound')})
               </h2>
             </div>
 
             <div className="flex items-center gap-2">
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-[#131822] border border-slate-800 rounded p-0.5 font-mono">
+              <div className="flex items-center bg-[#131822] dark:bg-[#131822] light:bg-slate-100 border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded p-0.5 font-mono">
                 <button
                   type="button"
                   onClick={() => setViewMode('table')}
-                  className={`p-1 rounded text-xs flex items-center gap-1 ${
-                    viewMode === 'table' ? 'bg-blue-600/20 text-blue-300 font-bold border border-blue-500/30' : 'text-slate-400 hover:text-slate-200'
+                  className={`p-1 rounded text-xs flex items-center gap-1 cursor-pointer ${
+                    viewMode === 'table'
+                      ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 font-bold border border-blue-500/30'
+                      : 'text-slate-400 dark:text-slate-400 light:text-slate-600'
                   }`}
                   title="Data Grid Table View"
                 >
                   <TableIcon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline text-[10px]">TABLE</span>
+                  <span className="hidden sm:inline text-[10px]">{t('tableView')}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('grid')}
-                  className={`p-1 rounded text-xs flex items-center gap-1 ${
-                    viewMode === 'grid' ? 'bg-blue-600/20 text-blue-300 font-bold border border-blue-500/30' : 'text-slate-400 hover:text-slate-200'
+                  className={`p-1 rounded text-xs flex items-center gap-1 cursor-pointer ${
+                    viewMode === 'grid'
+                      ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 font-bold border border-blue-500/30'
+                      : 'text-slate-400 dark:text-slate-400 light:text-slate-600'
                   }`}
                   title="Grid Card View"
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline text-[10px]">GRID</span>
+                  <span className="hidden sm:inline text-[10px]">{t('gridView')}</span>
                 </button>
               </div>
 
-              {filteredProducts.length > 0 && (
-                <div className="relative font-mono">
-                  <button
-                    type="button"
-                    onClick={() => setShowExportMenu(!showExportMenu)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#131822] border border-slate-800 hover:border-blue-500/40 text-slate-300 hover:text-blue-300 text-xs font-medium transition-all shadow-sm"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    EXPORT
-                    <ChevronDown className="w-3 h-3 text-slate-500" />
-                  </button>
+              {/* Export Dropdown Menu */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowExportMenu(!showExportMenu)}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 dark:text-blue-300 light:text-blue-700 border border-blue-500/40 text-xs font-mono font-bold transition-all cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>{t('export')}</span>
+                  <ChevronDown className="w-3 h-3" />
+                </button>
 
-                  {/* Export Dropdown Menu */}
-                  {showExportMenu && (
-                    <div className="absolute right-0 mt-1 w-48 bg-[#131822] border border-slate-800 rounded shadow-2xl z-50 py-1 text-xs text-slate-200 font-mono">
-                      <button
-                        onClick={exportAsCSV}
-                        className="w-full text-left px-3 py-1.5 hover:bg-slate-800 flex items-center gap-2 transition-colors"
-                      >
-                        <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
-                        Excel / CSV (.csv)
-                      </button>
-                      <button
-                        onClick={exportAsJSON}
-                        className="w-full text-left px-3 py-1.5 hover:bg-slate-800 flex items-center gap-2 transition-colors"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-blue-400" />
-                        JSON (.json)
-                      </button>
-                      <button
-                        onClick={exportAsMarkdown}
-                        className="w-full text-left px-3 py-1.5 hover:bg-slate-800 flex items-center gap-2 transition-colors"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-purple-400" />
-                        Markdown Table (.md)
-                      </button>
-                      <div className="border-t border-slate-800 my-1" />
-                      <button
-                        onClick={copyToClipboard}
-                        className="w-full text-left px-3 py-1.5 hover:bg-slate-800 flex items-center gap-2 transition-colors text-blue-400"
-                      >
-                        {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                        {copied ? 'COPIED TO CLIPBOARD' : 'COPY TO CLIPBOARD'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+                {showExportMenu && (
+                  <div className="absolute right-0 mt-1 w-44 bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded shadow-xl py-1 z-30 font-mono text-xs">
+                    <button
+                      onClick={exportAsCSV}
+                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                    >
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" /> Export CSV
+                    </button>
+                    <button
+                      onClick={exportAsJSON}
+                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-blue-400" /> Export JSON
+                    </button>
+                    <button
+                      onClick={exportAsMarkdown}
+                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-purple-400" /> Export Markdown
+                    </button>
+                    <button
+                      onClick={copyToClipboard}
+                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 cursor-pointer"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
+                      {copied ? 'Copied!' : 'Copy to Clipboard'}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
+          {/* Results Views */}
           {filteredProducts.length === 0 ? (
-            <div className="text-center py-12 bg-[#131822] border border-slate-800 rounded-lg font-mono">
-              <p className="text-slate-400 text-xs">NO COMPONENT RECORDS MATCHING SPECIFIED CONSTRAINTS.</p>
+            <div className="bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded p-8 text-center text-slate-500 font-mono text-xs">
+              {t('noRecords')}
             </div>
           ) : viewMode === 'table' ? (
-            /* Enterprise Data Grid Matrix (Table View) */
-            <div className="overflow-x-auto border border-slate-800 rounded-lg bg-[#131822] font-mono">
-              <table className="w-full text-left border-collapse text-xs">
+            /* Enterprise Data Grid Table Matrix */
+            <div className="overflow-x-auto border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-white shadow-lg">
+              <table className="w-full text-left border-collapse text-xs font-mono">
                 <thead>
-                  <tr className="bg-[#0B0F17] border-b border-slate-800 text-[10px] text-slate-400 uppercase tracking-wider">
-                    <th className="py-2.5 px-3 font-bold">Part Description / Title</th>
-                    <th className="py-2.5 px-3 font-bold">Supplier</th>
-                    <th className="py-2.5 px-3 font-bold text-center">Stock Status</th>
-                    <th className="py-2.5 px-3 font-bold text-right">Unit Price</th>
-                    <th className="py-2.5 px-3 font-bold text-right">Action</th>
+                  <tr className="bg-[#131822] dark:bg-[#131822] light:bg-slate-100 border-b border-slate-800 dark:border-slate-800 light:border-slate-200 text-slate-400 dark:text-slate-400 light:text-slate-600 text-[10px] uppercase tracking-wider">
+                    <th className="py-2.5 px-3 font-bold">{t('thPartTitle')}</th>
+                    <th className="py-2.5 px-3 font-bold">{t('thSupplier')}</th>
+                    <th className="py-2.5 px-3 font-bold text-center">{t('thStockStatus')}</th>
+                    <th className="py-2.5 px-3 font-bold text-right">{t('thUnitPrice')}</th>
+                    <th className="py-2.5 px-3 font-bold text-right">{t('thAction')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
+                <tbody className="divide-y divide-slate-850 dark:divide-slate-850 light:divide-slate-200">
                   {filteredProducts.map((product, idx) => {
-                    const titleClean = (product.title || '').split('||')[0].trim();
-                    const storeNorm = (product.store || '').toUpperCase();
+                    const storeNorm = (product.store || '').toLowerCase();
+                    const storeLabel =
+                      storeNorm === 'robotistan'
+                        ? 'Robotistan'
+                        : storeNorm === 'robolink'
+                        ? 'Robolink'
+                        : storeNorm === 'robo90'
+                        ? 'Robo90'
+                        : storeNorm === 'direncnet'
+                        ? 'Direnç.net'
+                        : product.store;
+
                     return (
-                      <tr key={idx} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-2.5 px-3">
-                          <div className="font-semibold text-slate-200 line-clamp-1 font-sans text-xs">{titleClean}</div>
+                      <tr
+                        key={`${product.store}-${idx}`}
+                        className="hover:bg-slate-800/40 dark:hover:bg-slate-800/40 light:hover:bg-slate-50 transition-colors"
+                      >
+                        <td className="py-2.5 px-3 font-semibold text-slate-100 dark:text-slate-100 light:text-slate-900 max-w-xs sm:max-w-md truncate font-sans">
+                          {product.title}
                         </td>
-                        <td className="py-2.5 px-3">
-                          <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 font-bold">
-                            {storeNorm}
+                        <td className="py-2.5 px-3 font-mono">
+                          <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-[#131822] dark:bg-[#131822] light:bg-slate-200 text-slate-300 dark:text-slate-300 light:text-slate-800 border border-slate-800 dark:border-slate-800 light:border-slate-300">
+                            {storeLabel}
                           </span>
                         </td>
                         <td className="py-2.5 px-3 text-center">
                           {product.in_stock ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
-                              IN STOCK
+                            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                              {t('inStock')}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded">
-                              OUT OF STOCK
+                            <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded">
+                              {t('outOfStock')}
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-bold text-blue-400">
+                        <td className="py-2.5 px-3 text-right font-bold text-blue-400 dark:text-blue-400 light:text-blue-600">
                           {product.formatted_price || `${product.price.toFixed(2)} TL`}
                         </td>
                         <td className="py-2.5 px-3 text-right">
@@ -474,9 +490,9 @@ export const SearchTab: React.FC = () => {
                             href={product.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px] font-bold transition-all"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 dark:text-blue-300 light:text-blue-700 border border-blue-500/40 text-[10px] font-bold transition-all"
                           >
-                            SOURCE <ExternalLink className="w-3 h-3" />
+                            {t('source')} <ExternalLink className="w-3 h-3" />
                           </a>
                         </td>
                       </tr>
