@@ -23,7 +23,12 @@ class DirencnetClient(BaseStore):
 
     def __init__(self) -> None:
         self.base_url = "https://www.direnc.net/srv/service/product/loader"
-        self.headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "Accept": "*/*"}
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Referer": "https://www.direnc.net/",
+        }
 
     def search(self, query: str, limit: int = 10) -> List[Product]:
         return self.search_component(query=query, limit=limit)
@@ -39,7 +44,7 @@ class DirencnetClient(BaseStore):
             params = {"arama": "", "q": query, "link": "arama", "pg": page}
 
             try:
-                response = requests.get(self.base_url, params=params, headers=self.headers, impersonate="safari15_5")
+                response = requests.get(self.base_url, params=params, headers=self.headers, impersonate="chrome120")
                 response.raise_for_status()
 
                 if not response.text or "PRODUCT_DATA.push" not in response.text:
