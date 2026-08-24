@@ -94,7 +94,7 @@ class DirencnetClient(BaseStore):
                             )
                         )
 
-                        if limit > 0 and len(all_products) >= limit:
+                        if 0 < limit <= len(all_products):
                             return all_products
                     except Exception as err:
                         logger.debug("Direncnet item parsing error: %s", err)
