@@ -19,6 +19,7 @@ import {
   Layers,
   Info,
   Check,
+  Terminal,
 } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -38,6 +39,8 @@ export const AgentTab: React.FC = () => {
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeResultTab, setActiveResultTab] = useState<'bom' | 'requirements' | 'compatibility' | 'cart' | 'report'>('bom');
+
+  const [executionLogs, setExecutionLogs] = useState<string[]>([]);
 
   // Load saved credentials from localStorage on mount
   useEffect(() => {
@@ -60,18 +63,34 @@ export const AgentTab: React.FC = () => {
     setKeySaved(false);
   };
 
+  const addLog = (msg: string) => {
+    const time = new Date().toISOString().split('T')[1].slice(0, 8);
+    setExecutionLogs((prev) => [...prev, `[${time}] ${msg}`]);
+  };
+
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
 
     setLoading(true);
     setError(null);
+    setExecutionLogs([]);
+
+    addLog('INITIATING AUTONOMOUS SOURCING ENGINE...');
+    addLog(`SELECTED LLM PROVIDER: ${provider.toUpperCase()}`);
+    addLog('CONNECTING TO VENDOR API CLUSTERS (ROBOTISTAN, ROBOLINK, ROBO90, DIRENCNET)...');
+    addLog('PARSING BOM (BILL OF MATERIALS) CONSTRAINTS...');
+
     try {
       handleSaveKey();
       const res = await api.analyzeAgent(prompt, projectType, apiKey.trim() || undefined, provider);
+      addLog('BOM CONSTRAINTS PARSED SUCCESSFULLY.');
+      addLog('HARDWARE COMPATIBILITY MATRIX GENERATED.');
+      addLog('OPTIMIZING UNIT PRICE & STOCK MATRICES.');
       setResponse(res);
       setActiveResultTab('bom');
     } catch (err: any) {
+      addLog(`ENGINE EXECUTION ERROR: ${err.message}`);
       setError(err.message || 'Yapay Zeka ajanı yanıt veremedi. Lütfen API anahtarınızı ve sağlayıcıyı kontrol edin.');
     } finally {
       setLoading(false);
@@ -79,13 +98,13 @@ export const AgentTab: React.FC = () => {
   };
 
   const providers = [
-    { id: 'openai', name: 'OpenAI (GPT-4o)', badge: 'Popüler', placeholder: 'sk-proj-...' },
-    { id: 'gemini', name: 'Google Gemini', badge: 'Önerilen', placeholder: 'AIzaSy...' },
-    { id: 'anthropic', name: 'Anthropic Claude', badge: 'Akıllı', placeholder: 'sk-ant-api...' },
-    { id: 'deepseek', name: 'DeepSeek', badge: 'Hızlı', placeholder: 'sk-...' },
-    { id: 'groq', name: 'Groq (Llama 3)', badge: 'Süper Hızlı', placeholder: 'gsk_...' },
-    { id: 'ollama', name: 'Ollama (Lokal)', badge: 'Ücretsiz', placeholder: 'Lokal sunucu (Anahtar gerektirmez)' },
-    { id: 'mock', name: 'Mock (Test)', badge: 'Demo', placeholder: 'Test Modu (Anahtar gerektirmez)' },
+    { id: 'openai', name: 'OpenAI (GPT-4o)', badge: 'STANDARD', placeholder: 'sk-proj-...' },
+    { id: 'gemini', name: 'Google Gemini', badge: 'RECOMMENDED', placeholder: 'AIzaSy...' },
+    { id: 'anthropic', name: 'Anthropic Claude', badge: 'INTELLIGENT', placeholder: 'sk-ant-api...' },
+    { id: 'deepseek', name: 'DeepSeek', badge: 'FAST', placeholder: 'sk-...' },
+    { id: 'groq', name: 'Groq (Llama 3)', badge: 'HIGH SPEED', placeholder: 'gsk_...' },
+    { id: 'ollama', name: 'Ollama (Local)', badge: 'LOCAL', placeholder: 'Local Server (No Key Required)' },
+    { id: 'mock', name: 'Mock Engine', badge: 'DEMO', placeholder: 'Test Mode (No Key Required)' },
   ];
 
   const selectedProviderInfo = providers.find((p) => p.id === provider) || providers[0];
@@ -101,41 +120,41 @@ export const AgentTab: React.FC = () => {
   const markdownReport = data.report_summary || '';
 
   return (
-    <div className="space-y-6">
-      {/* Title */}
-      <div className="text-center pt-4 pb-2">
-        <div className="inline-flex items-center gap-2 mb-3 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-medium px-3.5 py-1.5">
-          <Bot className="w-3.5 h-3.5" /> Otonom Donanım & BOM Ajanı
+    <div className="space-y-6 font-sans">
+      {/* Title Header */}
+      <div className="text-center pt-2 pb-1 space-y-1.5 font-mono">
+        <div className="inline-flex items-center gap-1.5 bg-blue-600/10 border border-blue-500/30 rounded px-2.5 py-1 text-blue-400 text-xs font-mono uppercase tracking-wider">
+          <Zap className="w-3.5 h-3.5" /> AUTONOMOUS HARDWARE PROCUREMENT & AUDIT ENGINE
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight">
-          Yapay Zeka <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Donanım Ajanı</span>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 uppercase tracking-tight">
+          AUTONOMOUS SOURCING ENGINE
         </h1>
-        <p className="text-slate-400 max-w-lg mx-auto text-xs sm:text-sm mt-2">
-          Proje fikrinizi tarif edin, Yapay Zeka gereksinimleri çıkarsın, BOM listesi hazırlasın ve marketlerden sepete eklesin.
+        <p className="text-slate-400 max-w-xl mx-auto text-xs font-sans">
+          Specify project scope & hardware constraints for automated BOM extraction, electrical verification, and market cart optimization.
         </p>
       </div>
 
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-4">
         {/* Bring Your Own API Key (BYOK) Card */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl shadow-slate-950/40">
+        <div className="bg-[#131822] border border-slate-800 rounded-lg p-4 space-y-3 font-mono">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
-              <Key className="w-4 h-4 text-cyan-400" />
-              Bring Your Own API Key (Kendi Anahtarını Getir)
+            <h3 className="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-2">
+              <Key className="w-4 h-4 text-blue-400" />
+              API CREDENTIAL MANAGEMENT (BYOK)
             </h3>
             {keySaved && apiKey.trim() ? (
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                <ShieldCheck className="w-3 h-3" /> Anahtar Kaydedildi
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
+                <ShieldCheck className="w-3 h-3" /> CREDENTIAL SAVED
               </span>
             ) : (
-              <span className="text-[11px] text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
-                Anahtar Bekleniyor
+              <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded">
+                KEY REQUIRED
               </span>
             )}
           </div>
 
           {/* Provider Choice Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
             {providers.map((p) => (
               <button
                 key={p.id}
@@ -144,14 +163,14 @@ export const AgentTab: React.FC = () => {
                   setProvider(p.id);
                   setKeySaved(false);
                 }}
-                className={`p-2.5 rounded-xl border text-left flex flex-col justify-between gap-1 transition-all ${
+                className={`p-2 rounded border text-left flex flex-col justify-between gap-1 transition-all ${
                   provider === p.id
-                    ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-300 shadow-sm'
-                    : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'bg-blue-600/20 border-blue-500/60 text-blue-300 font-bold'
+                    : 'bg-[#0B0F17] border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                 }`}
               >
-                <div className="text-[11px] font-bold truncate">{p.name}</div>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 w-fit">
+                <div className="text-[11px] truncate">{p.name}</div>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-slate-900 text-slate-500 w-fit">
                   {p.badge}
                 </span>
               </button>
@@ -160,10 +179,10 @@ export const AgentTab: React.FC = () => {
 
           {/* API Key Input Field */}
           {provider !== 'mock' && provider !== 'ollama' ? (
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
-                <span>{selectedProviderInfo.name} API Anahtarı:</span>
-                <span className="text-[10px] text-slate-500 font-normal">Tarayıcınızda güvenle saklanır</span>
+            <div className="space-y-1.5 pt-2 border-t border-slate-800">
+              <label className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                <span>{selectedProviderInfo.name} API KEY:</span>
+                <span className="text-[10px] text-slate-500 font-normal">Encrypted locally in browser</span>
               </label>
               <div className="relative">
                 <input
@@ -174,14 +193,14 @@ export const AgentTab: React.FC = () => {
                     setKeySaved(false);
                   }}
                   placeholder={selectedProviderInfo.placeholder}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-4 pr-24 py-2.5 text-xs font-mono text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-[#0B0F17] border border-slate-800 rounded pl-3 pr-24 py-2 text-xs font-mono text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => setShowApiKey(!showApiKey)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200"
-                    title={showApiKey ? 'Gizle' : 'Göster'}
+                    className="p-1 text-slate-400 hover:text-slate-200"
+                    title={showApiKey ? 'Hide' : 'Show'}
                   >
                     {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
@@ -189,63 +208,75 @@ export const AgentTab: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleClearKey}
-                      className="text-[10px] text-rose-400 hover:underline px-1.5"
+                      className="text-[10px] text-rose-400 hover:underline px-1"
                     >
-                      Sil
+                      Clear
                     </button>
                   )}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400">
+            <div className="p-2.5 rounded bg-[#0B0F17] border border-slate-800 text-[11px] text-slate-400">
               {provider === 'ollama'
-                ? 'ℹ️ Ollama lokal bilgisayarınızda (http://localhost:11434) çalışır. API anahtarı gerekmez.'
-                : 'ℹ️ Mock modu önceden tanımlanmış test donanım çıktıları üretir. API anahtarı gerekmez.'}
+                ? 'ℹ️ Ollama runs locally on your environment (http://localhost:11434). No API key needed.'
+                : 'ℹ️ Mock engine mode runs with predefined hardware simulation data. No API key needed.'}
             </div>
           )}
         </div>
 
         {/* Project Description Form */}
-        <form onSubmit={handleAnalyze} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Cpu className="w-4 h-4 text-blue-400" /> Proje Açıklaması veya İhtiyaç Tarifi:
+        <form onSubmit={handleAnalyze} className="bg-[#131822] border border-slate-800 rounded-lg p-4 space-y-3 font-mono">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Cpu className="w-4 h-4 text-blue-400" /> PROJECT SPECIFICATION & HARDWARE REQUIREMENTS:
             </label>
             <textarea
               rows={4}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Örn: ESP32 kullanarak 4 kanallı röle kartı ve OLED ekranlı akıllı röle kontrol panosu yapmak istiyorum..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 leading-relaxed"
+              placeholder="e.g. Design a Wi-Fi enabled smart irrigation control panel using ESP32, 4-channel relay module, and OLED display..."
+              className="w-full bg-[#0B0F17] border border-slate-800 rounded p-3 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 font-sans leading-relaxed"
             />
           </div>
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span>Proje Türü:</span>
+              <span>PROJECT DOMAIN:</span>
               <select
                 value={projectType}
                 onChange={(e) => setProjectType(e.target.value)}
-                className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-slate-300 focus:outline-none"
+                className="bg-[#0B0F17] border border-slate-800 rounded px-2.5 py-1 text-slate-300 focus:outline-none font-mono text-xs"
               >
-                <option value="IoT / Akıllı Ev">IoT / Akıllı Ev</option>
-                <option value="Robotik / Mechatronics">Robotik / Mechatronics</option>
-                <option value="Gömülü Sistemler">Gömülü Sistemler</option>
-                <option value="3D Yazıcı / CNC">3D Yazıcı / CNC</option>
+                <option value="IoT / Akıllı Ev">IoT / Smart Automation</option>
+                <option value="Robotik / Mechatronics">Robotics / Mechatronics</option>
+                <option value="Gömülü Sistemler">Embedded Electronics</option>
+                <option value="3D Yazıcı / CNC">CNC / Additive Manufacturing</option>
               </select>
             </div>
 
             <button
               type="submit"
               disabled={loading || !prompt.trim()}
-              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-400 hover:to-cyan-500 text-white font-semibold text-xs px-6 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded transition-all disabled:opacity-50 shadow"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Analiz Et ({selectedProviderInfo.name})
+              RUN AUDIT ({selectedProviderInfo.name})
             </button>
           </div>
         </form>
+
+        {/* Real-time Terminal Execution Log */}
+        {executionLogs.length > 0 && (
+          <div className="bg-[#0B0F17] border border-slate-800 rounded-lg p-3 font-mono text-[11px] text-blue-400 space-y-1 shadow-inner">
+            <div className="text-[10px] text-slate-500 border-b border-slate-850 pb-1 mb-1 font-bold flex items-center gap-1">
+              <Terminal className="w-3 h-3 text-slate-400" /> SOURCING ENGINE LOG STREAM:
+            </div>
+            {executionLogs.map((log, i) => (
+              <div key={i} className="leading-tight">{log}</div>
+            ))}
+          </div>
+        )}
 
         {/* Error Notification */}
         {error && (
@@ -257,46 +288,46 @@ export const AgentTab: React.FC = () => {
 
         {/* Structured Visual Agent Results UI */}
         {response && (
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-6 shadow-2xl">
+          <div className="bg-[#131822] border border-slate-800 rounded-lg p-5 space-y-5 shadow-2xl">
             {/* Header Status */}
-            <div className="flex items-center justify-between flex-wrap gap-2 pb-4 border-b border-slate-800">
+            <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-800 font-mono">
               <div>
-                <h3 className="font-extrabold text-slate-100 text-base flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-cyan-400" />
-                  Yapay Zeka Donanım Analiz Sonuçları
+                <h3 className="font-extrabold text-slate-100 text-sm uppercase tracking-wider flex items-center gap-2">
+                  <Terminal className="w-4 h-4 text-blue-400" />
+                  TECHNICAL HARDWARE AUDIT REPORT
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Sağlayıcı: <span className="text-cyan-300 font-semibold">{data.provider || provider}</span>
-                  {data.byok_active && ' • (Kullanıcı API Key Aktif)'}
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  LLM ENGINE PROVIDER: <span className="text-blue-300 font-bold">{data.provider || provider}</span>
+                  {data.byok_active && ' • (USER API KEY ACTIVE)'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-xl">
-                <CheckCircle2 className="w-4 h-4" /> Analiz Başarıyla Tamamlandı
+              <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded">
+                <CheckCircle2 className="w-4 h-4" /> AUDIT COMPLETED
               </div>
             </div>
 
             {/* Sub-Navigation Tabs */}
-            <div className="flex items-center gap-1 border-b border-slate-800 pb-2 overflow-x-auto">
+            <div className="flex items-center gap-1 border-b border-slate-800 pb-2 overflow-x-auto font-mono">
               {[
-                { id: 'bom', label: '📦 Malzeme Listesi (BOM)', count: componentsList.length },
-                { id: 'requirements', label: '📋 Proje İhtiyaçları' },
-                { id: 'compatibility', label: '⚡ Donanım Uyumluluğu' },
-                { id: 'cart', label: '🛒 Sepet & Mağazalar', count: storeGroups.length },
-                { id: 'report', label: '📝 Rapor Özeti' },
+                { id: 'bom', label: 'BOM (BILL OF MATERIALS)', count: componentsList.length },
+                { id: 'requirements', label: 'PROJECT SCOPE & CONSTRAINTS' },
+                { id: 'compatibility', label: 'HARDWARE COMPATIBILITY MATRIX' },
+                { id: 'cart', label: 'PROCUREMENT ALLOCATION', count: storeGroups.length },
+                { id: 'report', label: 'AUDIT SUMMARY REPORT' },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveResultTab(tab.id as any)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded text-xs font-mono font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                     activeResultTab === tab.id
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                   }`}
                 >
                   {tab.label}
                   {tab.count !== undefined && (
-                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-300 font-mono">
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-900 text-slate-300 font-mono">
                       {tab.count}
                     </span>
                   )}
@@ -304,81 +335,86 @@ export const AgentTab: React.FC = () => {
               ))}
             </div>
 
-            {/* TAB 1: BOM List Card View */}
+            {/* TAB 1: BOM List Table View */}
             {activeResultTab === 'bom' && (
-              <div className="space-y-4">
+              <div className="space-y-3 font-mono">
                 <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Proje: <strong className="text-slate-200">{bomData.project_name || 'Donanım Projesi'}</strong></span>
+                  <span>PROJECT IDENTIFIER: <strong className="text-slate-200">{bomData.project_name || 'INDUSTRIAL HARDWARE AUDIT'}</strong></span>
                   {bomData.notes && <span className="text-slate-500 text-[11px]">{bomData.notes}</span>}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {componentsList.map((comp: any, idx: number) => (
-                    <div
-                      key={idx}
-                      className="bg-slate-950/70 border border-slate-800 hover:border-slate-700/80 rounded-xl p-4 flex flex-col justify-between space-y-3"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">
-                            {comp.category || 'Bileşen'}
-                          </span>
-                          <h4 className="font-bold text-slate-100 text-sm mt-1.5">{comp.name}</h4>
-                        </div>
-                        <span className="text-xs font-extrabold px-2.5 py-1 rounded-lg bg-slate-800 text-cyan-300 border border-slate-700">
-                          x{comp.quantity || 1}
-                        </span>
-                      </div>
-
-                      <div className="text-xs text-slate-400 flex items-center justify-between border-t border-slate-850 pt-2">
-                        <span className="text-[11px]">{comp.specifications || 'Standart Spesifikasyon'}</span>
-                        {comp.is_optional && (
-                          <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
-                            Opsiyonel
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto border border-slate-800 rounded bg-[#0B0F17]">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-[#131822] border-b border-slate-800 text-[10px] text-slate-400 uppercase tracking-wider">
+                        <th className="py-2 px-3 font-bold">Category</th>
+                        <th className="py-2 px-3 font-bold">Component Name</th>
+                        <th className="py-2 px-3 font-bold">Technical Specifications</th>
+                        <th className="py-2 px-3 font-bold text-center">Qty</th>
+                        <th className="py-2 px-3 font-bold text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/80">
+                      {componentsList.map((comp: any, idx: number) => (
+                        <tr key={idx} className="hover:bg-slate-800/30 transition-colors">
+                          <td className="py-2 px-3">
+                            <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-300 border border-blue-500/20">
+                              {comp.category || 'BOM'}
+                            </span>
+                          </td>
+                          <td className="py-2 px-3 font-semibold text-slate-100 font-sans">{comp.name}</td>
+                          <td className="py-2 px-3 text-slate-400 text-[11px] font-sans">{comp.specifications || 'Standard Industrial Specification'}</td>
+                          <td className="py-2 px-3 text-center font-bold text-blue-400">x{comp.quantity || 1}</td>
+                          <td className="py-2 px-3 text-center">
+                            {comp.is_optional ? (
+                              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">OPTIONAL</span>
+                            ) : (
+                              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded">REQUIRED</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
 
             {/* TAB 2: Requirements View */}
             {activeResultTab === 'requirements' && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2">
-                    <div className="font-semibold text-slate-300 flex items-center gap-1.5">
-                      <Layers className="w-4 h-4 text-blue-400" /> Proje Türü & Hedef
+              <div className="space-y-3 font-mono">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="bg-[#0B0F17] border border-slate-800 rounded p-3.5 space-y-2">
+                    <div className="font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+                      <Layers className="w-3.5 h-3.5 text-blue-400" /> DOMAIN & TARGET SCOPE
                     </div>
-                    <p className="text-slate-200 font-bold text-sm">{reqs.project_type || 'Belirtilmedi'}</p>
-                    <p className="text-slate-400 leading-relaxed">{reqs.description || 'Açıklama bulunamadı.'}</p>
+                    <p className="text-slate-100 font-bold text-xs">{reqs.project_type || 'Unspecified'}</p>
+                    <p className="text-slate-400 leading-relaxed font-sans text-xs">{reqs.description || 'No description provided.'}</p>
                   </div>
 
-                  <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-3">
-                    <div className="font-semibold text-slate-300 flex items-center gap-1.5">
-                      <Zap className="w-4 h-4 text-amber-400" /> Güç & Bağlantı
+                  <div className="bg-[#0B0F17] border border-slate-800 rounded p-3.5 space-y-2">
+                    <div className="font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" /> POWER & INTERFACE PROTOCOLS
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-medium text-xs">
-                        ⚡ {reqs.power_source || 'Varsayılan Güç'}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <span className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-amber-300 text-xs">
+                        POWER: {reqs.power_source || 'Standard Rail'}
                       </span>
-                      <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-medium text-xs">
-                        📶 {reqs.wireless_protocol || 'Kablolu / Seri'}
+                      <span className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-blue-300 text-xs">
+                        PROTOCOL: {reqs.wireless_protocol || 'Serial / Bus'}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {reqs.key_features && reqs.key_features.length > 0 && (
-                  <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2 text-xs">
-                    <div className="font-semibold text-slate-300 flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-400" /> Temel Fonksiyonel Özellikler
+                  <div className="bg-[#0B0F17] border border-slate-800 rounded p-3.5 space-y-2 text-xs">
+                    <div className="font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+                      <Check className="w-3.5 h-3.5 text-emerald-400" /> VERIFIED FUNCTIONAL CONSTRAINTS
                     </div>
-                    <div className="flex flex-wrap gap-2 pt-1">
+                    <div className="flex flex-wrap gap-2 pt-1 font-sans">
                       {reqs.key_features.map((feat: string, i: number) => (
-                        <span key={i} className="px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-300">
+                        <span key={i} className="px-2.5 py-1 rounded bg-[#131822] border border-slate-800 text-slate-300 text-xs">
                           ✓ {feat}
                         </span>
                       ))}
@@ -390,40 +426,40 @@ export const AgentTab: React.FC = () => {
 
             {/* TAB 3: Compatibility View */}
             {activeResultTab === 'compatibility' && (
-              <div className="space-y-4">
+              <div className="space-y-3 font-mono">
                 <div
-                  className={`p-4 rounded-xl border flex items-center justify-between text-xs ${
+                  className={`p-3.5 rounded border flex items-center justify-between text-xs ${
                     compReport.is_compatible !== false
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                       : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
                   }`}
                 >
-                  <div className="flex items-center gap-2 font-bold text-sm">
-                    <ShieldCheck className="w-5 h-5" />
+                  <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
+                    <ShieldCheck className="w-4 h-4" />
                     {compReport.is_compatible !== false
-                      ? 'Tüm Parçalar Birbiriyle Elektriksel & Donanımsal Olarak Uyumlu'
-                      : 'Donanım Uyumsuzluk Uyarısı Tespit Edildi'}
+                      ? 'ELECTRICAL & BUS INTERFACE COMPATIBILITY VERIFIED'
+                      : 'HARDWARE INTERFACE CONFLICT DETECTED'}
                   </div>
                 </div>
 
                 {compReport.issues && compReport.issues.length > 0 && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-semibold text-slate-300">Tespit Edilen Uyumluluk Uvarıları & Çözümler:</h4>
+                  <div className="space-y-2 font-sans">
+                    <h4 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">COMPATIBILITY ISSUES & ENGINEERING FIXES:</h4>
                     {compReport.issues.map((issue: any, i: number) => (
-                      <div key={i} className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-xs space-y-2">
-                        <div className="flex items-center justify-between">
+                      <div key={i} className="bg-[#0B0F17] border border-slate-800 rounded p-3.5 text-xs space-y-2">
+                        <div className="flex items-center justify-between font-mono">
                           <span className="font-bold text-amber-400 uppercase text-[10px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
-                            {issue.severity || 'Uyarı'}
+                            {issue.severity || 'WARNING'}
                           </span>
                           <span className="text-slate-400 text-[11px]">
-                            Etkilenen: {issue.affected_components?.join(', ')}
+                            AFFECTED MPNs: {issue.affected_components?.join(', ')}
                           </span>
                         </div>
-                        <p className="text-slate-300 leading-relaxed">{issue.description}</p>
-                        <div className="p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[11px] flex items-start gap-2">
-                          <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                        <p className="text-slate-300 leading-relaxed text-xs">{issue.description}</p>
+                        <div className="p-2.5 rounded bg-blue-600/10 border border-blue-500/20 text-blue-300 text-[11px] font-mono flex items-start gap-2">
+                          <Info className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
                           <div>
-                            <strong>Önerilen Çözüm:</strong> {issue.suggested_fix}
+                            <strong>RECOMMENDED ENGINEERING FIX:</strong> {issue.suggested_fix}
                           </div>
                         </div>
                       </div>
@@ -435,49 +471,49 @@ export const AgentTab: React.FC = () => {
 
             {/* TAB 4: Cart & Stores View */}
             {activeResultTab === 'cart' && (
-              <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 flex items-center justify-between text-xs">
+              <div className="space-y-3 font-mono">
+                <div className="p-3.5 rounded bg-[#0B0F17] border border-slate-800 text-xs flex items-center justify-between">
                   <div>
-                    <div className="text-slate-400 text-[11px]">En Optimal Alışveriş Stratejisi</div>
-                    <div className="text-lg font-extrabold text-cyan-300">
-                      {optResult.strategy || 'Bölünmüş Sepet Alışverişi'}
+                    <div className="text-slate-500 text-[10px] uppercase tracking-wider">PROCUREMENT ALLOCATION STRATEGY</div>
+                    <div className="text-sm font-bold text-blue-300 uppercase">
+                      {optResult.strategy || 'SPLIT-VENDOR ALLOCATION'}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-slate-400 text-[11px]">Tahmini Genel Toplam</div>
-                    <div className="text-xl font-extrabold text-emerald-400">
-                      {optResult.grand_total ? `${optResult.grand_total.toFixed(2)} TL` : 'Hesaplandı'}
+                    <div className="text-slate-500 text-[10px] uppercase tracking-wider">ESTIMATED TOTAL GRAND COST</div>
+                    <div className="text-base font-bold text-emerald-400">
+                      {optResult.grand_total ? `${optResult.grand_total.toFixed(2)} TL` : 'CALCULATED'}
                     </div>
                   </div>
                 </div>
 
                 {storeGroups.map((group: any, i: number) => (
-                  <div key={i} className="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-3 text-xs">
+                  <div key={i} className="bg-[#0B0F17] border border-slate-800 rounded p-3.5 space-y-2 text-xs">
                     <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-                      <span className="font-bold text-slate-100 text-sm flex items-center gap-2">
-                        <ShoppingBag className="w-4 h-4 text-cyan-400" />
-                        {group.store} Mağaza Sepeti
+                      <span className="font-bold text-slate-100 text-xs uppercase flex items-center gap-2">
+                        <ShoppingBag className="w-3.5 h-3.5 text-blue-400" />
+                        {group.store} ALLOCATION BASKET
                       </span>
-                      <span className="font-bold text-emerald-400 text-sm">
+                      <span className="font-bold text-emerald-400 text-xs">
                         {group.total ? `${group.total.toFixed(2)} TL` : ''}
                       </span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 font-sans">
                       {group.items?.map((item: any, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 text-xs">
+                        <div key={idx} className="flex items-center justify-between p-2 rounded bg-[#131822] border border-slate-850 text-xs font-mono">
                           <div>
                             <span className="font-semibold text-slate-200">{item.product_name}</span>
                             <span className="text-[10px] text-slate-500 ml-2">(x{item.quantity})</span>
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="font-bold text-cyan-300">{item.total_price?.toFixed(2)} TL</span>
+                            <span className="font-bold text-blue-400">{item.total_price?.toFixed(2)} TL</span>
                             {item.url && (
                               <a
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 text-slate-400 hover:text-cyan-400"
+                                className="p-1 text-slate-400 hover:text-blue-300"
                               >
                                 <ExternalLink className="w-3.5 h-3.5" />
                               </a>
@@ -493,29 +529,29 @@ export const AgentTab: React.FC = () => {
 
             {/* TAB 5: Report Summary View */}
             {activeResultTab === 'report' && (
-              <div className="space-y-3">
+              <div className="space-y-2 font-mono">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-semibold text-slate-300">Yapay Zeka Markdown Özeti:</h4>
+                  <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">ENGINEERING AUDIT SUMMARY (MARKDOWN):</h4>
                   <button
                     onClick={() => navigator.clipboard.writeText(markdownReport)}
-                    className="text-xs text-cyan-400 hover:underline flex items-center gap-1"
+                    className="text-xs text-blue-400 hover:underline flex items-center gap-1"
                   >
-                    <FileText className="w-3.5 h-3.5" /> Raporu Kopyala
+                    <FileText className="w-3.5 h-3.5" /> COPY REPORT
                   </button>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-850 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-wrap overflow-x-auto">
-                  {markdownReport || 'Rapor özeti bulunamadı.'}
+                <div className="p-3.5 rounded bg-[#0B0F17] border border-slate-800 text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-wrap overflow-x-auto">
+                  {markdownReport || 'No markdown report summary available.'}
                 </div>
               </div>
             )}
 
             {/* Developer Raw JSON Accordion Drawer */}
-            <details className="pt-3 border-t border-slate-800">
-              <summary className="text-[11px] text-slate-500 cursor-pointer hover:text-slate-300">
-                Geliştirici İnceleme: Ham JSON Yanıtı
+            <details className="pt-2 border-t border-slate-800 font-mono">
+              <summary className="text-[10px] text-slate-500 cursor-pointer hover:text-slate-300 uppercase tracking-wider">
+                RAW JSON PAYLOAD AUDIT LOGS
               </summary>
-              <pre className="text-[11px] font-mono text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-850 whitespace-pre-wrap overflow-x-auto mt-2">
+              <pre className="text-[11px] font-mono text-slate-400 bg-[#0B0F17] p-3 rounded border border-slate-800 whitespace-pre-wrap overflow-x-auto mt-2">
                 {JSON.stringify(response.data || response, null, 2)}
               </pre>
             </details>

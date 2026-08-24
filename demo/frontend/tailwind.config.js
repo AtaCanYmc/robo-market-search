@@ -8,6 +8,15 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+      },
+      colors: {
+        industrial: {
+          950: '#0B0F17',
+          900: '#131822',
+          850: '#1A2130',
+          800: '#232D42',
+        },
       },
     },
   },

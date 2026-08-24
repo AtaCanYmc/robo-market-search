@@ -4,21 +4,21 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100;
+    @apply bg-[#0B0F17] text-slate-100 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-200 min-h-screen flex flex-col;
   }
 }
 
-/* Custom scrollbars */
+/* Industrial Terminal Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #0B0F17;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
+  background: #1E293B;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;

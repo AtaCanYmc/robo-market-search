@@ -7,6 +7,9 @@ export interface Product {
   store: string;
   in_stock: boolean;
   sku?: string;
+  mpn?: string;
+  manufacturer?: string;
+  lead_time?: string;
 }
 
 export interface SearchResponse {
@@ -16,6 +19,7 @@ export interface SearchResponse {
   products: Product[];
   message?: string;
   error?: string;
+  latency_ms?: number;
 }
 
 export interface BatchSearchResponse {
@@ -45,9 +49,16 @@ export interface OptimizationResponse {
   details?: Record<string, any>;
 }
 
+export interface AgentLogEntry {
+  timestamp: string;
+  level: 'INFO' | 'WARN' | 'EXEC' | 'SUCCESS' | 'ERROR';
+  message: string;
+}
+
 export interface AgentResponse {
   success: boolean;
   message: string;
   data?: Record<string, any>;
+  logs?: AgentLogEntry[];
   error?: string;
 }
