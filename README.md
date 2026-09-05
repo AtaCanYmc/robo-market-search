@@ -1,7 +1,7 @@
 <div align="center">
-  <img src=".github/screenshots/logo.svg" alt="Robo Market Search Logo" width="300" />
+  <img src=".github/screenshots/banner.svg" alt="Robo Market Search Banner" width="100%" />
 
-  # Robo Market Search
+  <br/><br/>
 
   [![PyPI version](https://img.shields.io/pypi/v/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
   [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)

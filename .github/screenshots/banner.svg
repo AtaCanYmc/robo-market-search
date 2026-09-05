@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070A13" />
+      <stop offset="50%" stop-color="#0D1527" />
+      <stop offset="100%" stop-color="#080C16" />
+    </linearGradient>
+
+    <!-- Neon Glow Accents -->
+    <radialGradient id="glowCyan" cx="15%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="glowBlue" cx="85%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="glowPurple" cx="60%" cy="85%" r="45%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Text Gradients -->
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8" />
+    </linearGradient>
+
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#1E293B" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#818CF8" stop-opacity="0.5" />
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1E293B" stroke-width="0.75" stroke-opacity="0.45" />
+      <circle cx="0" cy="0" r="1" fill="#38BDF8" fill-opacity="0.25" />
+    </pattern>
+
+    <!-- Filter for soft glow -->
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. Background Fill -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)" rx="16" />
+
+  <!-- 2. Grid Overlay -->
+  <rect width="100%" height="100%" fill="url(#grid)" rx="16" />
+
+  <!-- 3. Ambient Light Glows -->
+  <rect width="100%" height="100%" fill="url(#glowCyan)" rx="16" />
+  <rect width="100%" height="100%" fill="url(#glowBlue)" rx="16" />
+  <rect width="100%" height="100%" fill="url(#glowPurple)" rx="16" />
+
+  <!-- Outer Tech Border -->
+  <rect x="1.5" y="1.5" width="1197" height="417" rx="15" fill="none" stroke="url(#borderGrad)" stroke-width="1.5" />
+
+  <!-- 4. Futuristic PCB Circuit Traces -->
+  <g stroke="#334155" stroke-width="1.2" fill="none" opacity="0.5">
+    <path d="M 0 90 L 120 90 L 160 130 L 220 130" />
+    <path d="M 1200 120 L 1050 120 L 990 60 L 880 60" />
+    <path d="M 1200 310 L 1080 310 L 1030 360 L 920 360" />
+    <path d="M 0 330 L 140 330 L 180 290 L 230 290" />
+    <circle cx="220" cy="130" r="3" fill="#00F0FF" />
+    <circle cx="880" cy="60" r="3" fill="#38BDF8" />
+    <circle cx="920" cy="360" r="3" fill="#8B5CF6" />
+    <circle cx="230" cy="290" r="3" fill="#00F0FF" />
+  </g>
+
+  <!-- 5. Left Brand Emblem & Tech Scanner Circle -->
+  <g transform="translate(195, 210)">
+    <!-- Outer Orbit Ring -->
+    <circle cx="0" cy="0" r="128" fill="none" stroke="#1E293B" stroke-width="1.5" stroke-dasharray="8 8" opacity="0.6" />
+
+    <!-- Pulsing Radar Arc -->
+    <circle cx="0" cy="0" r="108" fill="none" stroke="#00F0FF" stroke-width="2" opacity="0.35" />
+    <path d="M 0 -108 A 108 108 0 0 1 108 0" fill="none" stroke="url(#accentGradient)" stroke-width="4.5" stroke-linecap="round" filter="url(#softGlow)" />
+
+    <!-- Glowing Core Backing -->
+    <circle cx="0" cy="0" r="82" fill="#0A101D" stroke="#1E293B" stroke-width="2" />
+    <circle cx="0" cy="0" r="82" fill="url(#glowCyan)" />
+
+    <!-- Precision Crosshairs -->
+    <line x1="-95" y1="0" x2="-75" y2="0" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="75" y1="0" x2="95" y2="0" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="0" y1="-95" x2="0" y2="-75" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="0" y1="75" x2="0" y2="95" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Middle Concentric Ring -->
+    <circle cx="0" cy="0" r="54" fill="none" stroke="#38BDF8" stroke-width="2.5" opacity="0.8" />
+    <circle cx="0" cy="0" r="36" fill="#131D31" stroke="#00F0FF" stroke-width="3" filter="url(#softGlow)" />
+
+    <!-- Center Scanner Eye -->
+    <circle cx="0" cy="0" r="14" fill="#00F0FF" filter="url(#softGlow)" />
+    <circle cx="0" cy="0" r="6" fill="#FFFFFF" />
+
+    <!-- Magnifying Handle / Arm (Branding Angle) -->
+    <g transform="rotate(45)">
+      <rect x="70" y="-8" width="56" height="16" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="2" />
+      <line x1="84" y1="-3" x2="112" y2="-3" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- 6. Right Main Content Area -->
+  <g transform="translate(400, 0)">
+    <!-- Top Pill Tag -->
+    <g transform="translate(0, 68)">
+      <rect x="0" y="0" width="375" height="28" rx="14" fill="#0F172A" stroke="#1E293B" stroke-width="1.2" />
+      <circle cx="15" cy="14" r="4" fill="#00F0FF" filter="url(#softGlow)" />
+      <text x="28" y="18" fill="#38BDF8" font-family="'JetBrains Mono', 'Fira Code', 'Courier New', monospace" font-size="11" font-weight="700" letter-spacing="1">
+        UNIFIED HARDWARE AGGREGATOR &amp; AI AGENT
+      </text>
+    </g>
+
+    <!-- Main Title -->
+    <g transform="translate(0, 142)">
+      <text x="0" y="0" fill="url(#titleGradient)" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="900" letter-spacing="-0.5">
+        ROBO MARKET <tspan fill="#38BDF8">SEARCH</tspan>
+      </text>
+    </g>
+
+    <!-- Subtitle / Mission Statement -->
+    <g transform="translate(0, 178)">
+      <text x="0" y="0" fill="#94A3B8" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" letter-spacing="0.2">
+        Türkiye'nin Lider 4 Robotik &amp; Elektronik Mağazasında Canlı Arama,
+      </text>
+      <text x="0" y="24" fill="#CBD5E1" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="600">
+        Sepet Optimizasyonu ve BYOK Destekli Otonom Donanım Ajanı
+      </text>
+    </g>
+
+    <!-- 7. Supported Store Badges Row -->
+    <g transform="translate(0, 245)">
+      <!-- Label -->
+      <text x="0" y="-10" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="700" letter-spacing="1.2">
+        DESTEKLENEN MAĞAZALAR:
+      </text>
+
+      <!-- Store 1: Robotistan -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="128" height="34" rx="8" fill="url(#cardGrad)" stroke="#2563EB" stroke-width="1.2" stroke-opacity="0.7" />
+        <circle cx="16" cy="17" r="4.5" fill="#3B82F6" />
+        <text x="29" y="21" fill="#F1F5F9" font-family="system-ui, sans-serif" font-size="12.5" font-weight="700">Robotistan</text>
+      </g>
+
+      <!-- Store 2: Robolink -->
+      <g transform="translate(138, 0)">
+        <rect x="0" y="0" width="124" height="34" rx="8" fill="url(#cardGrad)" stroke="#059669" stroke-width="1.2" stroke-opacity="0.7" />
+        <circle cx="16" cy="17" r="4.5" fill="#10B981" />
+        <text x="29" y="21" fill="#F1F5F9" font-family="system-ui, sans-serif" font-size="12.5" font-weight="700">Robolink</text>
+      </g>
+
+      <!-- Store 3: Robo90 -->
+      <g transform="translate(272, 0)">
+        <rect x="0" y="0" width="118" height="34" rx="8" fill="url(#cardGrad)" stroke="#7C3AED" stroke-width="1.2" stroke-opacity="0.7" />
+        <circle cx="16" cy="17" r="4.5" fill="#8B5CF6" />
+        <text x="29" y="21" fill="#F1F5F9" font-family="system-ui, sans-serif" font-size="12.5" font-weight="700">Robo90</text>
+      </g>
+
+      <!-- Store 4: Direncnet -->
+      <g transform="translate(400, 0)">
+        <rect x="0" y="0" width="126" height="34" rx="8" fill="url(#cardGrad)" stroke="#DC2626" stroke-width="1.2" stroke-opacity="0.7" />
+        <circle cx="16" cy="17" r="4.5" fill="#EF4444" />
+        <text x="29" y="21" fill="#F1F5F9" font-family="system-ui, sans-serif" font-size="12.5" font-weight="700">Direnç.net</text>
+      </g>
+    </g>
+
+    <!-- 8. Feature Highlights Row -->
+    <g transform="translate(0, 316)">
+      <!-- Feat 1: Parallel Search -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="168" height="32" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+        <text x="12" y="20" fill="#38BDF8" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600">⚡ Eşzamanlı Paralel Arama</text>
+      </g>
+
+      <!-- Feat 2: Split Cart -->
+      <g transform="translate(176, 0)">
+        <rect x="0" y="0" width="176" height="32" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+        <text x="12" y="20" fill="#34D399" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600">🛒 Kargo &amp; Sepet Optimizasyonu</text>
+      </g>
+
+      <!-- Feat 3: BYOK Agent -->
+      <g transform="translate(360, 0)">
+        <rect x="0" y="0" width="186" height="32" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+        <text x="12" y="20" fill="#A78BFA" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600">🤖 BYOK Donanım Ajanı (BOM)</text>
+      </g>
+
+      <!-- Feat 4: MCP / API / CLI -->
+      <g transform="translate(554, 0)">
+        <rect x="0" y="0" width="170" height="32" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1" />
+        <text x="12" y="20" fill="#FBBF24" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600">🔌 MCP Sunucu, API &amp; CLI</text>
+      </g>
+    </g>
+  </g>
+</svg>
