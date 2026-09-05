@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.9.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.2...v1.9.0) (2026-09-05)
+
+
+### ✨ Features
+
+* add server status modal and health check functionality to MainContent ([6561641](https://github.com/AtaCanYmc/robo-market-search/commit/6561641dfb340caff21172eb7dbab428aff58c3d))
+* update README with new banner image and layout adjustments ([3f619b7](https://github.com/AtaCanYmc/robo-market-search/commit/3f619b7df05116cad8186a8158ae299d56b102cd))
+
+
+### 📚 Documentation
+
+* update documentation to include Makefile commands for setup and testing ([6ca964e](https://github.com/AtaCanYmc/robo-market-search/commit/6ca964ebcefe9430fc28ecb373fc570516208108))
+
 ## [1.8.2](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.1...v1.8.2) (2026-08-24)
 
 
