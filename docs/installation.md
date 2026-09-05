@@ -88,16 +88,18 @@ To contribute to Robo Market Search:
 git clone https://github.com/AtaCanYmc/robo-market-search.git
 cd robo-market-search
 
-# 2. Create virtual environment
+# 2. Create and activate virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
 
-# 3. Install in editable mode with development dependencies
-pip install -e ".[all,dev]"
+# 3. Setup dependencies & git pre-commit hooks
+make setup
+# Or manually: pip install -e ".[all,dev]" && pre-commit install
 
-# 4. Install pre-commit hooks
-pre-commit install
-
-# 5. Run test suite
-pytest
+# 4. Run test suite
+make test
+# Or: pytest
 ```
+
+> [!TIP]
+> Run `make help` to see all available commands for development, linting, tests, and Docker services.

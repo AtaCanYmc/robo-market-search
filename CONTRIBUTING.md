@@ -87,38 +87,53 @@ cd robo-market-search
 python -m venv .venv
 source .venv/bin/activate        # On Windows: .venv\Scripts\activate
 
-# 3. Install the package with ALL optional dependencies + dev tools
-pip install -e ".[all]"
-pip install pre-commit ruff mypy types-beautifulsoup4
+# 3. Setup development environment & install git hooks
+make setup
 
-# 4. Install the git hooks (runs automatically on every commit)
-pre-commit install             # pre-commit hook
-pre-commit install --hook-type commit-msg  # Conventional Commits check
+# Or manually:
+# pip install -e ".[all,dev]"
+# pre-commit install
+# pre-commit install --hook-type commit-msg
 ```
+
+> [!TIP]
+> Run `make help` at any time to see all available development, testing, and service commands.
 
 ### Running the linter & formatter
 
 ```bash
-# Check & auto-fix all files with ruff
-ruff check --fix .
+# Run all code quality checks (formatting check, lint, typecheck)
+make check
 
-# Format all files with ruff
-ruff format .
+# Automatically format code and fix lint issues
+make fix
 
-# Or run all pre-commit hooks manually at once
-pre-commit run --all-files
+# Or individual targets:
+make lint          # Check code with Ruff
+make lint-fix      # Fix auto-fixable lint issues
+make format        # Format files with Ruff
+make pre-commit    # Run all pre-commit hooks manually
 ```
 
 ### Type checking
 
 ```bash
-mypy robo_market_search/
+make typecheck
+# Or: pre-commit run mypy --all-files
 ```
 
 ### Running tests
 
 ```bash
-pytest
+# Run all unit tests
+make test
+# Or: pytest
+
+# Run tests with verbose output
+make test-v
+
+# Run tests with coverage report
+make test-cov
 ```
 
 > [!NOTE]

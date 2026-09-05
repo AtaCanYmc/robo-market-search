@@ -595,9 +595,26 @@ Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `robo_mar
 
 ## Katkıda Bulunma
 
-Katkılarınızı memnuniyetle karşılıyoruz! Lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını okuyun.
+Katkılarınızı memnuniyetle karşılıyoruz! Detaylı bilgi için [CONTRIBUTING.md](CONTRIBUTING.md) ve [docs/development.md](docs/development.md) sayfalarını inceleyebilirsiniz.
 
-## Katkıda Bulunanlar (Contributors) & Teşekkürler
+### 🛠️ Makefile ile Hızlı Geliştirici Komutları
+
+Projede test, formatlama, tip kontrolü ve servis çalıştırma süreçlerini otomatikleştiren bir [`Makefile`](Makefile) bulunmaktadır:
+
+| Komut | Açıklama |
+| :--- | :--- |
+| `make help` | Tüm mevcut hedefleri ve açıklamalarını listeler |
+| `make setup` | Geliştirici paketlerini kurar ve pre-commit hook'larını aktif eder |
+| `make test` | Pytest test paketini çalıştırır |
+| `make test-cov` | Testleri kapsam (coverage) raporu ile yürütür |
+| `make check` | Format, lint (Ruff) ve tip (Mypy) kontrollerini çalıştırır |
+| `make fix` | Kod formatlama ve lint hatalarını otomatik düzeltir |
+| `make run-api` | FastAPI REST API sunucusunu ayağa kaldırır (port 8000) |
+| `make run-agent` | Donanım ajanını (CLI) başlatır |
+| `make demo-up` | Web demo ortamını (React + FastAPI) Docker ile başlatır |
+| `make clean` | Geçici derleme ve önbellek dosyalarını temizler |
+
+---
 
 Projemizin gelişmesinde emeği geçen ve katkıda bulunan tüm topluluk üyelerine teşekkür ederiz!
 

@@ -32,15 +32,65 @@ robo-market-search/
 
 ---
 
+## ⚡ Quick Start with Makefile
+
+A comprehensive [`Makefile`](file:///Users/atacan/PycharmProjects/robo-market-search/Makefile) is provided to automate common development workflows. If `.venv` exists, `make` targets automatically detect and use virtual environment binaries.
+
+Run `make help` to inspect all available targets:
+
+```bash
+make help
+```
+
+### 📋 Makefile Command Reference
+
+| Command | Description | Equivalent Underlying Command |
+| :--- | :--- | :--- |
+| `make setup` | Full dev setup (install all extras, dev tools & git hooks) | `pip install -e ".[all,dev]" && pre-commit install ...` |
+| `make install` | Editable install of core package | `pip install -e .` |
+| `make install-all` | Editable install with all optional features | `pip install -e ".[all]"` |
+| `make install-dev` | Editable install with all features + dev tools | `pip install -e ".[all,dev]"` |
+| `make test` | Run pytest test suite | `pytest` |
+| `make test-v` | Verbose pytest execution with short tracebacks | `pytest -v --tb=short` |
+| `make test-cov` | Pytest with cross-package coverage report | `pytest --cov=... --cov-report=term-missing tests/` |
+| `make lint` | Check code with Ruff | `ruff check .` |
+| `make lint-fix` | Auto-fix lint violations with Ruff | `ruff check --fix .` |
+| `make format` | Format code using Ruff | `ruff format .` |
+| `make format-check` | Verify formatting without modifying files | `ruff format --check .` |
+| `make typecheck` | Run static type checking via Mypy hook | `pre-commit run mypy --all-files` |
+| `make pre-commit` | Run all pre-commit hooks on all files | `pre-commit run --all-files` |
+| `make check` | Run format-check, lint, and typecheck | Runs formatting check, lint & typecheck |
+| `make fix` | Apply code formatting and auto-fixes | Runs `format` and `lint-fix` |
+| `make run-api` | Launch FastAPI REST API with auto-reload (port 8000) | `uvicorn robo_market_api.app.main:app --reload` |
+| `make run-agent` | Launch interactive AI hardware agent CLI | `python -m robo_market_agent.cli` |
+| `make run-mcp` | Launch Model Context Protocol server | `python -m robo_market_search.mcp.server` |
+| `make run-bot` | Launch Telegram bot | `python -m robo_market_search.bot.server` |
+| `make run-cli` | Display CLI help menu | `python -m robo_market_search.cli.main --help` |
+| `make docker-build` | Build API Docker image | `docker build -t robo-market-api .` |
+| `make docker-up` | Start API container via Docker Compose | `docker compose up -d` |
+| `make docker-down` | Stop API container via Docker Compose | `docker compose down` |
+| `make demo-up` | Start full demo stack (Frontend + Backend) | `docker compose -f demo/docker-compose.yml up -d` |
+| `make demo-down` | Stop full demo stack | `docker compose -f demo/docker-compose.yml down` |
+| `make build` | Build wheel and sdist packages | `python -m build` |
+| `make clean` | Remove build artifacts, caches, and `.pyc` files | Cleans `build/`, `dist/`, `__pycache__`, `.pytest_cache/` |
+
+---
+
 ## 🧪 Running Tests & Quality Checks
 
 ### 1. Pytest Test Suite
 ```bash
 # Run all unit tests
-pytest
+make test
+# Or: pytest
+
+# Run tests with verbose output
+make test-v
+# Or: pytest -v --tb=short
 
 # Run tests with coverage report
-pytest --cov=robo_market_search --cov=robo_market_agent --cov=robo_market_api
+make test-cov
+# Or: pytest --cov=robo_market_search --cov=robo_market_agent --cov=robo_market_api --cov-report=term-missing tests/
 ```
 
 ---
@@ -50,17 +100,18 @@ pytest --cov=robo_market_search --cov=robo_market_agent --cov=robo_market_api
 We enforce strict code formatting using **Ruff** and type checking via **MyPy**:
 
 ```bash
-# Run Ruff linting check
-ruff check .
+# Check formatting and lint
+make check
 
-# Fix auto-fixable issues
-ruff check --fix .
+# Automatically format code and fix lint issues
+make fix
 
-# Run Ruff formatting check
-ruff format --check .
-
-# Run MyPy static type check
-mypy .
+# Or execute specific targets:
+make lint          # Ruff lint check
+make lint-fix      # Ruff lint auto-fix
+make format        # Ruff format
+make format-check  # Ruff format check
+make typecheck     # Mypy static type check
 ```
 
 ---
@@ -70,13 +121,39 @@ mypy .
 Ensure pre-commit hooks are installed locally before committing code:
 
 ```bash
-pre-commit install
-pre-commit run --all-files
+# Install git hooks
+make setup
+# Or: pre-commit install && pre-commit install --hook-type commit-msg
+
+# Run all pre-commit hooks manually
+make pre-commit
+# Or: pre-commit run --all-files
 ```
 
 ---
 
-## 🚀 Release Process (`release-please`)
+## 🚀 Local Service Execution
+
+You can quickly spin up individual services for local testing:
+
+```bash
+# Start FastAPI REST API server (http://localhost:8000)
+make run-api
+
+# Start AI Hardware Agent CLI
+make run-agent
+
+# Start MCP Server
+make run-mcp
+
+# Launch Demo Web Stack (React + FastAPI) in Docker
+make demo-up
+make demo-down
+```
+
+---
+
+## 📦 Release Process (`release-please`)
 
 Releases are fully automated via GitHub Actions using **Google Release Please**:
 
