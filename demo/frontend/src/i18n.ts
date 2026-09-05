@@ -100,6 +100,18 @@ export interface Translations {
   footerCopyright: string;
   footerDocs: string;
   footerGithub: string;
+
+  // Server Status Modal
+  serverModalTitle: string;
+  serverModalSubtitle: string;
+  serverModalConnecting: string;
+  serverModalConnected: string;
+  serverModalAttempt: string;
+  serverModalHintCloud: string;
+  serverModalHintLocal: string;
+  serverModalRetryNow: string;
+  serverModalDismiss: string;
+  serverModalReopenTooltip: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -203,6 +215,18 @@ export const translations: Record<Language, Translations> = {
     footerCopyright: "Robo Market Search — Açık Kaynak Endüstriyel Donanım İndeksi",
     footerDocs: "REST API Swagger Dökümantasyonu",
     footerGithub: "GitHub Reposu",
+
+    // Server Status Modal
+    serverModalTitle: "Backend Sunucusuna Bağlanılıyor...",
+    serverModalSubtitle: "API sunucusu henüz yanıt vermiyor veya uyku modundan uyanıyor. Bağlantı kurulana kadar otomatik olarak yeniden denenecektir.",
+    serverModalConnecting: "Sunucu Sağlığı Kontrol Ediliyor...",
+    serverModalConnected: "Bağlantı Kuruldu! Sunucu aktif ve hazır.",
+    serverModalAttempt: "Bağlantı Denemesi",
+    serverModalHintCloud: "Bulut sunucusunda (Render ücretsiz plan) ilk istekte uyanma süresi yaklaşık 30-50 saniye sürebilir.",
+    serverModalHintLocal: "Eğer yerel geliştirme yapıyorsanız terminalinizde 'make run-api' veya 'robo-api' komutunu çalıştırın.",
+    serverModalRetryNow: "Şimdi Yeniden Dene",
+    serverModalDismiss: "Arka Planda Bekle",
+    serverModalReopenTooltip: "Sunucu bağlantı durumunu görüntüle",
   },
   en: {
     // Common / Global
@@ -304,5 +328,17 @@ export const translations: Record<Language, Translations> = {
     footerCopyright: "Robo Market Search — Open Source Industrial Hardware Index",
     footerDocs: "REST API Swagger Documentation",
     footerGithub: "GitHub Repository",
+
+    // Server Status Modal
+    serverModalTitle: "Connecting to Backend Server...",
+    serverModalSubtitle: "The API server is not responding yet or is waking up from idle state. Re-establishing connection automatically.",
+    serverModalConnecting: "Checking Server Health...",
+    serverModalConnected: "Connected Successfully! Server is online and active.",
+    serverModalAttempt: "Connection Attempt",
+    serverModalHintCloud: "On free cloud tier (Render), cold boot may take 30-50 seconds to initialize.",
+    serverModalHintLocal: "If testing locally, please ensure the backend is started with 'make run-api' or 'robo-api'.",
+    serverModalRetryNow: "Retry Now",
+    serverModalDismiss: "Wait in Background",
+    serverModalReopenTooltip: "View server connection status",
   },
 };

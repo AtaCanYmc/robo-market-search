@@ -20,19 +20,32 @@ import { useTheme } from '../context/ThemeContext';
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  apiOnline?: boolean | null;
+  onOpenServerModal?: () => void;
+  attemptCount?: number;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
-  const [apiOnline, setApiOnline] = useState<boolean | null>(null);
+export const Navbar: React.FC<NavbarProps> = ({
+  activeTab,
+  setActiveTab,
+  apiOnline: externalApiOnline,
+  onOpenServerModal,
+  attemptCount = 0,
+}) => {
+  const [internalApiOnline, setInternalApiOnline] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme, lang, toggleLang, t } = useTheme();
 
+  const apiOnline = externalApiOnline !== undefined ? externalApiOnline : internalApiOnline;
+
   useEffect(() => {
-    api
-      .checkHealth()
-      .then(() => setApiOnline(true))
-      .catch(() => setApiOnline(false));
-  }, []);
+    if (externalApiOnline === undefined) {
+      api
+        .checkHealth()
+        .then(() => setInternalApiOnline(true))
+        .catch(() => setInternalApiOnline(false));
+    }
+  }, [externalApiOnline]);
 
   const navItems = [
     { id: 'search', label: t('navSearch'), icon: Search },
@@ -113,12 +126,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             </button>
 
             {/* System Status LED Indicator */}
-            <div
-              className={`hidden sm:flex items-center gap-1 px-2 py-1 rounded border text-[10px] ${
+            <button
+              onClick={onOpenServerModal}
+              title={t('serverModalReopenTooltip')}
+              type="button"
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border text-[10px] transition-all cursor-pointer hover:brightness-110 active:scale-95 ${
                 apiOnline === true
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                   : apiOnline === false
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 animate-pulse'
                   : 'bg-slate-900 border-slate-800 text-slate-400'
               }`}
             >
@@ -130,11 +146,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               ) : apiOnline === false ? (
                 <span className="flex items-center gap-1 font-semibold">
                   <AlertCircle className="w-2.5 h-2.5 text-rose-400" /> {t('systemOffline')}
+                  {attemptCount > 0 && <span className="text-[9px] opacity-80">(#{attemptCount})</span>}
                 </span>
               ) : (
-                t('connecting')
+                <span className="font-semibold">{t('connecting')}</span>
               )}
-            </div>
+            </button>
 
             {/* Mobile Menu Toggle Button */}
             <button
