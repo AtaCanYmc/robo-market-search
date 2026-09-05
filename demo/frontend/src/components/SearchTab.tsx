@@ -13,9 +13,8 @@ import {
   LayoutGrid,
   Table as TableIcon,
   ExternalLink,
-  Terminal,
-  X,
-  Cpu,
+  PackageCheck,
+  ShoppingBag,
 } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { Product } from '../types';
@@ -28,7 +27,7 @@ export const SearchTab: React.FC = () => {
   const [limit, setLimit] = useState(10);
   const [sortBy, setSortBy] = useState<'price_asc' | 'price_desc' | 'name_asc'>('price_asc');
   const [stockOnly, setStockOnly] = useState(false);
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [selectedStores, setSelectedStores] = useState<string[]>([
     'robotistan',
     'robolink',
@@ -42,14 +41,8 @@ export const SearchTab: React.FC = () => {
   const [searched, setSearched] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [executionLogs, setExecutionLogs] = useState<string[]>([]);
 
-  const sampleQueries = ['ESP32-WROOM', 'Arduino Uno', 'Relay 5V', 'OLED 0.96', 'L298N', 'STM32F103'];
-
-  const addLog = (msg: string) => {
-    const time = new Date().toISOString().split('T')[1].slice(0, 8);
-    setExecutionLogs((prev) => [...prev, `[${time}] ${msg}`]);
-  };
+  const sampleQueries = ['ESP32-WROOM', 'Arduino Uno', '5V Röle', 'OLED 0.96', 'L298N', 'STM32F103'];
 
   const handleSearch = async (e?: React.FormEvent, searchQuery?: string) => {
     if (e) e.preventDefault();
@@ -63,24 +56,17 @@ export const SearchTab: React.FC = () => {
     setLoading(true);
     setError(null);
     setSearched(true);
-    setExecutionLogs([]);
-
-    addLog(`INITIATING COMPONENT INDEX QUERY FOR '${q.trim().toUpperCase()}'...`);
-    addLog(`CONNECTING TO VENDOR CLUSTERS (ROBOTISTAN, ROBOLINK, ROBO90, DIRENCNET)...`);
 
     try {
       const isPriceAsc = sortBy === 'price_asc';
       const res = await api.search(q.trim(), limit, isPriceAsc, true);
 
       if (res.success && res.products) {
-        addLog(`QUERY EXECUTED SUCCESSFULLY. ${res.products.length} MPN RECORD(S) RETRIEVED.`);
         setProducts(res.products);
       } else {
-        addLog(`QUERY FAILED: ${res.error || 'UNSPECIFIED VENDOR ERROR'}`);
         setError(res.error || 'Arama sırasında bir hata oluştu.');
       }
     } catch (err: any) {
-      addLog(`FATAL CLUSTER ERROR: ${err.message || 'REST API UNREACHABLE'}`);
       setError(err.message || 'REST API sunucusuna bağlanılamadı.');
       setProducts([]);
     } finally {
@@ -133,12 +119,12 @@ export const SearchTab: React.FC = () => {
   };
 
   const exportAsCSV = () => {
-    const headers = ['Part Title', 'Unit Price (TRY)', 'Supplier', 'Stock Status', 'URL'];
+    const headers = ['Ürün Adı', 'Birim Fiyat (TL)', 'Mağaza', 'Stok', 'URL'];
     const rows = filteredProducts.map((p) => [
       `"${(p.title || '').replace(/"/g, '""')}"`,
       p.price,
       `"${p.store}"`,
-      p.in_stock ? 'IN_STOCK' : 'OUT_OF_STOCK',
+      p.in_stock ? 'VAR' : 'YOK',
       `"${p.url}"`,
     ]);
     const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
@@ -154,15 +140,15 @@ export const SearchTab: React.FC = () => {
 
   const exportAsMarkdown = () => {
     const lines = [
-      `# Global Component Index Export — "${query.trim()}"`,
+      `# Arama Sonuçları — "${query.trim()}"`,
       ``,
-      `| Part Title | Unit Price (TRY) | Supplier | Stock Status | URL |`,
+      `| Ürün Adı | Fiyat | Mağaza | Stok | Link |`,
       `| --- | --- | --- | --- | --- |`,
       ...filteredProducts.map(
         (p) =>
           `| ${p.title} | ${p.price.toFixed(2)} TL | ${p.store} | ${
-            p.in_stock ? 'IN STOCK' : 'OUT OF STOCK'
-          } | [Link](${p.url}) |`
+            p.in_stock ? 'Stokta Var' : 'Stokta Yok'
+          } | [İncele](${p.url}) |`
       ),
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8;' });
@@ -186,71 +172,71 @@ export const SearchTab: React.FC = () => {
   };
 
   const storesList = [
-    { id: 'robotistan', name: 'ROBOTISTAN' },
-    { id: 'robolink', name: 'ROBOLINK' },
-    { id: 'robo90', name: 'ROBO90' },
-    { id: 'direncnet', name: 'DIRENCNET' },
+    { id: 'robotistan', name: 'Robotistan', color: 'bg-blue-500' },
+    { id: 'robolink', name: 'Robolink', color: 'bg-emerald-500' },
+    { id: 'robo90', name: 'Robo90', color: 'bg-purple-500' },
+    { id: 'direncnet', name: 'Direnç.net', color: 'bg-rose-500' },
   ];
 
   return (
-    <div className="space-y-6 font-sans">
-      {/* Hero Headline */}
-      <div className="text-center pt-2 pb-1 space-y-1.5 font-mono">
-        <div className="inline-flex items-center gap-1.5 bg-blue-600/10 border border-blue-500/30 rounded px-2.5 py-1 text-blue-400 text-xs font-mono font-medium uppercase tracking-wider">
-          <Terminal className="w-3.5 h-3.5" /> {t('searchTitle')}
-        </div>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-100 dark:text-slate-100 light:text-slate-900 font-mono uppercase tracking-tight">
+    <div className="space-y-6">
+      {/* Clean, Human Headline */}
+      <div className="text-center pt-2 pb-1 space-y-1">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
           {t('searchTitle')}
         </h1>
-        <p className="text-slate-400 dark:text-slate-400 light:text-slate-600 max-w-xl mx-auto text-xs font-sans">
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
           {t('searchSubtitle')}
         </p>
       </div>
 
-      {/* Main Search Form */}
-      <form onSubmit={(e) => handleSearch(e)} className="max-w-4xl mx-auto space-y-3 font-mono">
-        <div className="relative group">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t('searchPlaceholder')}
-            className="w-full bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded-lg pl-10 pr-28 py-2.5 text-slate-100 dark:text-slate-100 light:text-slate-900 text-xs font-mono placeholder-slate-500 focus:outline-none focus:border-blue-500/80 shadow-lg transition-all uppercase tracking-wider"
-          />
+      {/* Main Search Form (Mobile-First responsive flex) */}
+      <form onSubmit={(e) => handleSearch(e)} className="max-w-3xl mx-auto space-y-3">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('searchPlaceholder')}
+              className="w-full h-11 pl-10 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-xs transition-all"
+            />
+          </div>
           <button
             type="submit"
             disabled={loading}
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider px-4 py-1.5 rounded transition-all disabled:opacity-50 flex items-center gap-1 shadow cursor-pointer"
+            className="h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs cursor-pointer shrink-0 active:scale-98"
           >
-            {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-            {t('execute')}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+            <span>{t('execute')}</span>
           </button>
         </div>
 
         {/* Quick Sample Queries */}
-        <div className="flex items-center gap-1.5 flex-wrap text-xs text-slate-400 dark:text-slate-400 light:text-slate-600 justify-center font-mono">
-          <span className="text-slate-500 text-[10px]">{t('quickIndex')}</span>
+        <div className="flex items-center gap-1.5 flex-wrap justify-center text-xs">
+          <span className="text-slate-500 dark:text-slate-400">{t('quickIndex')}</span>
           {sampleQueries.map((sq) => (
             <button
               key={sq}
               type="button"
               onClick={() => handleSearch(undefined, sq)}
-              className="px-2 py-0.5 rounded bg-[#131822] dark:bg-[#131822] light:bg-slate-200 border border-slate-800 dark:border-slate-800 light:border-slate-300 text-slate-300 dark:text-slate-300 light:text-slate-800 text-[11px] hover:border-blue-500/50 hover:text-blue-400 transition-all cursor-pointer"
+              className="px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-mono transition-all cursor-pointer"
             >
               {sq}
             </button>
           ))}
         </div>
 
-        {/* Controls & Filter Bar */}
-        <div className="bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded-lg p-3 space-y-2 text-xs">
-          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800 dark:border-slate-800 light:border-slate-200">
-            {/* Vendor Filter Checkboxes */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                <SlidersHorizontal className="w-3 h-3 text-blue-400" /> {t('vendors')}
-              </span>
+        {/* Filters Card */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-4 space-y-3 shadow-xs">
+          {/* Store Pills */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              {t('vendors')}
+            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
               {storesList.map((s) => {
                 const checked = selectedStores.includes(s.id);
                 return (
@@ -258,41 +244,44 @@ export const SearchTab: React.FC = () => {
                     key={s.id}
                     type="button"
                     onClick={() => toggleStore(s.id)}
-                    className={`px-2 py-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                       checked
-                        ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 border-blue-500/50'
-                        : 'bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-100 text-slate-500 dark:text-slate-500 light:text-slate-400 border-slate-800 dark:border-slate-800 light:border-slate-300 line-through'
+                        ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/60'
+                        : 'bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900'
                     }`}
                   >
+                    <span className={`w-2 h-2 rounded-full ${s.color} ${checked ? 'opacity-100' : 'opacity-40'}`} />
                     {s.name}
                   </button>
                 );
               })}
             </div>
+          </div>
 
-            {/* Sort & Stock Filters */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <label className="flex items-center gap-1 cursor-pointer text-slate-300 dark:text-slate-300 light:text-slate-700 text-[11px]">
-                <input
-                  type="checkbox"
-                  checked={stockOnly}
-                  onChange={(e) => setStockOnly(e.target.checked)}
-                  className="rounded border-slate-800 text-blue-600 focus:ring-0 bg-[#0B0F17]"
-                />
-                <span>{t('inStockOnly')}</span>
-              </label>
+          {/* Secondary Controls: Stock, Limit, Sort */}
+          <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between flex-wrap gap-3 text-xs">
+            <label className="flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-300 select-none">
+              <input
+                type="checkbox"
+                checked={stockOnly}
+                onChange={(e) => setStockOnly(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-0"
+              />
+              <span>{t('inStockOnly')}</span>
+            </label>
 
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-1">
-                <span className="text-slate-500 text-[10px] font-bold uppercase">{t('limit')}</span>
+                <span className="text-slate-500 dark:text-slate-400">{t('limit')}</span>
                 {[5, 10, 20].map((val) => (
                   <button
                     key={val}
                     type="button"
                     onClick={() => setLimit(val)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono border cursor-pointer ${
+                    className={`px-2 py-0.5 rounded text-xs font-mono border cursor-pointer ${
                       limit === val
-                        ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 border-blue-500/50 font-bold'
-                        : 'border-slate-800 dark:border-slate-800 light:border-slate-300 text-slate-500'
+                        ? 'bg-blue-600 text-white border-blue-600 font-semibold'
+                        : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
                     {val}
@@ -303,7 +292,7 @@ export const SearchTab: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-100 border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded px-2 py-0.5 text-slate-300 dark:text-slate-300 light:text-slate-800 text-[11px] font-mono focus:outline-none"
+                className="h-7 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer"
               >
                 <option value="price_asc">{t('priceLowHigh')}</option>
                 <option value="price_desc">{t('priceHighLow')}</option>
@@ -314,111 +303,95 @@ export const SearchTab: React.FC = () => {
         </div>
       </form>
 
-      {/* Real-time Execution Log Feed */}
-      {executionLogs.length > 0 && (
-        <div className="max-w-4xl mx-auto bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-slate-900 border border-slate-800 rounded-lg p-3 font-mono text-[11px] text-blue-400 space-y-1 shadow-inner">
-          <div className="text-[10px] text-slate-500 border-b border-slate-850 pb-1 mb-1 font-bold flex items-center justify-between">
-            <span className="flex items-center gap-1">
-              <Terminal className="w-3 h-3 text-slate-400" /> {t('logStream')}
-            </span>
-            <button onClick={() => setExecutionLogs([])} className="hover:text-slate-300">
-              <X className="w-3 h-3" />
-            </button>
-          </div>
-          {executionLogs.map((log, idx) => (
-            <div key={idx} className="leading-tight">{log}</div>
-          ))}
-        </div>
-      )}
-
-      {/* Error Banner */}
+      {/* Error Alert */}
       {error && (
-        <div className="max-w-4xl mx-auto p-3.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 font-mono text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+        <div className="max-w-3xl mx-auto p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800/40 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Results Matrix Header & Controls */}
+      {/* Results Header & Views */}
       {searched && (
-        <div className="max-w-4xl mx-auto space-y-3 font-mono">
-          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800 dark:border-slate-800 light:border-slate-200">
-            <div>
-              <h2 className="font-extrabold text-slate-100 dark:text-slate-100 light:text-slate-900 text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-blue-400" />
-                {t('indexResults')} ({filteredProducts.length} {t('recordsFound')})
-              </h2>
-            </div>
+        <div className="max-w-5xl mx-auto space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100 text-sm flex items-center gap-2">
+              <PackageCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>{t('indexResults')}</span>
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+                ({filteredProducts.length} {t('recordsFound')})
+              </span>
+            </h2>
 
             <div className="flex items-center gap-2">
-              {/* View Mode Toggle */}
-              <div className="flex items-center bg-[#131822] dark:bg-[#131822] light:bg-slate-100 border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded p-0.5 font-mono">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('table')}
-                  className={`p-1 rounded text-xs flex items-center gap-1 cursor-pointer ${
-                    viewMode === 'table'
-                      ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 font-bold border border-blue-500/30'
-                      : 'text-slate-400 dark:text-slate-400 light:text-slate-600'
-                  }`}
-                  title="Data Grid Table View"
-                >
-                  <TableIcon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline text-[10px]">{t('tableView')}</span>
-                </button>
+              {/* View Mode Switcher */}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-0.5">
                 <button
                   type="button"
                   onClick={() => setViewMode('grid')}
-                  className={`p-1 rounded text-xs flex items-center gap-1 cursor-pointer ${
+                  className={`px-2 py-1 rounded-md text-xs flex items-center gap-1 cursor-pointer transition-all ${
                     viewMode === 'grid'
-                      ? 'bg-blue-600/20 text-blue-400 dark:text-blue-300 light:text-blue-700 font-bold border border-blue-500/30'
-                      : 'text-slate-400 dark:text-slate-400 light:text-slate-600'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-medium shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
-                  title="Grid Card View"
+                  title="Kart Görünümü"
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline text-[10px]">{t('gridView')}</span>
+                  <span className="hidden sm:inline text-xs">{t('gridView')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('table')}
+                  className={`px-2 py-1 rounded-md text-xs flex items-center gap-1 cursor-pointer transition-all ${
+                    viewMode === 'table'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-medium shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                  title="Tablo Görünümü"
+                >
+                  <TableIcon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline text-xs">{t('tableView')}</span>
                 </button>
               </div>
 
-              {/* Export Dropdown Menu */}
+              {/* Export Dropdown */}
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setShowExportMenu(!showExportMenu)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 dark:text-blue-300 light:text-blue-700 border border-blue-500/40 text-xs font-mono font-bold transition-all cursor-pointer"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5" />
+                  <Download className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   <span>{t('export')}</span>
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-3 h-3 ml-0.5 opacity-60" />
                 </button>
 
                 {showExportMenu && (
-                  <div className="absolute right-0 mt-1 w-44 bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-300 rounded shadow-xl py-1 z-30 font-mono text-xs">
+                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg z-30 py-1 text-xs">
                     <button
                       onClick={exportAsCSV}
-                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"
                     >
-                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" /> Export CSV
+                      <FileSpreadsheet className="w-4 h-4 text-emerald-500" /> CSV Olarak İndir
                     </button>
                     <button
                       onClick={exportAsJSON}
-                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"
                     >
-                      <FileText className="w-3.5 h-3.5 text-blue-400" /> Export JSON
+                      <FileText className="w-4 h-4 text-blue-500" /> JSON Olarak İndir
                     </button>
                     <button
                       onClick={exportAsMarkdown}
-                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 cursor-pointer"
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"
                     >
-                      <FileText className="w-3.5 h-3.5 text-purple-400" /> Export Markdown
+                      <FileText className="w-4 h-4 text-purple-500" /> Markdown Olarak İndir
                     </button>
                     <button
                       onClick={copyToClipboard}
-                      className="w-full text-left px-3 py-1.5 hover:bg-slate-800/60 dark:hover:bg-slate-800/60 light:hover:bg-slate-100 flex items-center gap-2 text-slate-300 dark:text-slate-300 light:text-slate-700 border-t border-slate-800 dark:border-slate-800 light:border-slate-200 cursor-pointer"
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2 text-slate-700 dark:text-slate-300 border-t border-slate-100 dark:border-slate-800 cursor-pointer"
                     >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
-                      {copied ? 'Copied!' : 'Copy to Clipboard'}
+                      {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-slate-400" />}
+                      <span>{copied ? 'Kopyalandı!' : 'Panoya Kopyala'}</span>
                     </button>
                   </div>
                 )}
@@ -428,23 +401,30 @@ export const SearchTab: React.FC = () => {
 
           {/* Results Views */}
           {filteredProducts.length === 0 ? (
-            <div className="bg-[#131822] dark:bg-[#131822] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded p-8 text-center text-slate-500 font-mono text-xs">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 text-center text-slate-500 text-sm">
               {t('noRecords')}
             </div>
-          ) : viewMode === 'table' ? (
-            /* Enterprise Data Grid Table Matrix */
-            <div className="overflow-x-auto border border-slate-800 dark:border-slate-800 light:border-slate-200 rounded bg-[#0B0F17] dark:bg-[#0B0F17] light:bg-white shadow-lg">
-              <table className="w-full text-left border-collapse text-xs font-mono">
+          ) : viewMode === 'grid' ? (
+            /* Modern Responsive Grid */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+              {filteredProducts.map((product, idx) => (
+                <ProductCard key={`${product.store}-${idx}`} product={product} />
+              ))}
+            </div>
+          ) : (
+            /* Clean Responsive Table with Safe Horizontal Overflow Container */
+            <div className="overflow-x-auto w-full border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+              <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#131822] dark:bg-[#131822] light:bg-slate-100 border-b border-slate-800 dark:border-slate-800 light:border-slate-200 text-slate-400 dark:text-slate-400 light:text-slate-600 text-[10px] uppercase tracking-wider">
-                    <th className="py-2.5 px-3 font-bold">{t('thPartTitle')}</th>
-                    <th className="py-2.5 px-3 font-bold">{t('thSupplier')}</th>
-                    <th className="py-2.5 px-3 font-bold text-center">{t('thStockStatus')}</th>
-                    <th className="py-2.5 px-3 font-bold text-right">{t('thUnitPrice')}</th>
-                    <th className="py-2.5 px-3 font-bold text-right">{t('thAction')}</th>
+                  <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider">
+                    <th className="py-3 px-3.5 font-semibold">{t('thPartTitle')}</th>
+                    <th className="py-3 px-3 font-semibold">{t('thSupplier')}</th>
+                    <th className="py-3 px-3 font-semibold text-center">{t('thStockStatus')}</th>
+                    <th className="py-3 px-3 font-semibold text-right">{t('thUnitPrice')}</th>
+                    <th className="py-3 px-3.5 font-semibold text-right">{t('thAction')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-850 dark:divide-slate-850 light:divide-slate-200">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredProducts.map((product, idx) => {
                     const storeNorm = (product.store || '').toLowerCase();
                     const storeLabel =
@@ -461,38 +441,39 @@ export const SearchTab: React.FC = () => {
                     return (
                       <tr
                         key={`${product.store}-${idx}`}
-                        className="hover:bg-slate-800/40 dark:hover:bg-slate-800/40 light:hover:bg-slate-50 transition-colors"
+                        className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
                       >
-                        <td className="py-2.5 px-3 font-semibold text-slate-100 dark:text-slate-100 light:text-slate-900 max-w-xs sm:max-w-md truncate font-sans">
+                        <td className="py-3 px-3.5 font-medium text-slate-900 dark:text-slate-100 max-w-xs sm:max-w-sm md:max-w-md truncate">
                           {product.title}
                         </td>
-                        <td className="py-2.5 px-3 font-mono">
-                          <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-[#131822] dark:bg-[#131822] light:bg-slate-200 text-slate-300 dark:text-slate-300 light:text-slate-800 border border-slate-800 dark:border-slate-800 light:border-slate-300">
+                        <td className="py-3 px-3 whitespace-nowrap">
+                          <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                             {storeLabel}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-center">
+                        <td className="py-3 px-3 text-center whitespace-nowrap">
                           {product.in_stock ? (
-                            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-md">
                               {t('inStock')}
                             </span>
                           ) : (
-                            <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 px-2 py-0.5 rounded-md">
                               {t('outOfStock')}
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-bold text-blue-400 dark:text-blue-400 light:text-blue-600">
+                        <td className="py-3 px-3 text-right font-mono font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                           {product.formatted_price || `${product.price.toFixed(2)} TL`}
                         </td>
-                        <td className="py-2.5 px-3 text-right">
+                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
                           <a
                             href={product.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 dark:text-blue-300 light:text-blue-700 border border-blue-500/40 text-[10px] font-bold transition-all"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60 text-xs font-medium transition-all"
                           >
-                            {t('source')} <ExternalLink className="w-3 h-3" />
+                            <span>{t('source')}</span>
+                            <ExternalLink className="w-3 h-3" />
                           </a>
                         </td>
                       </tr>
@@ -500,13 +481,6 @@ export const SearchTab: React.FC = () => {
                   })}
                 </tbody>
               </table>
-            </div>
-          ) : (
-            /* Grid Card View */
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filteredProducts.map((product, idx) => (
-                <ProductCard key={`${product.store}-${idx}`} product={product} />
-              ))}
             </div>
           )}
         </div>

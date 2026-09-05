@@ -50,7 +50,7 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
       role="dialog"
       aria-modal="true"
     >
-      <div className="relative w-full max-w-lg bg-[#0E131F] dark:bg-[#0E131F] light:bg-white border border-slate-700/80 dark:border-slate-700/80 light:border-slate-300 rounded-2xl shadow-2xl shadow-blue-950/50 overflow-hidden font-mono transition-colors animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-lg bg-white dark:bg-[#0E131F] border border-slate-300 dark:border-slate-700/80 rounded-2xl shadow-2xl shadow-blue-950/50 overflow-hidden font-mono transition-colors animate-in fade-in zoom-in-95 duration-200">
         {/* Top Status Accent Bar */}
         <div
           className={`h-1.5 w-full ${
@@ -61,7 +61,7 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
         />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between p-5 border-b border-slate-800 dark:border-slate-800 light:border-slate-200">
+        <div className="flex items-start justify-between p-5 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3.5">
             <div
               className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -83,10 +83,10 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
               )}
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-100 dark:text-slate-100 light:text-slate-900 tracking-tight flex items-center gap-2">
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
                 {justConnected ? t('serverModalConnected') : t('serverModalTitle')}
               </h3>
-              <p className="text-xs text-slate-400 dark:text-slate-400 light:text-slate-600 mt-0.5 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
                 {t('serverModalSubtitle')}
               </p>
             </div>
@@ -94,7 +94,7 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 dark:text-slate-400 light:text-slate-600 hover:text-slate-100 hover:bg-slate-800 dark:hover:bg-slate-800 light:hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             title={t('serverModalDismiss')}
           >
             <X className="w-4 h-4" />
@@ -104,7 +104,7 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
         {/* Modal Body */}
         <div className="p-5 space-y-4">
           {/* Radar / Pulse Graphic */}
-          <div className="relative py-4 px-4 rounded-xl bg-[#090D15] dark:bg-[#090D15] light:bg-slate-50 border border-slate-800/80 dark:border-slate-800/80 light:border-slate-200 flex flex-col items-center justify-center text-center overflow-hidden">
+          <div className="relative py-4 px-4 rounded-xl bg-slate-50 dark:bg-[#090D15] border border-slate-200 dark:border-slate-800/80 flex flex-col items-center justify-center text-center overflow-hidden">
             {/* Visual background ping rings */}
             <div className="relative my-3 flex items-center justify-center">
               {!justConnected && (
@@ -129,19 +129,19 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
             </div>
 
             {/* Live Status Pill */}
-            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 dark:bg-slate-900 light:bg-slate-200 border border-slate-700/80 dark:border-slate-700/80 light:border-slate-300">
+            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80">
               {justConnected ? (
-                <span className="text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                   {t('serverModalConnected')}
                 </span>
               ) : (
-                <span className="text-amber-400 flex items-center gap-1.5">
+                <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                   <RefreshCw
                     className={`w-3 h-3 ${isChecking ? 'animate-spin' : ''}`}
                   />
                   {t('serverModalConnecting')}
-                  <span className="text-slate-400 font-normal">
+                  <span className="text-slate-500 dark:text-slate-400 font-normal">
                     ({t('serverModalAttempt')} #{attemptCount})
                   </span>
                 </span>
@@ -152,37 +152,37 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
           {/* Context / Helpful Advice Cards */}
           <div className="space-y-2 text-xs">
             {/* Cloud (Render) Hint */}
-            <div className="p-3 rounded-xl bg-blue-950/20 dark:bg-blue-950/20 light:bg-blue-50/50 border border-blue-800/30 dark:border-blue-800/30 light:border-blue-200 text-slate-300 dark:text-slate-300 light:text-slate-700 flex items-start gap-2.5">
-              <Cloud className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/30 text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
+              <Cloud className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <span className="font-bold text-blue-400">Render Cloud:</span>{' '}
+                <span className="font-bold text-blue-600 dark:text-blue-400">Render Cloud:</span>{' '}
                 {t('serverModalHintCloud')}
               </div>
             </div>
 
             {/* Local Development Hint */}
-            <div className="p-3 rounded-xl bg-slate-900/60 dark:bg-slate-900/60 light:bg-slate-50 border border-slate-800 dark:border-slate-800 light:border-slate-200 text-slate-300 dark:text-slate-300 light:text-slate-700 space-y-2">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 space-y-2">
               <div className="flex items-start gap-2.5">
-                <Terminal className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <Terminal className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div className="leading-relaxed">
-                  <span className="font-bold text-emerald-400">Local Dev:</span>{' '}
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">Local Dev:</span>{' '}
                   {t('serverModalHintLocal')}
                 </div>
               </div>
 
               {/* Command Code snippet with 1-click copy */}
-              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#070A10] dark:bg-[#070A10] light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-300">
-                <code className="text-blue-400 font-bold font-mono text-[11px]">
+              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#070A10] border border-slate-300 dark:border-slate-800">
+                <code className="text-blue-600 dark:text-blue-400 font-bold font-mono text-[11px]">
                   make run-api
                 </code>
                 <button
                   onClick={() => handleCopyCommand('make run-api')}
-                  className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-slate-800 dark:bg-slate-800 light:bg-slate-100 hover:bg-slate-700 text-slate-300 dark:text-slate-300 light:text-slate-700 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3 h-3 text-emerald-400" />
-                      <span className="text-emerald-400">Kopyalandı</span>
+                      <Check className="w-3 h-3 text-emerald-500" />
+                      <span className="text-emerald-600 dark:text-emerald-400">Kopyalandı</span>
                     </>
                   ) : (
                     <>
@@ -197,10 +197,10 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between p-4 bg-[#090D15] dark:bg-[#090D15] light:bg-slate-100 border-t border-slate-800 dark:border-slate-800 light:border-slate-200">
+        <div className="flex items-center justify-between p-4 bg-slate-100 dark:bg-[#090D15] border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={onClose}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 dark:text-slate-400 light:text-slate-600 hover:text-slate-200 dark:hover:text-slate-200 light:hover:text-slate-900 transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors cursor-pointer"
           >
             {t('serverModalDismiss')}
           </button>
