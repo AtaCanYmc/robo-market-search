@@ -20,30 +20,58 @@ router = APIRouter(prefix="/agent", tags=["AI Hardware Agent"])
     response_model=AgentResponse,
     responses={501: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},
     summary="AI Hardware Requirement Analysis",
-    description="Analyze natural language hardware description and identify required components with custom API key support.",
+    description="Analyze natural language hardware description and identify required components with OpenAI-format and custom API key support.",
 )
 async def agent_analyze(
     payload: AgentRequest,
     agent_service: APIAgentService = Depends(get_agent_service),
+    authorization: Optional[str] = Header(default=None, alias="Authorization"),
     x_api_key: Optional[str] = Header(default=None, alias="X-API-Key"),
     x_openai_key: Optional[str] = Header(default=None, alias="X-OpenAI-API-Key"),
+    x_openai_base_url: Optional[str] = Header(default=None, alias="X-OpenAI-Base-URL"),
+    x_base_url: Optional[str] = Header(default=None, alias="X-Base-URL"),
+    x_openai_model: Optional[str] = Header(default=None, alias="X-OpenAI-Model"),
     x_gemini_key: Optional[str] = Header(default=None, alias="X-Gemini-API-Key"),
     x_anthropic_key: Optional[str] = Header(default=None, alias="X-Anthropic-API-Key"),
     x_provider: Optional[str] = Header(default=None, alias="X-Provider"),
 ) -> AgentResponse:
     """
-    AI Agent project analysis endpoint with Bring Your Own API Key (BYOK) support.
+    AI Agent project analysis endpoint with Bring Your Own API Key (BYOK)
+    and Direct OpenAI-compatible Connection Schema.
     """
+    # Extract Bearer token if present
+    auth_bearer = None
+    if authorization and authorization.lower().startswith("bearer "):
+        auth_bearer = authorization[7:].strip()
+
     # Header & Payload precedence calculation
-    effective_api_key = payload.api_key or x_api_key or x_openai_key or x_gemini_key or x_anthropic_key
-    effective_provider = payload.provider or x_provider or "gemini"
+    effective_api_key = (
+        payload.api_key
+        or x_openai_key
+        or auth_bearer
+        or x_api_key
+        or x_gemini_key
+        or x_anthropic_key
+    )
+    effective_base_url = (
+        payload.base_url
+        or x_openai_base_url
+        or x_base_url
+    )
+    effective_model = (
+        payload.model_name
+        or x_openai_model
+    )
+    effective_provider = payload.provider or x_provider or "openai"
 
     result = await agent_service.analyze_requirements(
         prompt=payload.prompt,
         project_type=payload.project_type,
         api_key=effective_api_key,
         provider=effective_provider,
-        model_name=payload.model_name,
+        model_name=effective_model,
+        base_url=effective_base_url,
+        temperature=payload.temperature,
     )
     return AgentResponse(
         success=True,
@@ -62,21 +90,34 @@ async def agent_analyze(
 async def agent_bom(
     payload: AgentRequest,
     agent_service: APIAgentService = Depends(get_agent_service),
+    authorization: Optional[str] = Header(default=None, alias="Authorization"),
     x_api_key: Optional[str] = Header(default=None, alias="X-API-Key"),
+    x_openai_key: Optional[str] = Header(default=None, alias="X-OpenAI-API-Key"),
+    x_openai_base_url: Optional[str] = Header(default=None, alias="X-OpenAI-Base-URL"),
+    x_base_url: Optional[str] = Header(default=None, alias="X-Base-URL"),
+    x_openai_model: Optional[str] = Header(default=None, alias="X-OpenAI-Model"),
     x_provider: Optional[str] = Header(default=None, alias="X-Provider"),
 ) -> AgentResponse:
     """
-    AI Agent BOM generation endpoint with BYOK support.
+    AI Agent BOM generation endpoint with BYOK and OpenAI connection support.
     """
-    effective_api_key = payload.api_key or x_api_key
-    effective_provider = payload.provider or x_provider or "gemini"
+    auth_bearer = None
+    if authorization and authorization.lower().startswith("bearer "):
+        auth_bearer = authorization[7:].strip()
+
+    effective_api_key = payload.api_key or x_openai_key or auth_bearer or x_api_key
+    effective_base_url = payload.base_url or x_openai_base_url or x_base_url
+    effective_model = payload.model_name or x_openai_model
+    effective_provider = payload.provider or x_provider or "openai"
 
     result = await agent_service.generate_bom(
         prompt=payload.prompt,
         budget=payload.budget,
         api_key=effective_api_key,
         provider=effective_provider,
-        model_name=payload.model_name,
+        model_name=effective_model,
+        base_url=effective_base_url,
+        temperature=payload.temperature,
     )
     return AgentResponse(
         success=True,

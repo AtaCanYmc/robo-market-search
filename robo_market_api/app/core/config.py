@@ -2,7 +2,7 @@
 Application configuration management using environment variables.
 """
 
-from typing import List
+from typing import List, Optional
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -32,6 +32,16 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
 
     CORS_ORIGINS: List[str] = ["*"]
+
+    # AI Agent & Direct OpenAI Connection Settings
+    OPENAI_API_KEY: Optional[str] = None
+    OPENAI_BASE_URL: Optional[str] = None
+    OPENAI_MODEL: str = "gpt-4o"
+    ROBO_AGENT_PROVIDER: str = "openai"
+    ROBO_AGENT_KEY: Optional[str] = None
+    ROBO_AGENT_BASE_URL: Optional[str] = None
+    ROBO_AGENT_MODEL: Optional[str] = None
+
 
     if SettingsConfigDict is not None:
         model_config = SettingsConfigDict(

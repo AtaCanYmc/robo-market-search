@@ -13,6 +13,9 @@ Robo Market Search can be configured via environment variables, configuration fi
 | `CACHE_TTL_SECONDS` | Integer | `7200` | Search result cache expiration time (default 2 hours) |
 | `ROBO_AGENT_PROVIDER` | String | `openai` | Default LLM provider for AI Agent (`openai`, `gemini`, `anthropic`, `deepseek`, `groq`, `ollama`, `mock`) |
 | `ROBO_AGENT_KEY` | String | None | Default API Key for LLM provider |
+| `OPENAI_API_KEY` | String | None | Direct OpenAI API Key |
+| `OPENAI_BASE_URL` | String | `https://api.openai.com/v1` | Target OpenAI-compatible endpoint URL (OpenAI, OpenRouter, Ollama, DeepSeek, etc.) |
+| `OPENAI_MODEL` | String | `gpt-4o` | Default model identifier |
 | `HOST` | String | `0.0.0.0` | REST API server binding host |
 | `PORT` | Integer | `8000` | REST API server port |
 | `BOT_TOKEN` | String | None | Telegram Bot token from @BotFather |

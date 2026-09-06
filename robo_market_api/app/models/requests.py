@@ -2,7 +2,7 @@
 Pydantic Request Schemas.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -89,6 +89,7 @@ class OptimizeRequest(BaseModel):
 class AgentRequest(BaseModel):
     """
     AI Agent analysis or BOM generation request with Bring Your Own API Key (BYOK) support.
+    Supports standard OpenAI connection schema (base_url, api_key, model_name, etc.).
     """
 
     prompt: str = Field(
@@ -103,16 +104,33 @@ class AgentRequest(BaseModel):
     budget: Optional[float] = Field(default=None, description="Target budget in TRY", json_schema_extra={"example": 500.0})
     api_key: Optional[str] = Field(
         default=None,
-        description="Bring Your Own API Key (OpenAI, Gemini, Anthropic, DeepSeek, Groq)",
+        description="Bring Your Own API Key (OpenAI, OpenRouter, DeepSeek, Groq, etc.)",
         json_schema_extra={"example": "sk-proj-..."},
+    )
+    base_url: Optional[str] = Field(
+        default=None,
+        description="OpenAI-compatible API Base URL (e.g. https://api.openai.com/v1, https://openrouter.ai/api/v1, http://localhost:11434/v1)",
+        json_schema_extra={"example": "https://api.openai.com/v1"},
     )
     provider: Optional[str] = Field(
         default=None,
-        description="LLM Provider choice: gemini, openai, anthropic, ollama, deepseek, groq, mock",
+        description="LLM Provider: openai (default when omitted, supports any OpenAI-compatible endpoint), deepseek, groq, gemini, anthropic, ollama, mock",
         json_schema_extra={"example": "openai"},
     )
     model_name: Optional[str] = Field(
         default=None,
-        description="Optional model name override (e.g. gpt-4o, gemini-2.0-flash, claude-3-5-sonnet-20241022)",
+        description="Model name override (e.g. gpt-4o, deepseek-chat, llama-3.3-70b-versatile)",
         json_schema_extra={"example": "gpt-4o"},
     )
+    temperature: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=2.0,
+        description="Sampling temperature for LLM generation",
+        json_schema_extra={"example": 0.2},
+    )
+    openai_config: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Optional full OpenAI connection schema configuration object",
+    )
+

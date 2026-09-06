@@ -12,6 +12,7 @@ from robo_market_agent.models.agent_models import (
     SearchRequest,
     ShoppingCartItem,
     StoreGroup,
+    OpenAIConnectionConfig,
 )
 
 __all__ = [
@@ -28,4 +29,6 @@ __all__ = [
     "SearchRequest",
     "ShoppingCartItem",
     "StoreGroup",
+    "OpenAIConnectionConfig",
 ]
+

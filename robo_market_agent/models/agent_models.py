@@ -4,7 +4,7 @@ Structured schema definitions for requirements, BOM, compatibility, optimization
 """
 
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -116,3 +116,23 @@ class FinalAgentReport(BaseModel):
     compatibility_report: CompatibilityReport
     optimization_result: OptimizationResult
     summary_markdown: str
+
+
+class OpenAIConnectionConfig(BaseModel):
+    """
+    Standard OpenAI connection schema supporting official OpenAI and any OpenAI-compatible provider
+    (OpenRouter, DeepSeek, Groq, Ollama, vLLM, LM Studio, LocalAI, etc.).
+    """
+
+    api_key: Optional[str] = Field(default=None, description="OpenAI API Key or provider auth token")
+    base_url: Optional[str] = Field(
+        default="https://api.openai.com/v1",
+        description="Target OpenAI-compatible endpoint base URL",
+    )
+    model_name: str = Field(default="gpt-4o", description="Target model identifier (e.g. gpt-4o, deepseek-chat)")
+    temperature: Optional[float] = Field(default=0.2, ge=0.0, le=2.0, description="Sampling temperature")
+    max_tokens: Optional[int] = Field(default=None, description="Maximum tokens to generate")
+    organization: Optional[str] = Field(default=None, description="OpenAI Organization ID")
+    timeout: Optional[float] = Field(default=60.0, description="HTTP client timeout in seconds")
+    extra_headers: Optional[Dict[str, str]] = Field(default=None, description="Additional HTTP headers")
+

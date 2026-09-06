@@ -91,7 +91,14 @@ Calculate split-cart optimization and store free shipping limits.
 ---
 
 ### 4. `POST /api/v1/agent/analyze`
-Execute the AI Hardware Agent pipeline.
+Execute the AI Hardware Agent pipeline using direct OpenAI format or compatible endpoints.
+
+- **Headers** (Optional):
+  - `Authorization: Bearer <api_key>`
+  - `X-OpenAI-API-Key: <api_key>`
+  - `X-OpenAI-Base-URL: https://api.openai.com/v1` (or custom endpoint e.g., OpenRouter, Ollama, DeepSeek)
+  - `X-OpenAI-Model: gpt-4o`
+  - `X-Provider: openai`
 
 - **Request Body**:
 ```json
@@ -99,6 +106,10 @@ Execute the AI Hardware Agent pipeline.
   "prompt": "WiFi connected plant watering system",
   "project_type": "IoT / Akıllı Ev",
   "provider": "openai",
-  "api_key": "sk-proj-..."
+  "base_url": "https://api.openai.com/v1",
+  "model_name": "gpt-4o",
+  "api_key": "sk-proj-...",
+  "temperature": 0.2
 }
 ```
+

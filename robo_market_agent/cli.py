@@ -76,9 +76,18 @@ def _get_api_key(provider_name: str, passed_key: str) -> str:
     return config.get(key_name, "")
 
 
-def _get_provider(provider_name: str, api_key: str, model_name: Optional[str]):
+def _get_provider(
+    provider_name: str,
+    api_key: str,
+    model_name: Optional[str],
+    base_url: Optional[str] = None,
+):
     p_name = provider_name.lower().strip()
     resolved_key = _get_api_key(p_name, api_key)
+    config = _load_config()
+
+    resolved_base_url = base_url or os.getenv("OPENAI_BASE_URL") or config.get(f"{p_name}_base_url")
+    resolved_model = model_name or os.getenv("OPENAI_MODEL") or config.get(f"{p_name}_model")
 
     if p_name not in ("mock", "ollama") and not resolved_key:
         console.print(f"[bold red]Hata:[/bold red] '{provider_name}' sağlayıcısı için API key bulunamadı!")
@@ -88,17 +97,25 @@ def _get_provider(provider_name: str, api_key: str, model_name: Optional[str]):
         sys.exit(1)
 
     if p_name == "openai":
-        return OpenAIProvider(api_key=resolved_key, model_name=model_name or "gpt-4o")
+        return OpenAIProvider(
+            api_key=resolved_key,
+            model_name=resolved_model or "gpt-4o",
+            base_url=resolved_base_url,
+        )
     elif p_name == "anthropic":
-        return AnthropicProvider(api_key=resolved_key, model_name=model_name or "claude-3-5-sonnet-20241022")
+        return AnthropicProvider(api_key=resolved_key, model_name=resolved_model or "claude-3-5-sonnet-20241022")
     elif p_name == "gemini":
-        return GeminiProvider(api_key=resolved_key, model_name=model_name or "gemini-2.5-flash")
+        return GeminiProvider(api_key=resolved_key, model_name=resolved_model or "gemini-2.5-flash")
     elif p_name == "groq":
-        return GroqProvider(api_key=resolved_key, model_name=model_name or "llama-3.3-70b-versatile")
+        return GroqProvider(api_key=resolved_key, model_name=resolved_model or "llama-3.3-70b-versatile")
     elif p_name == "deepseek":
-        return DeepSeekProvider(api_key=resolved_key, model_name=model_name or "deepseek-chat")
+        return DeepSeekProvider(
+            api_key=resolved_key,
+            model_name=resolved_model or "deepseek-chat",
+            base_url=resolved_base_url or "https://api.deepseek.com",
+        )
     elif p_name == "ollama":
-        return OllamaProvider(host=resolved_key or "http://localhost:11434", model_name=model_name or "llama3.1")
+        return OllamaProvider(host=resolved_base_url or resolved_key or "http://localhost:11434", model_name=resolved_model or "llama3.1")
     elif p_name == "mock":
         return MockLLMProvider()
     else:
@@ -117,20 +134,28 @@ def config_set(
     provider: str = typer.Option(
         ..., "--provider", "-p", help="LLM Sağlayıcı adı (openai, anthropic, gemini, groq, deepseek, ollama)"
     ),
-    api_key: str = typer.Option(..., "--api-key", "-k", help="Kaydedilecek API Key değeri"),
+    api_key: Optional[str] = typer.Option(None, "--api-key", "-k", help="Kaydedilecek API Key değeri"),
+    base_url: Optional[str] = typer.Option(None, "--base-url", "-u", help="OpenAI formatında Base URL"),
+    model: Optional[str] = typer.Option(None, "--model", "-m", help="Varsayılan model adı"),
     default: bool = typer.Option(False, "--default", "-d", help="Varsayılan sağlayıcı olarak ayarla"),
 ):
     """
-    Belirtilen LLM sağlayıcısının API Key değerini lokal hafızaya (~/.config/robo-market-agent/config.json) kaydeder.
+    Belirtilen LLM sağlayıcısının API Key, Base URL ve Model değerlerini lokal hafızaya (~/.config/robo-market-agent/config.json) kaydeder.
     """
     config = _load_config()
     p_name = provider.lower().strip()
-    config[f"{p_name}_api_key"] = api_key
+    if api_key is not None:
+        config[f"{p_name}_api_key"] = api_key
+    if base_url is not None:
+        config[f"{p_name}_base_url"] = base_url
+    if model is not None:
+        config[f"{p_name}_model"] = model
     if default:
         config["default_provider"] = p_name
 
     _save_config(config)
-    console.print(f"[bold green]✓[/bold green] '{p_name}' için API Key hafızaya başarıyla kaydedildi! ({CONFIG_FILE})")
+    console.print(f"[bold green]✓[/bold green] '{p_name}' için konfigürasyon hafızaya başarıyla kaydedildi! ({CONFIG_FILE})")
+
 
 
 @config_app.command("show")
@@ -174,6 +199,9 @@ def run(
         None, "--provider", "-p", help="LLM Sağlayıcı: openai, anthropic, gemini, groq, deepseek, ollama, mock"
     ),
     api_key: str = typer.Option("", "--api-key", "-k", help="LLM API Anahtarı (Komut anında geçmek için)"),
+    base_url: Optional[str] = typer.Option(
+        None, "--base-url", "-u", help="OpenAI formatında Base URL (Örn: https://api.openai.com/v1, https://openrouter.ai/api/v1)"
+    ),
     model: Optional[str] = typer.Option(
         None, "--model", "-m", help="Model adı (Örn: gpt-4o, deepseek-chat, llama-3.3-70b-versatile)"
     ),
@@ -183,7 +211,16 @@ def run(
     Donanım projenizi analiz eder, Malzeme Listesini (BOM) çıkartır, uyumluluğu denetler ve en ucuz sepet kombinasyonunu hesaplar.
     """
     config = _load_config()
-    selected_provider = provider or config.get("default_provider") or "mock"
+    default_prov = config.get("default_provider")
+    if not provider:
+        if default_prov:
+            selected_provider = default_prov
+        elif os.getenv("OPENAI_API_KEY") or config.get("openai_api_key"):
+            selected_provider = "openai"
+        else:
+            selected_provider = "mock"
+    else:
+        selected_provider = provider
 
     console.print(
         Panel(
@@ -192,7 +229,8 @@ def run(
         )
     )
 
-    llm_provider = _get_provider(selected_provider, api_key, model)
+    llm_provider = _get_provider(selected_provider, api_key, model, base_url)
+
     search_service = SearchService(use_cache=not no_cache)
     agent = RoboMarketAgent(llm_provider=llm_provider, search_service=search_service)
 

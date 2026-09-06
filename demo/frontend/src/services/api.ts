@@ -93,7 +93,8 @@ export const api = {
     project_type?: string,
     api_key?: string,
     provider?: string,
-    model_name?: string
+    model_name?: string,
+    base_url?: string
   ): Promise<AgentResponse> => {
     return fetchJSON<AgentResponse>('/agent/analyze', {
       method: 'POST',
@@ -103,6 +104,7 @@ export const api = {
         api_key,
         provider,
         model_name,
+        base_url,
       }),
     });
   },

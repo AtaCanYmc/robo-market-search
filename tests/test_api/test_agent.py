@@ -64,3 +64,49 @@ def test_agent_bom_mock_provider() -> None:
     data = response.json()
     assert data["success"] is True
     assert "bom" in data["data"]
+
+
+def test_agent_analyze_openai_format_headers() -> None:
+    """
+    Test agent analysis endpoint with OpenAI format headers: Authorization Bearer, X-OpenAI-Base-URL, X-OpenAI-Model.
+    """
+    response = client.post(
+        "/api/v1/agent/analyze",
+        headers={
+            "Authorization": "Bearer sk-test-bearer-token",
+            "X-OpenAI-Base-URL": "https://api.openai.com/v1",
+            "X-OpenAI-Model": "gpt-4o",
+            "X-Provider": "mock",
+        },
+        json={
+            "prompt": "IoT Weather Station with Solar Power",
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["data"]["byok_active"] is True
+    assert data["data"]["provider"] == "mock"
+
+
+def test_agent_analyze_openai_format_payload() -> None:
+    """
+    Test agent analysis endpoint with OpenAI connection fields in payload: base_url, model_name, api_key.
+    """
+    response = client.post(
+        "/api/v1/agent/analyze",
+        json={
+            "prompt": "Bluetooth Controlled Robotic Arm",
+            "api_key": "sk-proj-test-payload-key",
+            "base_url": "https://openrouter.ai/api/v1",
+            "model_name": "openai/gpt-4o",
+            "temperature": 0.2,
+            "provider": "mock",
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["data"]["byok_active"] is True
+    assert data["data"]["provider"] == "mock"
+

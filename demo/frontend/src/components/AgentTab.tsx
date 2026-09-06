@@ -17,6 +17,7 @@ import {
   Info,
   Check,
   Copy,
+  Globe,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
@@ -28,9 +29,11 @@ export const AgentTab: React.FC = () => {
   );
   const [projectType, setProjectType] = useState('IoT / Akıllı Ev');
 
-  // Bring Your Own API Key (BYOK) State
+  // Bring Your Own API Key (BYOK) & OpenAI Connection Schema State
   const [provider, setProvider] = useState<string>('openai');
   const [apiKey, setApiKey] = useState<string>('');
+  const [baseUrl, setBaseUrl] = useState<string>('https://api.openai.com/v1');
+  const [modelName, setModelName] = useState<string>('gpt-4o');
   const [showApiKey, setShowApiKey] = useState<boolean>(false);
   const [keySaved, setKeySaved] = useState<boolean>(false);
 
@@ -44,14 +47,20 @@ export const AgentTab: React.FC = () => {
   useEffect(() => {
     const savedKey = localStorage.getItem('ROBO_AGENT_KEY') || '';
     const savedProvider = localStorage.getItem('ROBO_AGENT_PROVIDER') || 'openai';
+    const savedBaseUrl = localStorage.getItem('ROBO_AGENT_BASE_URL') || 'https://api.openai.com/v1';
+    const savedModel = localStorage.getItem('ROBO_AGENT_MODEL') || 'gpt-4o';
     setApiKey(savedKey);
     setProvider(savedProvider);
+    setBaseUrl(savedBaseUrl);
+    setModelName(savedModel);
     if (savedKey) setKeySaved(true);
   }, []);
 
   const handleSaveKey = () => {
     localStorage.setItem('ROBO_AGENT_KEY', apiKey.trim());
     localStorage.setItem('ROBO_AGENT_PROVIDER', provider);
+    localStorage.setItem('ROBO_AGENT_BASE_URL', baseUrl.trim());
+    localStorage.setItem('ROBO_AGENT_MODEL', modelName.trim());
     setKeySaved(true);
   };
 
@@ -76,7 +85,14 @@ export const AgentTab: React.FC = () => {
 
     try {
       handleSaveKey();
-      const res = await api.analyzeAgent(prompt, projectType, apiKey.trim() || undefined, provider);
+      const res = await api.analyzeAgent(
+        prompt,
+        projectType,
+        apiKey.trim() || undefined,
+        provider,
+        modelName.trim() || undefined,
+        baseUrl.trim() || undefined
+      );
       setResponse(res);
       setActiveResultTab('bom');
     } catch (err: any) {
@@ -87,13 +103,62 @@ export const AgentTab: React.FC = () => {
   };
 
   const providers = [
-    { id: 'openai', name: 'OpenAI (GPT-4o)', badge: 'STANDART', placeholder: 'sk-proj-...' },
-    { id: 'gemini', name: 'Google Gemini', badge: 'ÖNERİLEN', placeholder: 'AIzaSy...' },
-    { id: 'anthropic', name: 'Claude', badge: 'GELİŞMİŞ', placeholder: 'sk-ant-api...' },
-    { id: 'deepseek', name: 'DeepSeek', badge: 'HIZLI', placeholder: 'sk-...' },
-    { id: 'groq', name: 'Groq (Llama 3)', badge: 'ULTRA HIZ', placeholder: 'gsk_...' },
-    { id: 'ollama', name: 'Ollama', badge: 'YEREL', placeholder: 'Yerel Sunucu (Anahtar Gerekmez)' },
-    { id: 'mock', name: 'Test Modu', badge: 'DEMO', placeholder: 'Test Modu (Anahtar Gerekmez)' },
+    {
+      id: 'openai',
+      name: 'OpenAI (Resmi)',
+      badge: 'STANDART',
+      baseUrl: 'https://api.openai.com/v1',
+      model: 'gpt-4o',
+      placeholder: 'sk-proj-...',
+    },
+    {
+      id: 'openrouter',
+      name: 'OpenRouter',
+      badge: 'GENİŞ MODEL',
+      baseUrl: 'https://openrouter.ai/api/v1',
+      model: 'openai/gpt-4o-mini',
+      placeholder: 'sk-or-v1-...',
+    },
+    {
+      id: 'deepseek',
+      name: 'DeepSeek',
+      badge: 'EKONOMİK',
+      baseUrl: 'https://api.deepseek.com',
+      model: 'deepseek-chat',
+      placeholder: 'sk-...',
+    },
+    {
+      id: 'groq',
+      name: 'Groq',
+      badge: 'ULTRA HIZ',
+      baseUrl: 'https://api.groq.com/openai/v1',
+      model: 'llama-3.3-70b-versatile',
+      placeholder: 'gsk_...',
+    },
+    {
+      id: 'ollama',
+      name: 'Ollama (Yerel)',
+      badge: 'YEREL AI',
+      baseUrl: 'http://localhost:11434/v1',
+      model: 'llama3.1',
+      placeholder: 'Yerel Sunucu (Key gerekmez)',
+    },
+    {
+      id: 'custom',
+      name: 'Özel OpenAI API',
+      badge: 'ÖZEL URL',
+      baseUrl: 'http://localhost:1234/v1',
+      model: 'custom-model',
+      placeholder: 'sk-... (varsa)',
+    },
+    {
+      id: 'mock',
+      name: 'Test Modu',
+      badge: 'DEMO',
+      baseUrl: '',
+      model: 'mock',
+      placeholder: 'Test Modu (Anahtar Gerekmez)',
+    },
   ];
 
   const selectedProviderInfo = providers.find((p) => p.id === provider) || providers[0];
@@ -150,6 +215,8 @@ export const AgentTab: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setProvider(p.id);
+                  if (p.baseUrl) setBaseUrl(p.baseUrl);
+                  if (p.model) setModelName(p.model);
                   setKeySaved(false);
                 }}
                 className={`p-2.5 rounded border text-left flex flex-col justify-between gap-1.5 transition-colors cursor-pointer ${
@@ -166,50 +233,92 @@ export const AgentTab: React.FC = () => {
             ))}
           </div>
 
-          {/* API Key Input Field */}
-          {provider !== 'mock' && provider !== 'ollama' ? (
-            <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                <span>{selectedProviderInfo.name} API Anahtarı:</span>
-                <span className="text-[11px] text-slate-500 font-normal">{t('encryptedNotice')}</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showApiKey ? 'text' : 'password'}
-                  value={apiKey}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setKeySaved(false);
-                  }}
-                  placeholder={selectedProviderInfo.placeholder}
-                  className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded pl-3 pr-24 py-2 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    title={showApiKey ? 'Gizle' : 'Göster'}
-                  >
-                    {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  </button>
-                  {apiKey && (
+          {/* OpenAI Connection Schema Inputs */}
+          {provider !== 'mock' ? (
+            <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Base URL */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                    <Globe className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Endpoint Base URL (OpenAI Formatı):</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={baseUrl}
+                    onChange={(e) => {
+                      setBaseUrl(e.target.value);
+                      setKeySaved(false);
+                    }}
+                    placeholder="https://api.openai.com/v1"
+                    className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Model Name */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                    <Cpu className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Model Adı:</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={modelName}
+                    onChange={(e) => {
+                      setModelName(e.target.value);
+                      setKeySaved(false);
+                    }}
+                    placeholder="gpt-4o"
+                    className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* API Key */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <Key className="w-3.5 h-3.5 text-blue-500" />
+                    <span>{selectedProviderInfo.name} API Anahtarı:</span>
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-normal">{t('encryptedNotice')}</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showApiKey ? 'text' : 'password'}
+                    value={apiKey}
+                    onChange={(e) => {
+                      setApiKey(e.target.value);
+                      setKeySaved(false);
+                    }}
+                    placeholder={selectedProviderInfo.placeholder}
+                    className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded pl-3 pr-24 py-2 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     <button
                       type="button"
-                      onClick={handleClearKey}
-                      className="text-xs text-rose-500 hover:underline px-1 cursor-pointer"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      title={showApiKey ? 'Gizle' : 'Göster'}
                     >
-                      {t('clear')}
+                      {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
-                  )}
+                    {apiKey && (
+                      <button
+                        type="button"
+                        onClick={handleClearKey}
+                        className="text-xs text-rose-500 hover:underline px-1 cursor-pointer"
+                      >
+                        {t('clear')}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
             <div className="p-2.5 rounded bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
-              {provider === 'ollama'
-                ? 'ℹ️ Ollama yerel ortamınızda çalışır (http://localhost:11434). API anahtarı gerekmez.'
-                : 'ℹ️ Test modunda simüle edilmiş donanım verileri kullanılır. API anahtarı gerekmez.'}
+              ℹ️ Test modunda simüle edilmiş donanım verileri kullanılır. API anahtarı veya endpoint gerekmez.
             </div>
           )}
         </div>
