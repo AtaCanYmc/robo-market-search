@@ -11,6 +11,8 @@ import logging
 import sys
 from typing import Dict, List
 
+from curl_cffi import requests
+
 from robo_market_search.unified.client import UnifiedSearchClient
 
 DEFAULT_TEST_ITEMS = [
@@ -21,6 +23,59 @@ DEFAULT_TEST_ITEMS = [
 ]
 
 STORES = ["Robolink", "Robotistan", "Robo90", "Direncnet"]
+
+
+def probe_store_status(store_name: str) -> str:
+    """Probes the store endpoint directly to diagnose root causes (WAF, HTTP errors, Cloudflare, DOM)."""
+    try:
+        if store_name == "Direncnet":
+            r = requests.get(
+                "https://www.direnc.net/arama?q=ESP32",
+                headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"},
+                impersonate="safari15_5",
+                timeout=8,
+            )
+            if r.status_code == 403:
+                return "HTTP 403 Forbidden: Cloudflare WAF / Datacenter IP engeli devrede"
+            if "<title>Just a moment...</title>" in r.text or "Attention Required! | Cloudflare" in r.text or "cf-browser-verification" in r.text:
+                return "Cloudflare Bot Koruması: JS Challenge / Turnstile sayfası döndü"
+            if r.status_code != 200:
+                return f"HTTP {r.status_code} ({r.reason}): Sunucu hata döndürdü"
+            if "PRODUCT_DATA.push" not in r.text:
+                return "HTTP 200 OK ancak 'PRODUCT_DATA.push' verisi DOM içinde bulunamadı (DOM değişmiş olabilir)"
+            return "Mağaza erişilebilir, arama sorgusu sonuç döndürmedi"
+
+        elif store_name == "Robo90":
+            r = requests.get(
+                "https://www.robo90.com/arama?q=ESP32",
+                headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"},
+                impersonate="safari15_5",
+                timeout=8,
+            )
+            if r.status_code == 403:
+                return "HTTP 403 Forbidden: WAF / Datacenter IP engeli devrede"
+            if r.status_code != 200:
+                return f"HTTP {r.status_code} ({r.reason}): Sunucu hata döndürdü"
+            if "PRODUCT_DATA.push" not in r.text:
+                return "HTTP 200 OK ancak 'PRODUCT_DATA.push' verisi DOM içinde bulunamadı"
+            return "Mağaza erişilebilir, arama sorgusu sonuç döndürmedi"
+
+        elif store_name == "Robolink":
+            r = requests.get("https://www.robolinkmarket.com", impersonate="safari15_5", timeout=8)
+            if r.status_code != 200:
+                return f"HTTP {r.status_code} ({r.reason}): Robolink sunucusu hata döndürdü"
+            return "Robolink API veya token ayrıştırma hatası"
+
+        elif store_name == "Robotistan":
+            r = requests.get("https://www.robotistan.com", impersonate="safari15_5", timeout=8)
+            if r.status_code != 200:
+                return f"HTTP {r.status_code} ({r.reason}): Robotistan sunucusu hata döndürdü"
+            return "Robotistan Segmentify API veya token hatası"
+
+    except Exception as e:
+        return f"Bağlantı/Ağ Hatası: {e}"
+
+    return "Bilinmeyen hata"
 
 
 class LogCaptureHandler(logging.Handler):
@@ -76,6 +131,16 @@ def run_health_check(items: List[str]) -> None:
                     item_diagnostics[store][item] = "Mağazada ürün listelenmedi veya arama eşleşmesi yok."
 
     root_scraper_logger.removeHandler(capture_handler)
+
+    # For stores that completely failed (0 products across all queries), probe store directly if no specific error was captured
+    for store in STORES:
+        total = sum(results_matrix[store][item] for item in items)
+        if total == 0:
+            reasons = list(item_diagnostics[store].values())
+            if not reasons or all(r == "Mağazada ürün listelenmedi veya arama eşleşmesi yok." for r in reasons):
+                probe_reason = probe_store_status(store)
+                for item in items:
+                    item_diagnostics[store][item] = probe_reason
 
     # Print summary table
     print("📊 Health Check Summary per Market:")

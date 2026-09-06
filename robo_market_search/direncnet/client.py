@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-from typing import List, Set
+from typing import List, Optional, Set
 from urllib.parse import quote
 
 from curl_cffi import requests
@@ -24,19 +24,13 @@ class DirencnetClient(BaseStore):
 
     def __init__(self) -> None:
         self.base_url = "https://www.direnc.net/arama"
+        self.catalog_url = "https://www.direnc.net/index.php?do=catalog/results"
         self.loader_url = "https://www.direnc.net/srv/service/product/loader"
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
             "Referer": "https://www.direnc.net/",
-            "Sec-Ch-Ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-            "Sec-Ch-Ua-Mobile": "?0",
-            "Sec-Ch-Ua-Platform": '"macOS"',
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-User": "?1",
         }
 
     def search(self, query: str, limit: int = 10) -> List[Product]:
@@ -48,22 +42,54 @@ class DirencnetClient(BaseStore):
         """
         all_products = []
         page = 1
-        session = requests.Session(impersonate="chrome120")
+        session = requests.Session(impersonate="safari15_5")
+
+        def _is_cf_blocked(code: Optional[int], body: str) -> bool:
+            if code in (403, 503):
+                return True
+            return (
+                "<title>Just a moment...</title>" in body
+                or "Attention Required! | Cloudflare" in body
+                or "cf-browser-verification" in body
+            )
 
         while True:
             response_text = None
+            last_status = None
+            last_reason = None
+            last_error = None
+            is_cf_challenge = False
 
             # Primary Strategy: GET search HTML page
             params = {"q": query, "pg": page}
             try:
                 response = session.get(self.base_url, params=params, headers=self.headers, timeout=10)
+                last_status = response.status_code
+                last_reason = response.reason
                 if response.status_code == 200 and "PRODUCT_DATA.push" in response.text:
                     response_text = response.text
+                elif _is_cf_blocked(response.status_code, response.text):
+                    is_cf_challenge = True
             except Exception as e:
+                last_error = str(e)
                 logger.debug("Direncnet /arama sayfa %d çekilirken hata oluştu: %s", page, e)
 
+            # Secondary Strategy: GET catalog results endpoint
+            if not response_text and not is_cf_challenge:
+                try:
+                    response = session.get(self.catalog_url, params=params, headers=self.headers, timeout=10)
+                    last_status = response.status_code
+                    last_reason = response.reason
+                    if response.status_code == 200 and "PRODUCT_DATA.push" in response.text:
+                        response_text = response.text
+                    elif _is_cf_blocked(response.status_code, response.text):
+                        is_cf_challenge = True
+                except Exception as e:
+                    last_error = str(e)
+                    logger.debug("Direncnet /catalog sayfa %d çekilirken hata oluştu: %s", page, e)
+
             # Fallback Strategy: GET AJAX loader service endpoint
-            if not response_text:
+            if not response_text and not is_cf_challenge:
                 loader_params = {"arama": "", "q": query, "link": "arama", "pg": page}
                 loader_headers = dict(self.headers)
                 loader_headers.update(
@@ -71,18 +97,31 @@ class DirencnetClient(BaseStore):
                         "Accept": "*/*",
                         "X-Requested-With": "XMLHttpRequest",
                         "Referer": f"https://www.direnc.net/arama?q={quote(query)}",
-                        "Sec-Fetch-Dest": "empty",
-                        "Sec-Fetch-Mode": "cors",
                     }
                 )
                 try:
                     response = session.get(self.loader_url, params=loader_params, headers=loader_headers, timeout=10)
+                    last_status = response.status_code
+                    last_reason = response.reason
                     if response.status_code == 200 and "PRODUCT_DATA.push" in response.text:
                         response_text = response.text
+                    elif _is_cf_blocked(response.status_code, response.text):
+                        is_cf_challenge = True
                 except Exception as e:
-                    logger.error("Direncnet /loader sayfa %d çekilirken hata oluştu: %s", page, e)
+                    last_error = str(e)
+                    logger.debug("Direncnet /loader sayfa %d çekilirken hata oluştu: %s", page, e)
 
-            if not response_text or "PRODUCT_DATA.push" not in response_text:
+            if not response_text:
+                if is_cf_challenge:
+                    logger.error("Direncnet Cloudflare Bot Koruması: JS Challenge / Doğrulama sayfası döndü.")
+                elif last_status == 403:
+                    logger.error("Direncnet HTTP 403 Forbidden: Cloudflare WAF veya IP erişim engeli devrede.")
+                elif last_status in (429, 503):
+                    logger.error("Direncnet HTTP %d: Hız sınırı veya sunucu geçici olarak kullanılamıyor.", last_status)
+                elif last_status and last_status != 200:
+                    logger.error("Direncnet HTTP %d (%s) döndü.", last_status, last_reason)
+                elif last_error:
+                    logger.error("Direncnet bağlantı hatası: %s", last_error)
                 break
 
             matches = re.findall(r"PRODUCT_DATA\.push\(JSON\.parse\('(.*?)'\)\);", response_text)
