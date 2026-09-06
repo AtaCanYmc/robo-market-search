@@ -2,6 +2,7 @@ import json
 import logging
 import re
 from typing import List, Set
+from urllib.parse import quote
 
 from curl_cffi import requests
 
@@ -69,7 +70,7 @@ class DirencnetClient(BaseStore):
                     {
                         "Accept": "*/*",
                         "X-Requested-With": "XMLHttpRequest",
-                        "Referer": f"https://www.direnc.net/arama?q={query}",
+                        "Referer": f"https://www.direnc.net/arama?q={quote(query)}",
                         "Sec-Fetch-Dest": "empty",
                         "Sec-Fetch-Mode": "cors",
                     }

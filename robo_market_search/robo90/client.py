@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-from typing import List, Set
+from typing import List, Optional, Set
 import urllib.parse
 
 from curl_cffi import requests
@@ -28,14 +28,18 @@ class Robo90Client(BaseStore):
 
     def search(self, query: str, limit: int = 10) -> List[Product]:
         results = self.search_component(query=query, page=1, stock=1)
+        if not results:
+            results = self.search_component(query=query, page=1, stock=0)
         return results[:limit]
 
-    def search_component(self, query: str, page: int = 1, stock: int = 1) -> List[Product]:
+    def search_component(self, query: str, page: int = 1, stock: Optional[int] = 1) -> List[Product]:
         """
         Robo90 üzerinde arama yapar ve ürünleri döndürür.
         """
         encoded_query = urllib.parse.quote(query)
-        target_url = f"{self.base_url}?q={encoded_query}&stock={stock}&pg={page}"
+        target_url = f"{self.base_url}?q={encoded_query}&pg={page}"
+        if stock is not None:
+            target_url += f"&stock={stock}"
 
         try:
             response = requests.get(target_url, headers=self.headers, impersonate="safari15_5")
@@ -63,6 +67,15 @@ class Robo90Client(BaseStore):
                     if "image" in item:
                         image_url = item["image"]
 
+                    qty = item.get("quantity")
+                    if qty is not None:
+                        try:
+                            is_in_stock = int(qty) > 0
+                        except (ValueError, TypeError):
+                            is_in_stock = stock == 1
+                    else:
+                        is_in_stock = stock == 1
+
                     stoktaki_urunler.append(
                         Product(
                             name=item.get("name", "Ürün Adı Yok"),
@@ -71,7 +84,7 @@ class Robo90Client(BaseStore):
                             url=full_url,
                             image_url=image_url,
                             store="Robo90",
-                            in_stock=stock == 1 or item.get("stockAmount", 1) > 0,
+                            in_stock=is_in_stock,
                         )
                     )
                 except json.JSONDecodeError:
