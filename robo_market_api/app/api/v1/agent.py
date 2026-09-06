@@ -45,23 +45,9 @@ async def agent_analyze(
         auth_bearer = authorization[7:].strip()
 
     # Header & Payload precedence calculation
-    effective_api_key = (
-        payload.api_key
-        or x_openai_key
-        or auth_bearer
-        or x_api_key
-        or x_gemini_key
-        or x_anthropic_key
-    )
-    effective_base_url = (
-        payload.base_url
-        or x_openai_base_url
-        or x_base_url
-    )
-    effective_model = (
-        payload.model_name
-        or x_openai_model
-    )
+    effective_api_key = payload.api_key or x_openai_key or auth_bearer or x_api_key or x_gemini_key or x_anthropic_key
+    effective_base_url = payload.base_url or x_openai_base_url or x_base_url
+    effective_model = payload.model_name or x_openai_model
     effective_provider = payload.provider or x_provider or "openai"
 
     result = await agent_service.analyze_requirements(

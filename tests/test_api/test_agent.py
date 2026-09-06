@@ -109,4 +109,3 @@ def test_agent_analyze_openai_format_payload() -> None:
     assert data["success"] is True
     assert data["data"]["byok_active"] is True
     assert data["data"]["provider"] == "mock"
-

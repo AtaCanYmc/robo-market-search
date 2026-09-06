@@ -77,4 +77,3 @@ def test_openai_provider_custom_parameters():
     assert provider.model_name == "llama3.1"
     assert provider.temperature == 0.0
     assert provider.timeout == 30.0
-

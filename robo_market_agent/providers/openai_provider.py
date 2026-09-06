@@ -33,11 +33,13 @@ class OpenAIProvider(BaseLLMProvider):
         extra_headers: Optional[Dict[str, str]] = None,
         config: Optional[OpenAIConnectionConfig] = None,
     ):
-        # Allow initializing from an OpenAIConnectionConfig
+        default_model = str(os.getenv("OPENAI_MODEL") or "gpt-4o")
+        resolved_model = model_name or (config.model_name if config else None) or default_model
+        self.model_name: str = resolved_model
+
         if config is not None:
             self.api_key = api_key if api_key is not None else (config.api_key or os.getenv("OPENAI_API_KEY", ""))
             self.base_url = base_url if base_url is not None else config.base_url
-            self.model_name = model_name or config.model_name or os.getenv("OPENAI_MODEL", "gpt-4o")
             self.temperature = temperature if temperature is not None else config.temperature
             self.organization = organization or config.organization
             self.timeout = timeout if timeout is not None else config.timeout
@@ -45,7 +47,6 @@ class OpenAIProvider(BaseLLMProvider):
         else:
             self.api_key = api_key if api_key is not None else os.getenv("OPENAI_API_KEY", "")
             self.base_url = base_url or os.getenv("OPENAI_BASE_URL", None)
-            self.model_name = model_name or os.getenv("OPENAI_MODEL", "gpt-4o")
             self.temperature = temperature if temperature is not None else 0.2
             self.organization = organization
             self.timeout = timeout or 60.0
@@ -157,4 +158,3 @@ class OpenAIProvider(BaseLLMProvider):
             temperature=self.temperature,
         )
         return cast("str", response.choices[0].message.content or "")
-

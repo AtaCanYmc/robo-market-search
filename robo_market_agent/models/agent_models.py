@@ -135,4 +135,3 @@ class OpenAIConnectionConfig(BaseModel):
     organization: Optional[str] = Field(default=None, description="OpenAI Organization ID")
     timeout: Optional[float] = Field(default=60.0, description="HTTP client timeout in seconds")
     extra_headers: Optional[Dict[str, str]] = Field(default=None, description="Additional HTTP headers")
-

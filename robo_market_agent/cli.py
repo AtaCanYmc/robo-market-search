@@ -115,7 +115,9 @@ def _get_provider(
             base_url=resolved_base_url or "https://api.deepseek.com",
         )
     elif p_name == "ollama":
-        return OllamaProvider(host=resolved_base_url or resolved_key or "http://localhost:11434", model_name=resolved_model or "llama3.1")
+        return OllamaProvider(
+            host=resolved_base_url or resolved_key or "http://localhost:11434", model_name=resolved_model or "llama3.1"
+        )
     elif p_name == "mock":
         return MockLLMProvider()
     else:
@@ -155,7 +157,6 @@ def config_set(
 
     _save_config(config)
     console.print(f"[bold green]✓[/bold green] '{p_name}' için konfigürasyon hafızaya başarıyla kaydedildi! ({CONFIG_FILE})")
-
 
 
 @config_app.command("show")
@@ -200,7 +201,10 @@ def run(
     ),
     api_key: str = typer.Option("", "--api-key", "-k", help="LLM API Anahtarı (Komut anında geçmek için)"),
     base_url: Optional[str] = typer.Option(
-        None, "--base-url", "-u", help="OpenAI formatında Base URL (Örn: https://api.openai.com/v1, https://openrouter.ai/api/v1)"
+        None,
+        "--base-url",
+        "-u",
+        help="OpenAI formatında Base URL (Örn: https://api.openai.com/v1, https://openrouter.ai/api/v1)",
     ),
     model: Optional[str] = typer.Option(
         None, "--model", "-m", help="Model adı (Örn: gpt-4o, deepseek-chat, llama-3.3-70b-versatile)"

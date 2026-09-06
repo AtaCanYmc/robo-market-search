@@ -133,4 +133,3 @@ class AgentRequest(BaseModel):
         default=None,
         description="Optional full OpenAI connection schema configuration object",
     )
-

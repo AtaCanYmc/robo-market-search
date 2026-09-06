@@ -7,12 +7,12 @@ from robo_market_agent.models.agent_models import (
     FinalAgentReport,
     IssueSeverity,
     MatchedProduct,
+    OpenAIConnectionConfig,
     OptimizationResult,
     ProjectRequirements,
     SearchRequest,
     ShoppingCartItem,
     StoreGroup,
-    OpenAIConnectionConfig,
 )
 
 __all__ = [
@@ -24,11 +24,10 @@ __all__ = [
     "FinalAgentReport",
     "IssueSeverity",
     "MatchedProduct",
+    "OpenAIConnectionConfig",
     "OptimizationResult",
     "ProjectRequirements",
     "SearchRequest",
     "ShoppingCartItem",
     "StoreGroup",
-    "OpenAIConnectionConfig",
 ]
-

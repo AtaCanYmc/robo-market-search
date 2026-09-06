@@ -112,4 +112,3 @@ Execute the AI Hardware Agent pipeline using direct OpenAI format or compatible 
   "temperature": 0.2
 }
 ```
-

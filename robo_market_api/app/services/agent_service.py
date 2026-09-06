@@ -67,7 +67,9 @@ def create_llm_provider(
     elif provider == "anthropic":
         return AnthropicProvider(api_key=effective_api_key, model_name=effective_model or "claude-3-5-sonnet-20241022")
     elif provider == "ollama":
-        return OllamaProvider(host=effective_base_url or effective_api_key or "http://localhost:11434", model_name=effective_model or "llama3.1")
+        return OllamaProvider(
+            host=effective_base_url or effective_api_key or "http://localhost:11434", model_name=effective_model or "llama3.1"
+        )
     elif provider == "mock":
         return MockLLMProvider()
     elif provider == "gemini":
@@ -199,4 +201,3 @@ class APIAgentService:
                 message=f"BOM generation failed: {exc!s}. Please check your LLM API Key.",
                 error_code="AGENT_EXECUTION_ERROR",
             )
-

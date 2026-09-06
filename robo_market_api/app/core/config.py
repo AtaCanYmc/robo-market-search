@@ -42,7 +42,6 @@ class Settings(BaseSettings):
     ROBO_AGENT_BASE_URL: Optional[str] = None
     ROBO_AGENT_MODEL: Optional[str] = None
 
-
     if SettingsConfigDict is not None:
         model_config = SettingsConfigDict(
             env_file=".env",

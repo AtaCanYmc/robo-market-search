@@ -19,4 +19,3 @@ class DeepSeekProvider(OpenAIProvider):
         **kwargs,
     ):
         super().__init__(api_key=api_key, model_name=model_name, base_url=base_url, **kwargs)
-
