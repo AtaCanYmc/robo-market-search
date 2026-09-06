@@ -11,6 +11,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.9.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.2...v1.9.0) (2026-09-06)
+
+
+### ✨ Features
+
+* add server status modal and health check functionality to MainContent ([6561641](https://github.com/AtaCanYmc/robo-market-search/commit/6561641dfb340caff21172eb7dbab428aff58c3d))
+* enhance AI agent with OpenAI connection schema support and configurable parameters ([ec74aa9](https://github.com/AtaCanYmc/robo-market-search/commit/ec74aa9c7dab43a3e22b22f9f04da0657e6848b1))
+* **health_check:** enhance health check script to test multiple items and provide detailed diagnostics ([976dae7](https://github.com/AtaCanYmc/robo-market-search/commit/976dae74d74dccacd98acdb608ce3edc8e5ed55c))
+* update README with new banner image and layout adjustments ([3f619b7](https://github.com/AtaCanYmc/robo-market-search/commit/3f619b7df05116cad8186a8158ae299d56b102cd))
+
+
+### 🐛 Bug Fixes
+
+* **scrapers:** refine Direncnet headers, add catalog fallback, and enhance health check failure diagnostics ([a6c39e3](https://github.com/AtaCanYmc/robo-market-search/commit/a6c39e3709937bd549ca8a235be099c3cf281b60))
+* **scrapers:** url-encode Direncnet Referer header and add out-of-stock fallback in Robo90 ([ae745b1](https://github.com/AtaCanYmc/robo-market-search/commit/ae745b1b193f9c6e679613a082f5357937433c7c))
+
+
+### 📚 Documentation
+
+* update documentation to include Makefile commands for setup and testing ([6ca964e](https://github.com/AtaCanYmc/robo-market-search/commit/6ca964ebcefe9430fc28ecb373fc570516208108))
+
 ## [1.8.2](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.1...v1.8.2) (2026-08-24)
 
 
