@@ -33,6 +33,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
 
-      - name: Run Baseline Health Check
+      - name: Run Multi-Item Scraper Health Check
         run: |
-          python examples/health_check.py "10K direnç"
+          python examples/health_check.py
