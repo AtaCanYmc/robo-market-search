@@ -2,6 +2,8 @@
 API Agent Service wrapping robo_market_agent capabilities with Bring Your Own API Key (BYOK) support.
 """
 
+from __future__ import annotations
+
 from typing import Any, Dict, Optional
 
 from robo_market_api.app.core.errors import APIException
@@ -23,6 +25,7 @@ try:
     AGENT_AVAILABLE = True
 except ImportError:
     RoboMarketAgent = None  # type: ignore
+    BaseLLMProvider = Any  # type: ignore
     AGENT_AVAILABLE = False
 
 
