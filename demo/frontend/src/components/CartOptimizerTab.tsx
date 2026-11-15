@@ -135,6 +135,8 @@ export const CartOptimizerTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowSettings(!showSettings)}
+              aria-expanded={showSettings}
+              aria-label={showSettings ? 'Kargo Ayarlarını Gizle' : 'Kargo Ayarlarını Düzenle'}
               className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold flex items-center gap-1 px-3 py-1 rounded bg-blue-50 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/40 transition-colors cursor-pointer"
             >
               <Sliders className="w-3.5 h-3.5" />
@@ -229,6 +231,7 @@ export const CartOptimizerTab: React.FC = () => {
               onChange={(e) => setNewItem(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addItem())}
               placeholder={t('addMpnPlaceholder')}
+              aria-label={t('addMpnPlaceholder') || 'Parça Adı Ekle'}
               className="flex-1 bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono"
             />
             <button
@@ -250,8 +253,9 @@ export const CartOptimizerTab: React.FC = () => {
                   onClick={() => removeItem(item)}
                   className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer p-0.5"
                   title={`${item} sil`}
+                  aria-label={`${item} listesinden sil`}
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
               </div>
             ))}

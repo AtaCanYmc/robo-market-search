@@ -292,16 +292,18 @@ export const AgentTab: React.FC = () => {
                       setKeySaved(false);
                     }}
                     placeholder={selectedProviderInfo.placeholder}
+                    aria-label="API Anahtarı / API Key"
                     className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded pl-3 pr-24 py-2 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     <button
                       type="button"
                       onClick={() => setShowApiKey(!showApiKey)}
-                      className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                       title={showApiKey ? 'Gizle' : 'Göster'}
+                      aria-label={showApiKey ? 'API Anahtarını Gizle' : 'API Anahtarını Göster'}
                     >
-                      {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      {showApiKey ? <EyeOff className="w-3.5 h-3.5" aria-hidden="true" /> : <Eye className="w-3.5 h-3.5" aria-hidden="true" />}
                     </button>
                     {apiKey && (
                       <button

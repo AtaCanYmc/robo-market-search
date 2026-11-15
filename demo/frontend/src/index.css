@@ -25,6 +25,37 @@
   body {
     @apply bg-slate-50 text-slate-900 dark:bg-[#0B0F17] dark:text-slate-100 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-600 dark:selection:text-blue-200 min-h-screen flex flex-col overflow-x-clip;
   }
+
+  /* R-39: Interaction Affordances - pointer cursor on interactive, not-allowed on disabled */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select:not(:disabled),
+  summary,
+  label[for],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"],
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* R-39: Accessibility - Non-essential motion stops under prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Responsive Clean Scrollbars - Legacy fallback for WebKit/Blink browsers without standard scrollbar-color support */

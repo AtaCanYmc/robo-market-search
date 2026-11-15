@@ -69,6 +69,7 @@ export const BatchSearchTab: React.FC = () => {
             onChange={(e) => setNewQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addQuery())}
             placeholder={t('batchPlaceholder')}
+            aria-label={t('batchPlaceholder') || 'Parça Kodu Ekle'}
             className="flex-1 bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 uppercase font-mono"
           />
           <button
@@ -93,8 +94,9 @@ export const BatchSearchTab: React.FC = () => {
                 onClick={() => removeQuery(q)}
                 className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer p-0.5"
                 title={`${q} kaldır`}
+                aria-label={`${q} listesinden kaldır`}
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </span>
           ))}

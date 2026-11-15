@@ -116,9 +116,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
             <button
               onClick={() => onAddToCart(product)}
               title="Sepete Ekle"
+              aria-label="Sepete Ekle"
               className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border border-slate-200 dark:border-slate-700 cursor-pointer"
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
+              <ShoppingBag className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           )}
 
@@ -129,7 +130,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
             className="flex items-center gap-1 text-[11px] font-medium px-2.5 py-1.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-600/20 dark:hover:bg-blue-600/30 dark:text-blue-300 border border-blue-200 dark:border-blue-500/40 transition-all"
           >
             {t('source')}
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-3 h-3" aria-hidden="true" />
           </a>
         </div>
       </div>

@@ -140,7 +140,7 @@ export const SearchTab: React.FC = () => {
 
   const exportAsMarkdown = () => {
     const lines = [
-      `# Arama Sonuçları — "${query.trim()}"`,
+      `# Arama Sonuçları: "${query.trim()}"`,
       ``,
       `| Ürün Adı | Fiyat | Mağaza | Stok | Link |`,
       `| --- | --- | --- | --- | --- |`,
@@ -200,6 +200,7 @@ export const SearchTab: React.FC = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
+              aria-label={t('searchPlaceholder') || 'Ürün Ara'}
               className="w-full h-11 pl-10 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-xs transition-all"
             />
           </div>
@@ -292,6 +293,7 @@ export const SearchTab: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
+                aria-label="Sıralama Seçimi / Sort Order"
                 className="h-7 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer"
               >
                 <option value="price_asc">{t('priceLowHigh')}</option>

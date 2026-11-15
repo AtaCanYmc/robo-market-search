@@ -212,7 +212,7 @@ export const translations: Record<Language, Translations> = {
     rawJson: "Ham JSON Yanıtı",
 
     // Footer
-    footerCopyright: "Robo Market Search — Türkiye Elektronik & Robotik Parça Arama Platformu",
+    footerCopyright: "Robo Market Search: Türkiye Elektronik & Robotik Parça Arama Platformu",
     footerDocs: "REST API Dökümantasyonu",
     footerGithub: "GitHub Kaynak Kodu",
 
@@ -325,7 +325,7 @@ export const translations: Record<Language, Translations> = {
     rawJson: "Raw JSON Response",
 
     // Footer
-    footerCopyright: "Robo Market Search — Open Source Hardware Sourcing Engine",
+    footerCopyright: "Robo Market Search: Open Source Hardware Sourcing Engine",
     footerDocs: "REST API Swagger Docs",
     footerGithub: "GitHub Repository",
 

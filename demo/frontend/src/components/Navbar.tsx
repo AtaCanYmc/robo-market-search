@@ -130,8 +130,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={toggleLang}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
               title="Dil Değiştir / Toggle Language"
+              aria-label="Dil Değiştir / Toggle Language"
             >
-              <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
               <span>{lang.toUpperCase()}</span>
             </button>
 
@@ -140,11 +141,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={toggleTheme}
               className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
               title={theme === 'dark' ? 'Açık Mod' : 'Koyu Mod'}
+              aria-label={theme === 'dark' ? 'Açık Mod' : 'Koyu Mod'}
             >
               {theme === 'dark' ? (
-                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <Sun className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
               ) : (
-                <Moon className="w-3.5 h-3.5 text-slate-700" />
+                <Moon className="w-3.5 h-3.5 text-slate-700" aria-hidden="true" />
               )}
             </button>
 
@@ -152,9 +154,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
-              aria-label="Menüyü aç"
+              aria-label={mobileMenuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-4 h-4" aria-hidden="true" /> : <Menu className="w-4 h-4" aria-hidden="true" />}
             </button>
           </div>
         </div>

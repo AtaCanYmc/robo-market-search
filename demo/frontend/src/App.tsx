@@ -109,7 +109,7 @@ const MainContent: React.FC = () => {
       <footer className="border-t border-slate-200 dark:border-slate-800 py-5 text-center text-xs text-slate-500 transition-colors">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            © 2026 <span className="text-slate-700 dark:text-slate-300 font-semibold">{t('appName')}</span> — {t('footerCopyright')}
+            © 2026 <span className="text-slate-700 dark:text-slate-300 font-semibold">{t('appName')}</span> · {t('footerCopyright')}
           </div>
           <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
             <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
