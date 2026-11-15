@@ -11,6 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.10.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.9.0...v1.10.0) (2026-11-15)
+
+
+### ✨ Features
+
+* **theme:** modernize scrollbar standards and synchronize color-scheme meta with fouc prevention ([db1c1ec](https://github.com/AtaCanYmc/robo-market-search/commit/db1c1ecc20d2a05b84e24acdb425c214e6da6a81))
+
+
+### 🐛 Bug Fixes
+
+* **ci:** bump mypy target python_version to 3.10 to support pydantic pattern matching ([e04e73b](https://github.com/AtaCanYmc/robo-market-search/commit/e04e73b963bc628adc8a37ec44f32fe534459aaf))
+* **security:** resolve frontend npm vulnerabilities, harden cors policy, and update dependabot coverage ([a1edd90](https://github.com/AtaCanYmc/robo-market-search/commit/a1edd90e92164f096a3e0c2b9efa7add16d81b0b))
+
+
+### ♻️  Code Refactoring
+
+* **ui:** apply antislop standards across accessibility, keyboard controls, and typography ([1ff46c6](https://github.com/AtaCanYmc/robo-market-search/commit/1ff46c6773edfcfb76f5a70dfc47151be01550c9))
+
 ## [1.9.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.8.2...v1.9.0) (2026-09-06)
 
 
