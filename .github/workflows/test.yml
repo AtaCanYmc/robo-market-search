@@ -48,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false   # Bir versiyon başarısız olsa diğerleri devam etsin
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v7
