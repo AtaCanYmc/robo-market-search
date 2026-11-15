@@ -153,3 +153,6 @@ node_modules/
 dist/
 demo/frontend/node_modules/
 demo/frontend/dist/
+
+# Antislop reports & audit artifacts
+anti-slop/
