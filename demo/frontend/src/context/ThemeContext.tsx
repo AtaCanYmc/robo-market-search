@@ -27,12 +27,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     const root = document.documentElement;
+    const metaColorScheme = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]');
     if (theme === 'dark') {
       root.classList.add('dark');
       root.classList.remove('light');
+      if (metaColorScheme) {
+        metaColorScheme.content = 'dark';
+      }
     } else {
       root.classList.remove('dark');
       root.classList.add('light');
+      if (metaColorScheme) {
+        metaColorScheme.content = 'light';
+      }
     }
     localStorage.setItem('ROBO_THEME', theme);
   }, [theme]);

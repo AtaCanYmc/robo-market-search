@@ -2,6 +2,23 @@
 <html lang="tr" class="dark">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try {
+        const theme = localStorage.getItem("ROBO_THEME");
+        if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+          document.documentElement.classList.remove("light");
+          const meta = document.querySelector('meta[name="color-scheme"]');
+          if (meta) meta.content = "dark";
+        } else if (theme === "light") {
+          document.documentElement.classList.remove("dark");
+          document.documentElement.classList.add("light");
+          const meta = document.querySelector('meta[name="color-scheme"]');
+          if (meta) meta.content = "light";
+        }
+      } catch (_) {}
+    </script>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
