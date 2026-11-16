@@ -10,9 +10,11 @@ Running directly:
 from pathlib import Path
 import sys
 
-# Ensure root repository directory is in sys.path
+# Ensure root and src directory are in sys.path
 BASE_DIR = Path(__file__).parent
 REPO_ROOT = BASE_DIR.parent.parent
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
