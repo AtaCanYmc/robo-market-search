@@ -8,7 +8,7 @@ Robo Market Search features an official **MCP (Model Context Protocol)** server 
 
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) is an open standard introduced by Anthropic that connects AI models to external tools, data sources, and APIs safely.
 
-By connecting `robo-mcp`, your LLM assistant gains real-time access to Robotistan, Robolink, Robo90, and Direnç.net product inventories.
+By connecting `robo-mcp`, your LLM assistant gains real-time access to Robotistan, Robolink, Robo90, Direnç.net, Özdisan, and Motorobit product inventories.
 
 ![MCP Claude Desktop Integration](../.github/screenshots/mcp_example.png)
 

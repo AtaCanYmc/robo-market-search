@@ -5,7 +5,7 @@ Robo Market Search includes a built-in Telegram Bot runner (`robo-bot`) powered 
 ---
 
 ## 🤖 Features
-- **Inline & Direct Product Search**: Instant product lookup across all 4 stores with store emojis, stock badges, and direct store links.
+- **Inline & Direct Product Search**: Instant product lookup across all 6 stores with store emojis, stock badges, and direct store links.
 - **Interactive Cart Optimizer**: Send a list of parts to receive calculated store splits and shipping costs.
 - **Rich Formatting**: Clean Telegram Markdown V2 formatting.
 

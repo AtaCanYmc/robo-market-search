@@ -8,8 +8,8 @@ Robo Market Search can be installed using multiple package managers depending on
 
 | Use Case | Recommended Command | Installed Tools |
 | :--- | :--- | :--- |
-| **CLI & Tools Only** | `pipx install "robo-market-search[all]"` | `robo-search`, `robo-agent`, `robo-mcp`, `robo-api` |
-| **Homebrew (macOS/Linux)** | `brew install atacanymc/robo-market-search/robo-market-search` | Standalone CLI |
+| **CLI & Tools Only** | `pipx install "robo-market-search[all]"` | `robo-search`, `robo-agent`, `robo-mcp`, `robo-api`, `robo-bot` |
+| **Homebrew (macOS/Linux)** | `brew install atacanymc/tap/robo-market-search` | Standalone CLI |
 | **cURL Shell Installer** | `curl -fsSL https://raw.githubusercontent.com/.../install.sh \| bash` | Standalone CLI & environment |
 | **Python SDK Only** | `pip install robo-market-search` | `robo_market_search` package |
 | **Full Python Ecosystem** | `pip install "robo-market-search[all]"` | Core SDK, Agent, API, MCP, Bot |
@@ -38,8 +38,7 @@ robo-api --help
 If you use Homebrew on macOS or Linux:
 
 ```bash
-brew tap atacanymc/robo-market-search
-brew install robo-market-search
+brew install atacanymc/tap/robo-market-search
 ```
 
 ---

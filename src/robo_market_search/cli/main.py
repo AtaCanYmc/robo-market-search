@@ -78,7 +78,7 @@ def _show_banner():
 [bold white]Türkiye'nin Elektronik Market Arama Motoru[/bold white] [dim]• v"""
         + CLI_VERSION
         + r"""[/dim]
-[dim]Mağazalar: [bold #E63946]Robotistan[/] · [bold #457B9D]Robolink[/] · [bold #2A9D8F]Robo90[/] · [bold #E76F51]Direnç.net[/][/dim]""",
+[dim]Mağazalar: [bold #E63946]Robotistan[/] · [bold #457B9D]Robolink[/] · [bold #2A9D8F]Robo90[/] · [bold #E76F51]Direnç.net[/] · [bold #0077B6]Özdisan[/] · [bold #F4A261]Motorobit[/][/dim]""",
         box=box.ROUNDED,
         border_style="cyan",
         padding=(0, 2),
@@ -248,7 +248,7 @@ def search(
     as_markdown: bool = typer.Option(False, "--markdown", help="Sonuçları Markdown tablosu olarak yazdır"),
 ):
     """
-    Belirtilen anahtar kelimeyle Robotistan, Robolink, Robo90 ve Direnç.net mağazalarında eşzamanlı arama yapar.
+    Belirtilen anahtar kelimeyle Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında eşzamanlı arama yapar.
 
     Örnekler:
       robo-search "ESP32-WROOM"

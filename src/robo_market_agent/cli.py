@@ -286,6 +286,15 @@ def run(
 
 
 def main():
+    """
+    CLI Entrypoint with smart subcommand auto-routing.
+    Allows running `robo-agent "Project description"` directly without explicitly typing `run`.
+    """
+    if len(sys.argv) > 1:
+        first_arg = sys.argv[1].lower()
+        subcommands = {"run", "config", "--help", "-h", "--install-completion", "--show-completion"}
+        if first_arg not in subcommands and not first_arg.startswith("-"):
+            sys.argv.insert(1, "run")
     app()
 
 

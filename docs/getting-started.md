@@ -1,6 +1,6 @@
 # Getting Started with Robo Market Search
 
-Welcome to **Robo Market Search**! This guide will help you quickly understand the ecosystem, install the tools, and perform your first e-commerce search across Turkey's leading electronics and robotics stores (**Robolink, Robotistan, Robo90, Direnç.net**).
+Welcome to **Robo Market Search**! This guide will help you quickly understand the ecosystem, install the tools, and perform your first e-commerce search across Turkey's leading electronics and robotics stores (**Robotistan, Robolink, Robo90, Direnç.net, Özdisan, Motorobit**).
 
 ---
 
@@ -25,7 +25,7 @@ The fastest way to try Robo Market Search is via `pipx` or `pip`:
 # Install CLI
 pip install "robo-market-search[cli]"
 
-# Search for a product across all 4 stores
+# Search for a product across all 6 stores
 robo-search "ESP32-WROOM" --limit 5
 
 # Calculate split-cart optimization for multiple components
@@ -43,7 +43,7 @@ from robo_market_search import UnifiedSearchClient
 
 client = UnifiedSearchClient()
 
-# Eşzamanlı arama (4 markette paralel)
+# Eşzamanlı arama (6 markette paralel)
 results = client.search("Arduino Uno R3", limit_per_store=3)
 
 for product in results:

@@ -37,10 +37,10 @@ dev = [
 ]
 
 [project.scripts]
-robo-search = "robo_market_search.cli.main:app"
+robo-search = "robo_market_search.cli.main:main"
 robo-mcp = "robo_market_search.mcp.server:main"
 robo-bot = "robo_market_search.bot.server:main"
-robo-agent = "robo_market_agent.cli:app"
+robo-agent = "robo_market_agent.cli:main"
 robo-api = "robo_market_api.app.main:cli_main"
 
 [project.urls]
