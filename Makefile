@@ -154,7 +154,11 @@ demo-down: ## Stop the full demo stack
 .PHONY: build clean
 
 build: ## Build wheel and source distribution packages
-	$(PYTHON) -m build
+	@if command -v uv >/dev/null 2>&1; then \
+		uv build; \
+	else \
+		$(PYTHON) -m build; \
+	fi
 
 clean: ## Remove temporary build files, cache, coverage, and bytecode
 	rm -rf build/ dist/ *.egg-info .eggs/
