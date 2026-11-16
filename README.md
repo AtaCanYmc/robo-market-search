@@ -1,7 +1,13 @@
 <div align="center">
-  <img src=".github/screenshots/banner.svg" alt="Robo Market Search Banner" width="100%" />
+  <a href="https://github.com/AtaCanYmc/robo-market-search">
+    <img src=".github/screenshots/logo.svg" alt="Robo Market Search Logo" width="140" height="140" />
+  </a>
 
-  <br/><br/>
+  <h1>Robo Market Search</h1>
+
+  <p>
+    <b>Türkiye'nin 6 Büyük Robotik ve Elektronik Pazarı İçin Akıllı Arama &amp; Sepet Optimizasyonu</b>
+  </p>
 
   [![PyPI version](https://img.shields.io/pypi/v/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
   [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
