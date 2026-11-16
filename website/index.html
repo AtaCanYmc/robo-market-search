@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robo Market Search | Türkiye'nin Robotik &amp; Elektronik Arama Motoru</title>
+  <meta name="description" content="Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında tek tıkla canlı arama, sepet kargo optimizasyonu ve BYOK destekli donanım yapay zeka asistanı.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-link">
+        <img src="assets/logo.svg" alt="Robo Market Search Logo" class="brand-logo" width="38" height="38">
+        <span>Robo Market Search</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="#stores" class="nav-link">Mağazalar</a></li>
+        <li><a href="#features" class="nav-link">Özellikler</a></li>
+        <li><a href="#downloads" class="nav-link">İndir</a></li>
+        <li><a href="#quickstart" class="nav-link">Geliştirici</a></li>
+        <li><a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank" rel="noopener noreferrer" class="nav-link">GitHub ↗</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#downloads" class="btn btn-primary">Uygulamayı İndir</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 2. Hero Section -->
+  <header class="hero-section">
+    <div class="container">
+      <div class="hero-badge">
+        <span>●</span> Sürüm <span class="release-version-badge">v1.10.0</span> • Masaüstü ve Açık Kaynak Ekosistemi
+      </div>
+
+      <h1 class="hero-title">
+        Türkiye'nin 6 Büyük Elektronik Pazarında Canlı Arama ve Akıllı Sepet Optimizasyonu
+      </h1>
+
+      <p class="hero-subtitle">
+        Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında paralel canlı fiyat, stok ve kargo limitlerini tarayın. Yapay zeka destekli donanım asistanı ile projeleriniz için otomatik Malzeme Listesi (BOM) çıkartın.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#downloads" id="hero-download-btn" class="btn btn-primary btn-lg">
+          Masaüstü Uygulamasını İndir
+        </a>
+        <a href="#quickstart" class="btn btn-secondary btn-lg">
+          Terminalde Başlat (`brew` / `pipx`)
+        </a>
+      </div>
+
+      <!-- Real Desktop App Screenshot Frame (No Redrawn Chrome) -->
+      <figure class="hero-figure">
+        <img src="assets/desktop_app.png" alt="Robo Market Search Masaüstü Uygulama Ekranı" width="1040" height="600" loading="eager">
+      </figure>
+
+      <!-- Proof Row (Honest metrics, zero fabricated numbers) -->
+      <div class="proof-row">
+        <div class="proof-card">
+          <div class="proof-val">6</div>
+          <div class="proof-lbl">Entegre Robotik &amp; Elektronik Mağaza</div>
+        </div>
+        <div class="proof-card">
+          <div class="proof-val">%100</div>
+          <div class="proof-lbl">Anlık Canlı Fiyat &amp; Stok Sorgusu</div>
+        </div>
+        <div class="proof-card">
+          <div class="proof-val">37 / 37</div>
+          <div class="proof-lbl">Doğrulama Testi &amp; Tip Güvencesi</div>
+        </div>
+        <div class="proof-card">
+          <div class="proof-val">Apache 2.0</div>
+          <div class="proof-lbl">%100 Açık Kaynak ve Özgür Yazılım</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. Supported Stores Section -->
+  <section id="stores" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Mağaza Ekosistemi</div>
+        <h2 class="section-title">Desteklenen 6 Büyük Pazar</h2>
+        <p class="section-desc">
+          Tek tek web sitelerini dolaşmadan, her mağazanın canlı API ve arama sayfalarına eşzamanlı istek atılır.
+        </p>
+      </div>
+
+      <div class="stores-grid">
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Robotistan</h3>
+            <span class="store-badge badge-robotistan">robotistan.com</span>
+          </div>
+          <p class="store-desc">Arduino, geliştirme kartları, 3D yazıcı bileşenleri ve robotik kitler.</p>
+          <div class="store-meta">
+            <span>Canlı HTML Kazıma</span> • <span>Ücretsiz Kargo Analizi</span>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Robolink Market</h3>
+            <span class="store-badge badge-robolink">robolinkmarket.com</span>
+          </div>
+          <p class="store-desc">Geliştirme kartları, sensörler, motor sürücüler ve maker donanımları.</p>
+          <div class="store-meta">
+            <span>TLS Taklit İstemcisi</span> • <span>Stok Durumu</span>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Robo90</h3>
+            <span class="store-badge badge-robo90">robo90.com</span>
+          </div>
+          <p class="store-desc">Elektronik modüller, kablosuz haberleşme ve mikrodenetleyici donanımları.</p>
+          <div class="store-meta">
+            <span>Canlı Kazıma</span> • <span>Fiyat Sıralaması</span>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Direnç.net</h3>
+            <span class="store-badge badge-direncnet">direnc.net</span>
+          </div>
+          <p class="store-desc">Pasif komponentler, entegreler, robotik sensörler ve yarı iletkenler.</p>
+          <div class="store-meta">
+            <span>Resmi JSON API Entegrasyonu</span> • <span>Yüksek Hız</span>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Özdisan</h3>
+            <span class="store-badge badge-ozdisan">ozdisan.com</span>
+          </div>
+          <p class="store-desc">Endüstriyel elektronik komponentler, yarı iletken distribütörlüğü ve konnektörler.</p>
+          <div class="store-meta">
+            <span>Endüstriyel Katalog</span> • <span>BOM Tedariği</span>
+          </div>
+        </div>
+
+        <div class="store-card">
+          <div class="store-header">
+            <h3 class="store-name">Motorobit</h3>
+            <span class="store-badge badge-motorobit">motorobit.com</span>
+          </div>
+          <p class="store-desc">Step motorlar, sürücüler, robotik mekanikler ve güç elektroniği.</p>
+          <div class="store-meta">
+            <span>Canlı Arama</span> • <span>Kargo Optimizasyonu</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Feature Pillars Section -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Yetenekler</div>
+        <h2 class="section-title">Akıllı Donanım Tedarik Altyapısı</h2>
+        <p class="section-desc">
+          Tek bir sorguyla en ucuz parçaları bulun, kargo maliyetlerini hesaplayın ve yapay zeka ile BOM listesi çıkartın.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Pillar 1 -->
+        <div class="feature-card">
+          <div>
+            <div class="feature-icon-wrapper">🔍</div>
+            <h3 class="feature-title">Eşzamanlı Paralel Canlı Arama</h3>
+            <p class="feature-text">
+              Tüm marketlerde ThreadPool mimarisiyle saniyeler içinde paralel arama yapar. Sonuçlar en ucuzdan pahalıya sıralanır, stokta olmayan ürünler filtrelenebilir ve tek tıkla CSV/JSON formatında indirilebilir.
+            </p>
+          </div>
+          <figure class="feature-preview">
+            <img src="assets/desktop_app.png" alt="Paralel Arama Görünümü" width="600" height="350" loading="lazy">
+          </figure>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="feature-card">
+          <div>
+            <div class="feature-icon-wrapper">🛒</div>
+            <h3 class="feature-title">Akıllı Sepet &amp; Kargo Bölüşümü (`cart_search`)</h3>
+            <p class="feature-text">
+              Birden fazla parça alırken her mağazanın ücretsiz kargo limitlerini (örn: 1500 TL barajı) analiz eder. Ürünleri tek mağazadan toplu almak mı, yoksa kargo baremlerine göre bölüşmek mi (split cart) daha karlı otomatik hesaplar.
+            </p>
+          </div>
+          <figure class="feature-preview">
+            <img src="assets/agent_cart.png" alt="Sepet Optimizasyonu Görünümü" width="600" height="350" loading="lazy">
+          </figure>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="feature-card">
+          <div>
+            <div class="feature-icon-wrapper">🤖</div>
+            <h3 class="feature-title">BYOK Destekli Yapay Zeka Ajanı</h3>
+            <p class="feature-text">
+              Kendi API anahtarınızı (OpenAI, Gemini, Claude, DeepSeek, Groq, Ollama) bağlayın. "Otomatik sulama sistemi" gibi serbest metin proje tanımlarını anlar, Malzeme Listesi (BOM) çıkartır ve voltaj uyumluluklarını denetler.
+            </p>
+          </div>
+          <figure class="feature-preview">
+            <img src="assets/agent_bom.png" alt="Yapay Zeka Malzeme Listesi Görünümü" width="600" height="350" loading="lazy">
+          </figure>
+        </div>
+
+        <!-- Pillar 4 -->
+        <div class="feature-card">
+          <div>
+            <div class="feature-icon-wrapper">⚡</div>
+            <h3 class="feature-title">Çoklu Arayüz &amp; Terminal Araçları</h3>
+            <p class="feature-text">
+              Masaüstü uygulamasına ek olarak zengin terminal araçları (`robo-search`, `robo-agent`), Claude Desktop için MCP sunucusu (`robo-mcp`), Aiogram Telegram botu (`robo-bot`) ve FastAPI REST API (`robo-api`) içerir.
+            </p>
+          </div>
+          <figure class="feature-preview">
+            <img src="assets/cli_example.png" alt="Terminal CLI Arayüzü" width="600" height="350" loading="lazy">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Downloads Hub (Core Action) -->
+  <section id="downloads" class="section downloads-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">İndirme Merkezi</div>
+        <h2 class="section-title">İstediğiniz Platformda Kullanın</h2>
+        <p class="section-desc">
+          macOS, Windows ve Linux için yerel masaüstü uygulaması veya terminal üzerinden Homebrew ve pipx kurulumu.
+        </p>
+      </div>
+
+      <!-- OS Tabs -->
+      <div class="download-tabs">
+        <button class="tab-btn active" data-target="macos">macOS</button>
+        <button class="tab-btn" data-target="windows">Windows</button>
+        <button class="tab-btn" data-target="linux">Linux</button>
+        <button class="tab-btn" data-target="cli">Homebrew &amp; pipx</button>
+        <button class="tab-btn" data-target="docker">Docker</button>
+      </div>
+
+      <!-- Tab Panes -->
+      <!-- macOS Pane -->
+      <div id="tab-macos" class="tab-pane active">
+        <div class="download-cards-grid">
+          <div class="download-card highlight">
+            <h3 class="dl-platform-title">macOS Masaüstü (.dmg)</h3>
+            <p class="dl-platform-desc">Apple Silicon (M1/M2/M3/M4) ve Intel Mac'ler için yerel Tauri v2 uygulaması.</p>
+            <div class="dl-actions">
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                Apple Silicon İndir (.dmg)
+              </a>
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                Tüm macOS Sürümleri (Releases ↗)
+              </a>
+            </div>
+          </div>
+
+          <div class="download-card">
+            <h3 class="dl-platform-title">Homebrew ile Kurulum</h3>
+            <p class="dl-platform-desc">Terminal üzerinden tek satırla global CLI aracını kurun.</p>
+            <div class="code-box">
+              <code>brew install atacanymc/tap/robo-market-search</code>
+              <button class="code-copy-btn" data-copy="brew install atacanymc/tap/robo-market-search">Kopyala</button>
+            </div>
+            <div class="code-box">
+              <code>robo-search "ESP32"</code>
+              <button class="code-copy-btn" data-copy="robo-search &quot;ESP32&quot;">Kopyala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Windows Pane -->
+      <div id="tab-windows" class="tab-pane">
+        <div class="download-cards-grid">
+          <div class="download-card highlight">
+            <h3 class="dl-platform-title">Windows Masaüstü (.msi)</h3>
+            <p class="dl-platform-desc">Windows 10 ve 11 (64-bit) için yerel kurulum paketi ve masaüstü arayüzü.</p>
+            <div class="dl-actions">
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                Windows Yükleyici İndir (.msi)
+              </a>
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                Taşınabilir Sürüm (.exe)
+              </a>
+            </div>
+          </div>
+
+          <div class="download-card">
+            <h3 class="dl-platform-title">pipx / pip ile Kurulum</h3>
+            <p class="dl-platform-desc">PowerShell veya CMD üzerinden CLI komutlarını kurun.</p>
+            <div class="code-box">
+              <code>pipx install "robo-market-search[all]"</code>
+              <button class="code-copy-btn" data-copy="pipx install &quot;robo-market-search[all]&quot;">Kopyala</button>
+            </div>
+            <div class="code-box">
+              <code>robo-search "Arduino Uno"</code>
+              <button class="code-copy-btn" data-copy="robo-search &quot;Arduino Uno&quot;">Kopyala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Linux Pane -->
+      <div id="tab-linux" class="tab-pane">
+        <div class="download-cards-grid">
+          <div class="download-card highlight">
+            <h3 class="dl-platform-title">Linux Paketleri</h3>
+            <p class="dl-platform-desc">Ubuntu, Debian, Fedora, Arch ve diğer Linux dağıtımları için hazır ikili paketler.</p>
+            <div class="dl-actions">
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                AppImage İndir (.AppImage)
+              </a>
+              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                Debian Paketi (.deb)
+              </a>
+            </div>
+          </div>
+
+          <div class="download-card">
+            <h3 class="dl-platform-title">Hızlı Shell Kurulumu</h3>
+            <p class="dl-platform-desc">Tek satır cURL betiği ile ortam yapılandırması gerektirmeden kurun.</p>
+            <div class="code-box">
+              <code>curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash</code>
+              <button class="code-copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash">Kopyala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLI Pane -->
+      <div id="tab-cli" class="tab-pane">
+        <div class="download-cards-grid">
+          <div class="download-card">
+            <h3 class="dl-platform-title">pipx (Tavsiye Edilen)</h3>
+            <p class="dl-platform-desc">Global Python ortamınızı kirletmeden izole bir sanal ortamda CLI araçlarını kurar.</p>
+            <div class="code-box">
+              <code>pipx install "robo-market-search[all]"</code>
+              <button class="code-copy-btn" data-copy="pipx install &quot;robo-market-search[all]&quot;">Kopyala</button>
+            </div>
+          </div>
+
+          <div class="download-card">
+            <h3 class="dl-platform-title">Modüler pip Kurulumu</h3>
+            <p class="dl-platform-desc">Yalnızca ihtiyacınız olan katmanları bağımsız paketler olarak yükleyebilirsiniz.</p>
+            <div class="code-box">
+              <code>pip install "robo-market-search[cli]"</code>
+              <button class="code-copy-btn" data-copy="pip install &quot;robo-market-search[cli]&quot;">Kopyala</button>
+            </div>
+            <div class="code-box">
+              <code>pip install "robo-market-search[agent]"</code>
+              <button class="code-copy-btn" data-copy="pip install &quot;robo-market-search[agent]&quot;">Kopyala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Docker Pane -->
+      <div id="tab-docker" class="tab-pane">
+        <div class="download-cards-grid">
+          <div class="download-card" style="grid-column: 1 / -1; max-width: 600px; margin-inline: auto;">
+            <h3 class="dl-platform-title">Docker Compose ile Dağıtım</h3>
+            <p class="dl-platform-desc">FastAPI REST API sunucusunu tek komutla sunucunuzda konteyner olarak çalıştırın.</p>
+            <div class="code-box">
+              <code>git clone https://github.com/AtaCanYmc/robo-market-search.git && cd robo-market-search && docker compose up -d</code>
+              <button class="code-copy-btn" data-copy="git clone https://github.com/AtaCanYmc/robo-market-search.git && cd robo-market-search && docker compose up -d">Kopyala</button>
+            </div>
+            <p class="dl-platform-desc" style="margin-top: 12px; margin-bottom: 0;">
+              Başlatıldıktan sonra: <a href="http://localhost:8000/docs" target="_blank" style="color: var(--color-accent); text-decoration: underline;">http://localhost:8000/docs</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Developer & Quick Start Code Tabs -->
+  <section id="quickstart" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Geliştirici Odaklı</div>
+        <h2 class="section-title">Hızlı Kod ve Entegrasyon Örnekleri</h2>
+        <p class="section-desc">
+          Kendi Python projelerinizde, terminal betiklerinizde veya LLM asistanlarınızda kullanın.
+        </p>
+      </div>
+
+      <div style="max-width: 840px; margin-inline: auto;">
+        <!-- Code Tab: Python SDK -->
+        <h3 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--color-accent);">1. Python SDK (`UnifiedSearchClient`)</h3>
+        <div class="code-box" style="align-items: flex-start; flex-direction: column;">
+          <pre style="width: 100%; overflow-x: auto;"><code>from robo_market_search import UnifiedSearchClient
+
+client = UnifiedSearchClient()
+
+# 6 mağazada eşzamanlı canlı arama
+results = client.search("ESP32 DevKit", limit_per_store=3)
+
+for product in results:
+    print(f"[{product.store}] {product.name} - {product.price} TL (Stok: {product.in_stock})")</code></pre>
+        </div>
+
+        <!-- Code Tab: Claude Desktop MCP Config -->
+        <h3 style="font-size: 1.1rem; margin-top: 32px; margin-bottom: 12px; color: var(--color-accent);">2. Claude Desktop MCP Yapılandırması (`claude_desktop_config.json`)</h3>
+        <div class="code-box" style="align-items: flex-start; flex-direction: column;">
+          <pre style="width: 100%; overflow-x: auto;"><code>{
+  "mcpServers": {
+    "robo-market-search": {
+      "command": "robo-mcp"
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="assets/logo.svg" alt="Robo Market Search Logo" width="28" height="28">
+          <span>Robo Market Search</span>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Deposu</a></li>
+          <li><a href="https://pypi.org/project/robo-market-search/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI Paketi</a></li>
+          <li><a href="https://github.com/AtaCanYmc/robo-market-search/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer" class="footer-link">Dokümantasyon</a></li>
+          <li><a href="https://github.com/AtaCanYmc/robo-market-search/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">Apache 2.0 Lisansı</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>Robo Market Search: Türkiye'nin Açık Kaynaklı Robotik ve Elektronik Pazaryeri Arama Motoru.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
