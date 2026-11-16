@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.12.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.11.1...v1.12.0) (2026-11-16)
+
+
+### ✨ Features
+
+* **release:** align all desktop assets and links to v1.11.1 with sync workflow ([b54a706](https://github.com/AtaCanYmc/robo-market-search/commit/b54a706c74935bf8ce19bf62bbea5710a59eb545))
+
+
+### 🐛 Bug Fixes
+
+* **desktop:** resolve sidecar path matching and handle stdout/stderr receiver ([25d3adc](https://github.com/AtaCanYmc/robo-market-search/commit/25d3adc44e5d82ed05d75b99440cce31ad777d89))
+* **sidecar:** use ascii output and force utf8 encoding for windows runners ([3648d80](https://github.com/AtaCanYmc/robo-market-search/commit/3648d80c4656ce18bead66fcaf3d02f1af74ce22))
+* **website:** point static download links directly to release binary assets ([f94d7a6](https://github.com/AtaCanYmc/robo-market-search/commit/f94d7a66be2c6e7f8a82be79deaee8df62754f0a))
+* **website:** resolve newest release containing compiled desktop assets ([267cb29](https://github.com/AtaCanYmc/robo-market-search/commit/267cb29bd309fcd31a43e5fd97832173b1cfebf7))
+
+
+### 📚 Documentation
+
+* **website:** add gatekeeper quarantine bypass hint for macos app ([33260d3](https://github.com/AtaCanYmc/robo-market-search/commit/33260d3ba29eacb0a5664e5b3e5cdec96676edcf))
+
 ## [1.11.1](https://github.com/AtaCanYmc/robo-market-search/compare/v1.11.0...v1.11.1) (2026-11-16)
 
 
