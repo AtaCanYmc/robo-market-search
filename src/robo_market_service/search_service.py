@@ -140,6 +140,8 @@ class SearchService:
             results[q] = self.search_single(req)
         return results
 
+    search_multiple = search_concurrent
+
     def cart_search(self, queries: List[str], limit_per_store: int = 5) -> CartSearchResult:
         """
         Calculate overall store options and split combinations using UnifiedSearchClient.

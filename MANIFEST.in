@@ -1,1 +1,1 @@
-recursive-include robo_market_agent/prompts *.txt
+recursive-include src/robo_market_agent/prompts *.txt

@@ -43,7 +43,7 @@ class APISearchService:
         store_str = getattr(product.store, "value", str(product.store)).lower()
 
         return ProductModel(
-            title=product.name or product.title or "",
+            title=product.name or getattr(product, "title", "") or "",
             price=price_val,
             formatted_price=formatted_price,
             url=product.url or "",
@@ -101,7 +101,7 @@ class APISearchService:
         """
 
         def _exec() -> List[Product]:
-            return search_provider(provider_name=provider, query=query, limit=limit)
+            return search_provider(provider=provider, query=query, limit=limit or 10)
 
         products = await asyncio.to_thread(_exec)
         return [self._convert_product(p) for p in products]

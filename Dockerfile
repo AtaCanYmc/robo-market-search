@@ -13,10 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy project files
 COPY pyproject.toml README.md MANIFEST.in ./
-COPY robo_market_search ./robo_market_search
-COPY robo_market_service ./robo_market_service
-COPY robo_market_agent ./robo_market_agent
-COPY robo_market_api ./robo_market_api
+COPY src ./src
 
 # Install package with all dependencies
 RUN pip install --no-cache-dir --upgrade pip wheel setuptools
@@ -28,7 +25,7 @@ FROM python:3.12-slim as runner
 WORKDIR /app
 
 # Copy installed site-packages and binaries from builder stage
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /app /app
 

@@ -47,10 +47,11 @@ jobs:
             --collect-all robo_market_search \
             --collect-all robo_market_service \
             --collect-all robo_market_agent \
+            --collect-all robo_market_api \
             --hidden-import typer \
             --hidden-import rich \
             --hidden-import curl_cffi \
-            robo_market_search/cli/main.py
+            src/robo_market_search/cli/main.py
 
       - name: Upload Binary to Release
         uses: softprops/action-gh-release@v3

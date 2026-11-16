@@ -71,11 +71,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[all,dev]"
 
-      - name: Verify package imports across all 3 layers
+      - name: Verify package imports across all 4 layers
         run: |
           python -c "import robo_market_search; print('✅ robo_market_search OK')"
           python -c "import robo_market_service; print('✅ robo_market_service OK')"
           python -c "import robo_market_agent; print('✅ robo_market_agent OK')"
+          python -c "import robo_market_api; print('✅ robo_market_api OK')"
 
       - name: Run pytest suite
         run: |

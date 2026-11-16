@@ -15,7 +15,7 @@ dependencies = [
     "curl_cffi>=0.17.0",
     "beautifulsoup4"
 ]
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
 keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper", "api", "mcp", "bot", "cli", "python", "library", "agent", "bom"]
 
 [project.optional-dependencies]
@@ -46,11 +46,19 @@ robo-api = "robo_market_api.app.main:cli_main"
 [project.urls]
 "Homepage" = "https://github.com/AtaCanYmc/robo-market-search"
 
+[tool.setuptools.package-dir]
+"" = "src"
+
 [tool.setuptools.packages.find]
-include = ["robo_market_search", "robo_market_search.*", "robo_market_service", "robo_market_service.*", "robo_market_agent", "robo_market_agent.*", "robo_market_api", "robo_market_api.*"]
+where = ["src"]
+include = ["robo_market_search*", "robo_market_service*", "robo_market_agent*", "robo_market_api*"]
 
 [tool.setuptools.package-data]
 "robo_market_agent" = ["prompts/*.txt", "prompts/*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
 
 
 [tool.ruff]
@@ -92,26 +100,26 @@ unfixable = []
 "demo/*" = [
     "B008",
 ]
-"robo_market_search/bot/*" = [
+"src/robo_market_search/bot/*" = [
     "B008",
 ]
-"robo_market_search/cli/*" = [
-    "B008",
-    "UP",
-]
-"robo_market_search/cart/*" = [
+"src/robo_market_search/cli/*" = [
     "B008",
     "UP",
 ]
-"robo_market_agent/cli.py" = [
+"src/robo_market_search/cart/*" = [
+    "B008",
+    "UP",
+]
+"src/robo_market_agent/cli.py" = [
     "B008",
 ]
-"robo_market_api/*" = [
+"src/robo_market_api/*" = [
     "B008",
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["robo_market_search", "robo_market_service", "robo_market_agent"]
+known-first-party = ["robo_market_search", "robo_market_service", "robo_market_agent", "robo_market_api"]
 force-sort-within-sections = true
 split-on-trailing-comma = true
 
@@ -125,7 +133,7 @@ docstring-code-line-length = 88
 
 [tool.mypy]
 python_version = "3.10"
-mypy_path = "."
+mypy_path = "src"
 show_error_codes       = true
 show_column_numbers    = true
 pretty                 = true

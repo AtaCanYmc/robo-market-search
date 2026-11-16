@@ -53,8 +53,8 @@ repos:
           - types-beautifulsoup4
           - types-requests
           - pydantic
-        # Tüm modülleri (search, service, agent) tip kontrolüne tabi tut
-        files: ^(robo_market_search|robo_market_service|robo_market_agent)/
+        # Tüm src modüllerini tip kontrolüne tabi tut
+        files: ^src/
         types_or: [python, pyi]
 
   # ── 4. Conventional Commits zorunluluğu ────────────────────────────────

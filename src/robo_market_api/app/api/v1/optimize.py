@@ -41,7 +41,7 @@ async def optimize_cart(
             batch_res = service.core_service.search_multiple(payload.items)
             return {
                 "total_cost": None,
-                "items_found": {k: len(v) for k, v in batch_res.items()},
+                "items_found": {k: len(v.products) for k, v in batch_res.items()},
             }
 
     details = await asyncio.to_thread(_exec)

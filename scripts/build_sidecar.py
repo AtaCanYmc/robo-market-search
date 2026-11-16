@@ -62,6 +62,8 @@ def build_sidecar() -> None:
         "--workpath",
         str(work_dir),
         "--paths",
+        str(REPO_ROOT / "src"),
+        "--paths",
         str(REPO_ROOT),
         "--collect-all",
         "curl_cffi",

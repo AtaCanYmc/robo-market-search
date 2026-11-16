@@ -58,7 +58,7 @@ setup: install-dev ## Full developer setup: install all dev tools and git pre-co
 	$(PRECOMMIT) install --hook-type commit-msg
 	@printf "$(GREEN)✓ Development environment and pre-commit hooks configured.$(RESET)\n"
 
-PYTHON_DIRS := robo_market_search robo_market_service robo_market_agent robo_market_api tests demo
+PYTHON_DIRS := src tests demo scripts
 
 # -----------------------------------------------------------------------------
 # 🔍 Code Quality, Linting & Formatting
@@ -103,7 +103,7 @@ test-v: ## Run pytest with verbose output and short tracebacks
 	$(PYTEST) -v --tb=short
 
 test-cov: ## Run pytest with test coverage report across packages
-	$(PYTEST) --cov=robo_market_search --cov=robo_market_agent --cov=robo_market_api --cov-report=term-missing tests/
+	$(PYTEST) --cov=src --cov-report=term-missing tests/
 
 # -----------------------------------------------------------------------------
 # 🚀 Running Local Services & CLI
