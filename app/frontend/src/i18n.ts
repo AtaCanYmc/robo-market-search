@@ -112,13 +112,22 @@ export interface Translations {
   serverModalRetryNow: string;
   serverModalDismiss: string;
   serverModalReopenTooltip: string;
+
+  // Desktop App UI
+  desktopViews: string;
+  desktopStores: string;
+  desktopShortcuts: string;
+  sidebarCollapse: string;
+  sidebarExpand: string;
+  quickSearchPlaceholder: string;
+  connectedLocalApi: string;
 }
 
 export const translations: Record<Language, Translations> = {
   tr: {
     // Common / Global
     appName: "Robo Market Search",
-    appVersion: "v1.8",
+    appVersion: "v1.10.0",
     appSubtitle: "Türkiye Elektronik & Robotik Parça Arama Motoru",
     systemStatus: "SİSTEM:",
     systemOnline: "ÇEVRİMİÇİ",
@@ -133,7 +142,7 @@ export const translations: Record<Language, Translations> = {
 
     // Search Tab
     searchTitle: "Elektronik Parça Arama",
-    searchSubtitle: "Robotistan, Robolink, Robo90 ve Direnç.net mağazalarında eşzamanlı canlı arama.",
+    searchSubtitle: "Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında eşzamanlı canlı arama.",
     searchPlaceholder: "Parça adı veya kod girin (örn. ESP32, STM32, 5V Röle, OLED ekran)...",
     execute: "Ara",
     quickIndex: "Hızlı Arama:",
@@ -227,11 +236,20 @@ export const translations: Record<Language, Translations> = {
     serverModalRetryNow: "Şimdi Yeniden Dene",
     serverModalDismiss: "Arka Planda Bekle",
     serverModalReopenTooltip: "Sunucu bağlantı durumunu görüntüle",
+
+    // Desktop App UI
+    desktopViews: "GÖRÜNÜMLER",
+    desktopStores: "MAĞAZALAR",
+    desktopShortcuts: "Kısayollar",
+    sidebarCollapse: "Kenar Çubuğunu Daralt (⌘B)",
+    sidebarExpand: "Kenar Çubuğunu Genişlet (⌘B)",
+    quickSearchPlaceholder: "Hızlı parça ara... (⌘K)",
+    connectedLocalApi: "Yerel API Servisi",
   },
   en: {
     // Common / Global
     appName: "Robo Market Search",
-    appVersion: "v1.8",
+    appVersion: "v1.10.0",
     appSubtitle: "Turkish Electronics & Robotics Sourcing Engine",
     systemStatus: "SYSTEM:",
     systemOnline: "ONLINE",
@@ -246,7 +264,7 @@ export const translations: Record<Language, Translations> = {
 
     // Search Tab
     searchTitle: "Electronic Component Search",
-    searchSubtitle: "Search live across Robotistan, Robolink, Robo90, and Direnç.net in parallel.",
+    searchSubtitle: "Search live across Robotistan, Robolink, Robo90, Direnç.net, Özdisan, and Motorobit in parallel.",
     searchPlaceholder: "Search by component name or part number (e.g. ESP32, STM32, 5V Relay)...",
     execute: "Search",
     quickIndex: "Quick Search:",
@@ -340,5 +358,14 @@ export const translations: Record<Language, Translations> = {
     serverModalRetryNow: "Retry Now",
     serverModalDismiss: "Wait in Background",
     serverModalReopenTooltip: "View server connection status",
+
+    // Desktop App UI
+    desktopViews: "VIEWS",
+    desktopStores: "STORES",
+    desktopShortcuts: "Shortcuts",
+    sidebarCollapse: "Collapse Sidebar (⌘B)",
+    sidebarExpand: "Expand Sidebar (⌘B)",
+    quickSearchPlaceholder: "Quick search parts... (⌘K)",
+    connectedLocalApi: "Local API Service",
   },
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Navbar } from './components/Navbar';
+import { DesktopSidebar } from './components/DesktopSidebar';
+import { DesktopHeader } from './components/DesktopHeader';
+import { DesktopStatusBar } from './components/DesktopStatusBar';
 import { SearchTab } from './components/SearchTab';
 import { BatchSearchTab } from './components/BatchSearchTab';
 import { CartOptimizerTab } from './components/CartOptimizerTab';
@@ -10,12 +12,32 @@ import { api } from './services/api';
 
 const MainContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('search');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    return localStorage.getItem('ROBO_SIDEBAR_COLLAPSED') === 'true';
+  });
   const [apiOnline, setApiOnline] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [attemptCount, setAttemptCount] = useState(0);
   const [justConnected, setJustConnected] = useState(false);
   const { t } = useTheme();
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem('ROBO_SIDEBAR_COLLAPSED', String(next));
+      return next;
+    });
+  }, []);
+
+  const handleQuickSearchFocus = useCallback(() => {
+    if (activeTab !== 'search') {
+      setActiveTab('search');
+    }
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('robo:focus-search'));
+    }, 50);
+  }, [activeTab]);
 
   const checkHealth = useCallback(async () => {
     setIsChecking(true);
@@ -40,12 +62,12 @@ const MainContent: React.FC = () => {
     }
   }, []);
 
-  // Initial healthcheck on page load
+  // Initial healthcheck on load
   useEffect(() => {
     checkHealth();
   }, [checkHealth]);
 
-  // Periodic polling every 3 seconds while backend is offline
+  // Periodic polling while backend is offline
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     if (apiOnline === false) {
@@ -58,26 +80,79 @@ const MainContent: React.FC = () => {
     };
   }, [apiOnline, checkHealth]);
 
+  // Global desktop keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      if (isCmdOrCtrl && e.key === '1') {
+        e.preventDefault();
+        setActiveTab('search');
+      } else if (isCmdOrCtrl && e.key === '2') {
+        e.preventDefault();
+        setActiveTab('batch');
+      } else if (isCmdOrCtrl && e.key === '3') {
+        e.preventDefault();
+        setActiveTab('optimizer');
+      } else if (isCmdOrCtrl && e.key === '4') {
+        e.preventDefault();
+        setActiveTab('agent');
+      } else if (isCmdOrCtrl && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        toggleSidebar();
+      } else if (isCmdOrCtrl && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        handleQuickSearchFocus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSidebar, handleQuickSearchFocus]);
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 flex flex-col overflow-x-clip transition-colors">
-      <Navbar
+    <div className="h-screen w-screen overflow-hidden flex bg-slate-100 dark:bg-[#070A0F] text-slate-900 dark:text-slate-100 select-none">
+      {/* Desktop Navigation Activity Sidebar */}
+      <DesktopSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={toggleSidebar}
         apiOnline={apiOnline}
         onOpenServerModal={() => setIsModalOpen(true)}
         attemptCount={attemptCount}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 min-w-0">
-        {activeTab === 'search' && <SearchTab />}
-        {activeTab === 'batch' && <BatchSearchTab />}
-        {activeTab === 'optimizer' && <CartOptimizerTab />}
-        {activeTab === 'agent' && <AgentTab />}
-      </main>
+      {/* Main Workspace Frame */}
+      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-slate-50 dark:bg-[#080C14]">
+        {/* Desktop Titlebar / Header Bar */}
+        <DesktopHeader
+          activeTab={activeTab}
+          onQuickSearchFocus={handleQuickSearchFocus}
+          apiOnline={apiOnline}
+        />
+
+        {/* Content Pane (Independent Scrolling, Selectable Text) */}
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 min-w-0 selectable-text">
+          <div className="max-w-6xl mx-auto">
+            {activeTab === 'search' && <SearchTab />}
+            {activeTab === 'batch' && <BatchSearchTab />}
+            {activeTab === 'optimizer' && <CartOptimizerTab />}
+            {activeTab === 'agent' && <AgentTab />}
+          </div>
+        </main>
+
+        {/* Desktop Application Bottom Status Bar */}
+        <DesktopStatusBar
+          apiOnline={apiOnline}
+          attemptCount={attemptCount}
+          onOpenServerModal={() => setIsModalOpen(true)}
+        />
+      </div>
 
       {/* Floating Status Pill when modal is closed but server is still offline */}
       {apiOnline === false && !isModalOpen && (
-        <div className="fixed bottom-5 right-5 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-10 right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <button
             onClick={() => setIsModalOpen(true)}
             type="button"
@@ -105,23 +180,6 @@ const MainContent: React.FC = () => {
         attemptCount={attemptCount}
         justConnected={justConnected}
       />
-
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-5 text-center text-xs text-slate-500 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            © 2026 <span className="text-slate-700 dark:text-slate-300 font-semibold">{t('appName')}</span> · {t('footerCopyright')}
-          </div>
-          <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-            <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              {t('footerDocs')}
-            </a>
-            <span>•</span>
-            <a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              {t('footerGithub')}
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

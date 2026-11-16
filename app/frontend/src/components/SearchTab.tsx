@@ -58,17 +58,26 @@ export const SearchTab: React.FC = () => {
 
   const sampleQueries = ['ESP32-S3', 'Raspberry Pi 5', 'STM32F401', 'OLED 0.96', 'TB6612FNG', 'BME280', '10K Direnç'];
 
-  // Global hotkey: '/' or 'Cmd+K' to focus search input
+  // Global hotkey & custom event: '/' or 'Cmd+K' to focus search input
   useEffect(() => {
+    const handleFocus = () => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key === 'k')) && document.activeElement !== inputRef.current) {
         e.preventDefault();
-        inputRef.current?.focus();
-        inputRef.current?.select();
+        handleFocus();
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('robo:focus-search', handleFocus);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('robo:focus-search', handleFocus);
+    };
   }, []);
 
   const handleSearch = async (e?: React.FormEvent, searchQuery?: string) => {
@@ -229,14 +238,20 @@ export const SearchTab: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Title & Description */}
-      <div className="text-center pt-2 pb-1 space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-          {t('searchTitle')}
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-          {t('searchSubtitle')}
-        </p>
+      {/* Desktop Tool Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            {t('searchTitle')}
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {t('searchSubtitle')}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 dark:text-slate-500">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+          <span>6 Mağaza Canlı Arama</span>
+        </div>
       </div>
 
       {/* Main Search Bar & Quick Chips */}

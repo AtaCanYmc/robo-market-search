@@ -22,8 +22,35 @@
     --scrollbar-thumb: #1E293B;
   }
 
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-[#0B0F17] dark:text-slate-100 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-600 dark:selection:text-blue-200 min-h-screen flex flex-col overflow-x-clip;
+    @apply bg-slate-100 text-slate-900 dark:bg-[#080C14] dark:text-slate-100 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-600 dark:selection:text-blue-200 select-none;
+  }
+
+  /* Selectable text in data regions */
+  input,
+  textarea,
+  pre,
+  code,
+  .selectable-text,
+  table {
+    user-select: text;
+  }
+
+  .window-drag-region {
+    -webkit-app-region: drag;
+  }
+
+  .window-no-drag {
+    -webkit-app-region: no-drag;
   }
 
   /* R-39: Interaction Affordances - pointer cursor on interactive, not-allowed on disabled */

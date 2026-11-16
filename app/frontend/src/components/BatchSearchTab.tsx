@@ -48,13 +48,19 @@ export const BatchSearchTab: React.FC = () => {
 
   return (
     <div className="space-y-6 font-sans">
-      <div className="text-center pt-2 pb-1 space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-          {t('batchTitle')}
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-xs sm:text-sm">
-          {t('batchSubtitle')}
-        </p>
+      {/* Desktop Tool Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            {t('batchTitle')}
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {t('batchSubtitle')}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 dark:text-slate-500">
+          <span>{queries.length} Parça Listede</span>
+        </div>
       </div>
 
       {/* Query Input Box & Tags */}
