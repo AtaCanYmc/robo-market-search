@@ -6,10 +6,29 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .setup(|app| {
             // Launch the Python FastAPI sidecar
-            match app.shell().sidecar("robo-backend") {
+            // In Tauri v2, sidecar identifier can be 'binaries/robo-backend' or 'robo-backend'
+            let sidecar_result = app
+                .shell()
+                .sidecar("binaries/robo-backend")
+                .or_else(|_| app.shell().sidecar("robo-backend"));
+
+            match sidecar_result {
                 Ok(cmd) => match cmd.spawn() {
-                    Ok((_rx, _child)) => {
+                    Ok((mut rx, _child)) => {
                         println!("Python sidecar backend started successfully");
+                        tauri::async_runtime::spawn(async move {
+                            while let Some(event) = rx.recv().await {
+                                match event {
+                                    tauri_plugin_shell::process::CommandEvent::Stdout(line) => {
+                                        println!("[backend] {}", String::from_utf8_lossy(&line));
+                                    }
+                                    tauri_plugin_shell::process::CommandEvent::Stderr(line) => {
+                                        eprintln!("[backend err] {}", String::from_utf8_lossy(&line));
+                                    }
+                                    _ => {}
+                                }
+                            }
+                        });
                     }
                     Err(e) => {
                         eprintln!(

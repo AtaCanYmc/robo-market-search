@@ -12,6 +12,10 @@
         {
           "name": "binaries/robo-backend",
           "sidecar": true
+        },
+        {
+          "name": "robo-backend",
+          "sidecar": true
         }
       ]
     },
@@ -20,6 +24,10 @@
       "allow": [
         {
           "name": "binaries/robo-backend",
+          "sidecar": true
+        },
+        {
+          "name": "robo-backend",
           "sidecar": true
         }
       ]
