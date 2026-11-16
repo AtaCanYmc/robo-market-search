@@ -103,7 +103,7 @@ def build_sidecar() -> None:
     if not is_windows:
         os.chmod(target_path, 0o755)
 
-    print(f"[✓] Successfully built and placed sidecar binary at:\n    {target_path}")
+    print(f"[OK] Successfully built and placed sidecar binary at:\n    {target_path}")
 
     # Cleanup temporary directories
     shutil.rmtree(dist_dir, ignore_errors=True)

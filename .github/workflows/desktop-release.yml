@@ -28,6 +28,10 @@ jobs:
           - platform: ubuntu-22.04
             args: ""
 
+    env:
+      PYTHONIOENCODING: "utf-8"
+      PYTHONUTF8: "1"
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
