@@ -11,14 +11,16 @@ from robo_market_search.shared.models import Product
 
 def test_registered_stores_exist():
     stores = default_registry.get_all()
-    assert len(stores) >= 4
+    assert len(stores) >= 6
     assert "Robotistan" in stores
     assert "Direncnet" in stores
     assert "Robo90" in stores
     assert "Robolink" in stores
+    assert "Ozdisan" in stores
+    assert "Motorobit" in stores
 
 
-@pytest.mark.parametrize("store_name", ["Robotistan", "Direncnet", "Robo90", "Robolink"])
+@pytest.mark.parametrize("store_name", ["Robotistan", "Direncnet", "Robo90", "Robolink", "Ozdisan", "Motorobit"])
 def test_store_class_contract(store_name):
     store_cls = default_registry.get(store_name)
     assert issubclass(store_cls, BaseStore)

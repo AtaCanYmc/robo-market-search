@@ -102,6 +102,7 @@ Ensure your custom store satisfies contract tests by adding a unit test:
 from robo_market_search.providers.registry import default_registry
 from robo_market_search.providers.base import BaseStore
 
+
 def test_custom_store_registration():
     assert "Robitshop" in default_registry.list_stores()
     store_cls = default_registry.get("Robitshop")

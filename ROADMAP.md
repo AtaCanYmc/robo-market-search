@@ -55,8 +55,8 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 
 #### v1.12.0: Scraper Expansion & Distributed Caching
 - **New Scraper Integrations**:
-  - Implement `OzdisanClient` for industrial electronic components and IC distribution.
-  - Implement `MotorobitClient` for robotics and automation hardware.
+  - [x] Implement `OzdisanClient` for industrial electronic components and IC distribution.
+  - [x] Implement `MotorobitClient` for robotics and automation hardware.
 - **Distributed Cache Layer**:
   - Add optional Redis backend to `robo_market_service` alongside the in-memory cache.
   - Implement TTL-based cache invalidation per market source.

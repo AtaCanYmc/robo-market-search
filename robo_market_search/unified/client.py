@@ -11,6 +11,8 @@ import time
 from typing import Callable, Dict, List, Optional, Tuple
 
 from robo_market_search.direncnet.client import DirencnetClient
+from robo_market_search.motorobit.client import MotorobitClient
+from robo_market_search.ozdisan.client import OzdisanClient
 from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
@@ -35,19 +37,21 @@ from robo_market_search.shared.models import (
 
 logger = logging.getLogger("robo_market_search.unified")
 
-STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet"]
+STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet", "Ozdisan", "Motorobit"]
 
 SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {
     "Robolink": ShippingInfo(flat_rate=39.90, free_shipping_min=1500.0),
     "Robotistan": ShippingInfo(flat_rate=34.90, free_shipping_min=1500.0),
     "Robo90": ShippingInfo(flat_rate=39.90, free_shipping_min=1500.0),
     "Direncnet": ShippingInfo(flat_rate=29.90, free_shipping_min=1500.0),
+    "Ozdisan": ShippingInfo(flat_rate=50.00, free_shipping_min=2000.0),
+    "Motorobit": ShippingInfo(flat_rate=39.90, free_shipping_min=1500.0),
 }
 
 
 class UnifiedSearchClient:
     """
-    Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet) eşzamanlı ve önbellekli arama yapar.
+    Tüm marketlerde (Robolink, Robotistan, Robo90, Direncnet, Ozdisan, Motorobit) eşzamanlı ve önbellekli arama yapar.
     Sözleşmeli BaseStore mimarisi ve Event Dispatcher altyapısını destekler.
     """
 
@@ -56,6 +60,8 @@ class UnifiedSearchClient:
         self.robotistan = RobotistanClient()
         self.robo90 = Robo90Client()
         self.direncnet = DirencnetClient()
+        self.ozdisan = OzdisanClient()
+        self.motorobit = MotorobitClient()
         self.use_cache = use_cache
         self.cache = SearchCache(default_ttl_seconds=cache_ttl_seconds) if use_cache else None
         self.events = EventDispatcher()
@@ -106,6 +112,8 @@ class UnifiedSearchClient:
             _fetch("Robotistan", lambda: self.robotistan.search(query, limit_per_store)),
             _fetch("Robo90", lambda: self.robo90.search(query, limit_per_store)),
             _fetch("Direncnet", lambda: self.direncnet.search(query, limit_per_store)),
+            _fetch("Ozdisan", lambda: self.ozdisan.search(query, limit_per_store)),
+            _fetch("Motorobit", lambda: self.motorobit.search(query, limit_per_store)),
         ]
 
         store_results_list = await asyncio.gather(*tasks)
@@ -145,7 +153,7 @@ class UnifiedSearchClient:
                 self.events.emit_product(p)
             return prods
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
             future_to_store = {
                 executor.submit(_run_store, "Robolink", lambda: self.robolink.search(query, limit_per_store)): "Robolink",
                 executor.submit(
@@ -153,6 +161,8 @@ class UnifiedSearchClient:
                 ): "Robotistan",
                 executor.submit(_run_store, "Robo90", lambda: self.robo90.search(query, limit_per_store)): "Robo90",
                 executor.submit(_run_store, "Direncnet", lambda: self.direncnet.search(query, limit_per_store)): "Direncnet",
+                executor.submit(_run_store, "Ozdisan", lambda: self.ozdisan.search(query, limit_per_store)): "Ozdisan",
+                executor.submit(_run_store, "Motorobit", lambda: self.motorobit.search(query, limit_per_store)): "Motorobit",
             }
 
             for future in concurrent.futures.as_completed(future_to_store):

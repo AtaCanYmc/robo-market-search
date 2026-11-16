@@ -55,10 +55,7 @@ overrides = {
     "Robolink": ShippingInfo(flat_rate=40.0, free_shipping_min=1200.0),
 }
 
-result = client.cart_search(
-    queries=["ESP32", "0.96 OLED"],
-    shipping_overrides=overrides
-)
+result = client.cart_search(queries=["ESP32", "0.96 OLED"], shipping_overrides=overrides)
 ```
 
 ---

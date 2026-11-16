@@ -6,6 +6,8 @@ Zero AI dependencies - direct search helper functions.
 from typing import Dict, List, cast
 
 from robo_market_search.direncnet.client import DirencnetClient
+from robo_market_search.motorobit.client import MotorobitClient
+from robo_market_search.ozdisan.client import OzdisanClient
 from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
@@ -17,6 +19,8 @@ _CLIENT_MAP = {
     "robotistan": RobotistanClient,
     "robo90": Robo90Client,
     "direncnet": DirencnetClient,
+    "ozdisan": OzdisanClient,
+    "motorobit": MotorobitClient,
 }
 
 
@@ -76,6 +80,8 @@ def search_provider(provider: str, query: str, limit: int = 10) -> List[Product]
         return cast("List[Product]", client.search_component(query, limit, 1))
     elif key == "robo90":
         return cast("List[Product]", client.search_component(query, 1, 1)[:limit])
+    elif key == "motorobit":
+        return cast("List[Product]", client.search_component(query, 1)[:limit])
     else:
         return cast("List[Product]", client.search_component(query, limit))
 

@@ -40,6 +40,8 @@ STORE_STYLES: Dict[str, Dict[str, str]] = {
     "robolink": {"badge": "[bold #457B9D]● Robolink[/bold #457B9D]"},
     "robo90": {"badge": "[bold #2A9D8F]● Robo90[/bold #2A9D8F]"},
     "direncnet": {"badge": "[bold #E76F51]● Direnç.net[/bold #E76F51]"},
+    "ozdisan": {"badge": "[bold #0077B6]● Özdisan[/bold #0077B6]"},
+    "motorobit": {"badge": "[bold #F4A261]● Motorobit[/bold #F4A261]"},
 }
 
 
@@ -237,7 +239,10 @@ def search(
     limit: int = typer.Option(10, "--limit", "-l", help="Market başına getirilecek maksimum sonuç sayısı"),
     stock_only: bool = typer.Option(False, "--stock-only", "-s", help="Yalnızca stokta bulunan ürünleri göster"),
     store: Optional[str] = typer.Option(
-        None, "--store", "-m", help="Yalnızca belirli bir mağazayı filtrele (robotistan, robolink, robo90, direncnet)"
+        None,
+        "--store",
+        "-m",
+        help="Yalnızca belirli bir mağazayı filtrele (robotistan, robolink, robo90, direncnet, ozdisan, motorobit)",
     ),
     as_json: bool = typer.Option(False, "--json", help="Sonuçları JSON formatında yazdır"),
     as_markdown: bool = typer.Option(False, "--markdown", help="Sonuçları Markdown tablosu olarak yazdır"),

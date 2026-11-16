@@ -12,12 +12,12 @@
 </div>
 
 <br/>
-Türkiye'nin en popüler 4 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python kütüphanesi ve ekosistemi.
+Türkiye'nin en popüler 6 elektronik ve robotik pazarında (**Robolink, Robotistan, Robo90, Direnç.net, Özdisan, Motorobit**) tek satır kodla, çok hızlı ve eşzamanlı arama yapmanızı sağlayan Python kütüphanesi ve ekosistemi.
 
 Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context Protocol)** sunucusu, **Yapay Zeka Donanım Ajanı (BYOK destekli)** ve **Vite + React Web Önyüzü** içerir.
 
 ## Özellikler
-- **Unified Search (Birleştirilmiş Arama)**: 4 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
+- **Unified Search (Birleştirilmiş Arama)**: 6 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
 - **Sepet Optimizasyonu & Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
 - **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) otonom donanım analizi ve BOM listesi çıkarma.
 - **Vite + React + Tailwind SPA Önyüz**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV/JSON/Markdown/Clipboard** formatlarında tek tıkla dışa aktarma.
@@ -125,6 +125,8 @@ graph TB
             R2["RobolinkClient"]
             R3["Robo90Client"]
             R4["DirencnetClient"]
+            R5["OzdisanClient"]
+            R6["MotorobitClient"]
         end
         TK["🔑 Dinamik Token Yenileyici"]
         MD["📦 Product Model"]
@@ -136,6 +138,8 @@ graph TB
         M2["robolink.com"]
         M3["robo90.com"]
         M4["direnc.net"]
+        M5["ozdisan.com"]
+        M6["motorobit.com"]
     end
 
     WEB --> REST
@@ -492,15 +496,18 @@ from robo_market_search import Client, CaptchaDetectedError, RateLimitError
 
 client = Client()
 
+
 # Event dinleyicileri ekleme
 @client.on_request
 def on_req(store, q):
     print(f"[{store}] '{q}' araması başlatılıyor...")
 
+
 @client.on_product
 def on_prod(p):
     if p.price < 50.0:
         print(f"Fırsat Ürün: {p.name} ({p.price} TL)")
+
 
 try:
     products = client.search("ESP32-WROOM")
@@ -559,7 +566,7 @@ if result.best_split:
 Robo Market Search bir Google veya Yandex gibi web arama motoru değildir; sitelerin SEO puanları, Backlink'leri veya Google sıralamaları sonuçlarımızı **hiçbir şekilde etkilemez.**
 
 Sistem tamamen tarafsız bir kazıma (scraping) ve fiyat karşılaştırma mantığıyla çalışır:
-1. Bir kelime aratıldığında 4 marketin (Robotistan, Robolink, Robo90, Direnç.net) kendi iç arama motorlarına **eşzamanlı (paralel)** doğrudan istek atılır.
+1. Bir kelime aratıldığında 6 marketin (Robotistan, Robolink, Robo90, Direnç.net, Özdisan, Motorobit) kendi iç arama motorlarına **eşzamanlı (paralel)** doğrudan istek atılır.
 2. Gelen tüm ürünler eşit şartlarda toplanır ve standart `Product` modeline dönüştürülür.
 3. Varsayılan olarak sonuçlar **sadece ve sadece ürün fiyatına göre (en ucuzdan en pahalıya)** sıralanır.
 
@@ -570,7 +577,7 @@ Dolayısıyla hiçbir markete SEO veya popülerlik avantajı tanınmaz; kullanı
 <summary><b>❓ Ürünlerin fiyat ve stok bilgileri ne kadar güncel?</b></summary>
 <br/>
 
-Arama yapıldığı an 4 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir.
+Arama yapıldığı an 6 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir.
 </details>
 
 <details>

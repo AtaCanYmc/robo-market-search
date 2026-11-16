@@ -1,4 +1,6 @@
 from .direncnet.client import DirencnetClient
+from .motorobit.client import MotorobitClient
+from .ozdisan.client import OzdisanClient
 from .robo90.client import Robo90Client
 from .robolink.client import RobolinkClient
 from .robotistan.client import RobotistanClient
@@ -33,7 +35,9 @@ __all__ = [
     "CartSearchResult",
     "Client",
     "DirencnetClient",
+    "MotorobitClient",
     "NetworkError",
+    "OzdisanClient",
     "ParsingError",
     "Product",
     "RateLimitError",

@@ -24,6 +24,8 @@ class APISearchService:
         ),
         ProviderInfo(name="robo90", display_name="Robo90", base_url="https://www.robo90.com", status="active"),
         ProviderInfo(name="direncnet", display_name="Direnç.net", base_url="https://www.direnc.net", status="active"),
+        ProviderInfo(name="ozdisan", display_name="Özdisan", base_url="https://www.ozdisan.com", status="active"),
+        ProviderInfo(name="motorobit", display_name="Motorobit", base_url="https://www.motorobit.com", status="active"),
     ]
 
     def __init__(self) -> None:

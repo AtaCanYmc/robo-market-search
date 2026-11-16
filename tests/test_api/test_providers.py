@@ -17,10 +17,12 @@ def test_list_providers():
     assert response.status_code == 200
     data = response.json()
     assert data["success"] is True
-    assert data["count"] == 4
+    assert data["count"] == 6
     provider_names = [p["name"] for p in data["providers"]]
     assert "robotistan" in provider_names
     assert "robolink" in provider_names
+    assert "ozdisan" in provider_names
+    assert "motorobit" in provider_names
 
 
 def test_search_specific_provider_invalid():
