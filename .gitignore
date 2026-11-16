@@ -102,7 +102,9 @@ Session.vim
 .DS_Store
 .AppleDouble
 .LSOverride
-Icon?
+Icon[$'\r']
+!**/icons/
+!**/icons/**
 ._*
 .Spotlight-V100
 .Trashes

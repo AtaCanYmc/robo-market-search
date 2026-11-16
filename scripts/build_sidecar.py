@@ -65,17 +65,35 @@ def build_sidecar() -> None:
         str(REPO_ROOT / "src"),
         "--paths",
         str(REPO_ROOT),
+        "--hidden-import",
+        "_cffi_backend",
         "--collect-all",
         "curl_cffi",
         "--collect-all",
         "robo_market_search",
         "--collect-all",
         "robo_market_api",
+        "--collect-all",
+        "uvicorn",
+        "--collect-all",
+        "fastapi",
+        "--collect-all",
+        "pydantic",
+        "--collect-all",
+        "pydantic_settings",
+        "--copy-metadata",
+        "curl_cffi",
+        "--copy-metadata",
+        "robo_market_search",
         str(ENTRYPOINT),
     ]
 
     print("[*] Executing:", " ".join(cmd))
-    subprocess.check_call(cmd, cwd=str(REPO_ROOT))
+    try:
+        subprocess.check_call(cmd, cwd=str(REPO_ROOT))
+    except subprocess.CalledProcessError as err:
+        print(f"[!] PyInstaller build failed with exit code: {err.returncode}", file=sys.stderr)
+        raise
 
     built_binary = dist_dir / f"robo-backend{ext}"
     if not built_binary.exists():
