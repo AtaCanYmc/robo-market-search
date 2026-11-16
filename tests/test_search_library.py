@@ -152,3 +152,91 @@ def test_ozdisan_parser(monkeypatch):
     assert p.in_stock is True
     assert p.url == "https://www.ozdisan.com/p/mcu-kategorisi/stm32f401ret6-12345"
     assert p.image_url == "https://cdn.ozdisan.com/img.jpg"
+
+
+def test_direncnet_json_parser(monkeypatch):
+    from robo_market_search.direncnet.client import DirencnetClient
+
+    sample_json = {
+        "data": [
+            {
+                "id": "18248",
+                "title": "ESP32-WROOM-32D 4MB Flash WiFi ve Bluetooth Modül",
+                "price_sell_with_vat": "272,21",
+                "price_sell": 226.84,
+                "url": "/esp32-wroom-32d-wifi-modul",
+                "image": "https://www.direnc.net/img.jpg",
+                "stock": 1,
+            }
+        ]
+    }
+
+    class DummyResp:
+        status_code = 200
+
+        def json(self):
+            return sample_json
+
+    monkeypatch.setattr(
+        "robo_market_search.direncnet.client.requests.post",
+        lambda *args, **kwargs: DummyResp(),
+    )
+
+    client = DirencnetClient()
+    products = client.search("ESP32", limit=5)
+    assert len(products) == 1
+    p = products[0]
+    assert p.name == "ESP32-WROOM-32D 4MB Flash WiFi ve Bluetooth Modül"
+    assert p.price == 272.21
+    assert p.currency == "TL"
+    assert p.store == "Direncnet"
+    assert p.in_stock is True
+    assert p.url == "https://www.direnc.net/esp32-wroom-32d-wifi-modul"
+    assert p.image_url == "https://www.direnc.net/img.jpg"
+
+
+def test_direncnet_html_dom_fallback(monkeypatch):
+    from robo_market_search.direncnet.client import DirencnetClient
+
+    class FailResp:
+        status_code = 500
+
+    monkeypatch.setattr(
+        "robo_market_search.direncnet.client.requests.post",
+        lambda *args, **kwargs: FailResp(),
+    )
+
+    sample_html = """
+    <html>
+    <body>
+        <div data-toggle="product">
+            <a href="/esp32-s3-board" data-toggle="product-url" title="ESP32-S3 Board">
+                <span data-toggle="product-title">ESP32-S3 Board</span>
+            </a>
+            <img data-toggle="product-image" data-src="https://www.direnc.net/esp32s3.jpg" />
+            <span data-toggle="price-sell-vat">349,34 TL</span>
+        </div>
+    </body>
+    </html>
+    """
+
+    class DummyHtmlResp:
+        status_code = 200
+        text = sample_html
+
+    monkeypatch.setattr(
+        "robo_market_search.direncnet.client.requests.Session.get",
+        lambda *args, **kwargs: DummyHtmlResp(),
+    )
+
+    client = DirencnetClient()
+    products = client.search("ESP32", limit=5)
+    assert len(products) == 1
+    p = products[0]
+    assert p.name == "ESP32-S3 Board"
+    assert p.price == 349.34
+    assert p.currency == "TL"
+    assert p.store == "Direncnet"
+    assert p.in_stock is True
+    assert p.url == "https://www.direnc.net/esp32-s3-board"
+    assert p.image_url == "https://www.direnc.net/esp32s3.jpg"
