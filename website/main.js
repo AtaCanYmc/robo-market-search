@@ -129,10 +129,13 @@ function bindDirectUrl(buttonId, url) {
  */
 async function fetchLatestRelease() {
   try {
-    const res = await fetch("https://api.github.com/repos/AtaCanYmc/robo-market-search/releases/latest");
+    const res = await fetch("https://api.github.com/repos/AtaCanYmc/robo-market-search/releases");
     if (!res.ok) return;
-    const data = await res.json();
-    const tagName = data.tag_name || "v1.11.0";
+    const releases = await res.json();
+    if (!Array.isArray(releases) || releases.length === 0) return;
+
+    const latestRelease = releases[0];
+    const tagName = latestRelease.tag_name || "v1.11.1";
 
     // 1. Update version badges
     const badges = document.querySelectorAll(".release-version-badge");
@@ -140,7 +143,9 @@ async function fetchLatestRelease() {
       b.textContent = tagName;
     });
 
-    const assets = data.assets || [];
+    // Find the newest release that has compiled binary assets uploaded
+    const releaseWithAssets = releases.find(r => Array.isArray(r.assets) && r.assets.length > 0) || latestRelease;
+    const assets = releaseWithAssets.assets || [];
     const directLinks = {};
 
     if (assets.length > 0) {
