@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,9 +22,9 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 cli = ["typer", "rich"]
 mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-agent = ["pydantic>=2.0", "typer", "rich", "openai>=1.0.0", "groq>=0.4.0", "anthropic>=0.18.0", "google-generativeai>=0.4.0", "ollama>=0.1.0"]
-api = ["fastapi", "uvicorn[standard]", "pydantic-settings>=2.0"]
-all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0", "fastapi", "uvicorn[standard]", "pydantic-settings>=2.0", "openai>=1.0.0", "groq>=0.4.0", "anthropic>=0.18.0", "google-generativeai>=0.4.0", "ollama>=0.1.0"]
+agent = ["pydantic>=2.0", "typer", "rich", "openai>=3.50.0", "groq>=1.7.0", "anthropic>=2.8.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
+api = ["fastapi", "uvicorn[standard]", "pydantic-settings>=2.15.0"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.0", "fastapi", "uvicorn[standard]", "pydantic-settings>=2.15.0", "openai>=3.50.0", "groq>=1.7.0", "anthropic>=2.8.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
 dev = [
     "pre-commit",
     "ruff",
