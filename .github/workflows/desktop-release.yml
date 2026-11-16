@@ -4,6 +4,11 @@ on:
   release:
     types: [published, created]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release Tag (örn: v1.11.0)'
+        required: true
+        default: 'v1.11.0'
 
 permissions:
   contents: write
@@ -71,7 +76,7 @@ jobs:
         with:
           projectPath: "app/frontend"
           args: ${{ matrix.args }}
-          tagName: ${{ github.ref_name }}
+          tagName: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || 'v1.11.0' }}
           releaseName: "Robo Market Search Desktop v__VERSION__"
           releaseBody: "Automated desktop binaries for macOS, Windows, and Linux."
           releaseDraft: false
