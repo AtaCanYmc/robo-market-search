@@ -83,7 +83,7 @@ from robo_market_search.providers.registry import default_registry
 
 # List registered stores
 print(default_registry.list_stores())
-# Output: ['Robotistan', 'Direncnet', 'Robo90', 'Robolink', 'Motorobit']
+# Output: ['Direncnet', 'Motorobit', 'Ozdisan', 'Robo90', 'Robolink', 'Robotistan']
 
 # Retrieve store class
 store_cls = default_registry.get("Motorobit")

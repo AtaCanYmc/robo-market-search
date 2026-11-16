@@ -1,4 +1,6 @@
-# `robo_market_service` — Search Service Layer
+[← Ana Depoya Dön](../../README.md)
+
+# `robo_market_service`: Arama Servis Katmanı
 
 `robo_market_service`, temel arama kütüphanesi (`robo_market_search`) ile üst seviye sistemler veya Yapay Zeka Ajanı (`robo_market_agent`) arasında bir köprü görevi gören **Servis Katmanıdır**.
 
@@ -7,6 +9,7 @@
 ---
 
 ## Özellikler & Sorumluluklar
+
 1. **Paralel & Eşzamanlı Arama**: Çoklu donanım aramasını arka planda paralel yönetir.
 2. **Yeniden Deneme (Retries & Backoff)**: Bağlantı veya ağ hatalarında katlanarak artan zaman aşımı ile otomatik yeniden dener.
 3. **Önbellek Yönetimi (`ServiceCache`)**: SQLite altyapısı ile mükerrer aramaları engeller.
@@ -32,6 +35,7 @@ robo_market_service/
 ## Kullanım Örnekleri
 
 ### 1. Tekli Arama ve Eşanlamlı Kelime Genişletme
+
 ```python
 from robo_market_service import SearchService, ServiceSearchRequest
 
@@ -51,6 +55,7 @@ for p in result.products:
 ```
 
 ### 2. Çoklu Komponentleri Eşzamanlı Arama
+
 ```python
 from robo_market_service import SearchService
 
@@ -66,6 +71,7 @@ for query, srv_res in results.items():
 ```
 
 ### 3. Sepet Optimizasyonu (Cart Optimization)
+
 ```python
 from robo_market_service import SearchService
 
@@ -73,5 +79,5 @@ service = SearchService()
 cart_result = service.cart_search(["ESP32", "L298N", "HC-SR04"], limit_per_store=5)
 
 if cart_result.best_split:
-    print(f"🏆 En Optimal Genel Toplam (Bölünmüş Sipariş): {cart_result.best_split.grand_total} TL")
+    print(f"En Optimal Genel Toplam (Bölünmüş Sipariş): {cart_result.best_split.grand_total} TL")
 ```

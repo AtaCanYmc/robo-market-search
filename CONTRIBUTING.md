@@ -1,7 +1,7 @@
 # Contributing to Robo Market Search
 
 First off, thank you for taking the time to contribute! 🎉
-Every contribution — bug reports, feature requests, documentation improvements, or code — is welcome and appreciated.
+Every contribution (bug reports, feature requests, documentation improvements, or code) is welcome and appreciated.
 
 ---
 
@@ -166,12 +166,12 @@ to drive automated versioning and changelog generation via
 | `feat`     | minor        | A new feature visible to end users                     |
 | `fix`      | patch        | A bug fix                                              |
 | `perf`     | patch        | A performance improvement                              |
-| `refactor` | –            | Code change that is neither a feature nor a bug fix    |
-| `docs`     | –            | Documentation only                                     |
-| `test`     | –            | Adding or updating tests                               |
-| `build`    | –            | Build system or dependency changes                     |
-| `ci`       | –            | CI/CD configuration changes                            |
-| `chore`    | –            | Other changes that don't affect the package itself     |
+| `refactor` | -            | Code change that is neither a feature nor a bug fix    |
+| `docs`     | -            | Documentation only                                     |
+| `test`     | -            | Adding or updating tests                               |
+| `build`    | -            | Build system or dependency changes                     |
+| `ci`       | -            | CI/CD configuration changes                            |
+| `chore`    | -            | Other changes that don't affect the package itself     |
 | `revert`   | patch        | Reverts a previous commit                              |
 
 ### Breaking changes
@@ -213,18 +213,23 @@ The pre-commit hooks run all checks automatically on every `git commit`. CI also
 ## Project Structure
 
 ```
-robo_market_search/
-├── __init__.py          # Public API surface
-├── unified/             # UnifiedSearchClient
-├── shared/              # Shared models (Product) and utilities
-├── robolink/            # Robolink scraper client
-├── robotistan/          # Robotistan scraper client
-├── robo90/              # Robo90 scraper client
-├── direncnet/           # Direnç.net scraper client
-├── cli/                 # Typer-based CLI entry point
-├── mcp/                 # MCP server
-├── bot/                 # Telegram bot
-└── agent/               # Agent utilities
+src/
+├── robo_market_search/   # Core scraping & unified search library
+│   ├── providers/        # BaseStore and registry
+│   ├── robotistan/       # Robotistan client
+│   ├── robolink/         # Robolink client
+│   ├── robo90/           # Robo90 client
+│   ├── direncnet/        # Direnç.net client
+│   ├── ozdisan/          # Özdisan client
+│   ├── motorobit/        # Motorobit client
+│   ├── unified/          # UnifiedSearchClient
+│   ├── cli/              # robo-search CLI
+│   ├── mcp/              # MCP server (robo-mcp)
+│   └── bot/              # Telegram bot (robo-bot)
+├── robo_market_service/  # Search caching, synonyms, retries & deduplication
+├── robo_market_agent/    # AI BOM generation, compatibility & BYOK engine
+└── robo_market_api/      # FastAPI REST API (robo-api)
+app/                      # Desktop & Web Application (Tauri v2 + React)
 ```
 
 ---

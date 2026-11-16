@@ -51,14 +51,14 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 
 #### v1.11.0: Automation & Dependency Governance
 - Dynamic CLI package version resolution via `importlib.metadata`.
-- Repository-wide Dependabot configuration covering root, `/demo`, `/demo/backend`, `/demo/frontend`, Dockerfiles, and GitHub Actions.
+- Repository-wide Dependabot configuration covering root, `app/`, `app/backend`, `app/frontend`, Dockerfiles, and GitHub Actions.
 - Automated weekly pre-commit hook update workflow via GitHub Actions.
 - Dependency synchronization across Python packages and frontend build manifests.
 
 #### v1.12.0: Scraper Expansion & Distributed Caching
 - **New Scraper Integrations**:
-  - Implement `OzdisanClient` for industrial electronic components and IC distribution.
-  - Implement `MotorobitClient` for robotics and automation hardware.
+  - Implement `RobitshopClient` for maker and development boards.
+  - Implement `KartalOtomasyonClient` for industrial sensors and automation components.
 - **Distributed Cache Layer**:
   - Add optional Redis backend to `robo_market_service` alongside the in-memory cache.
   - Implement TTL-based cache invalidation per market source.

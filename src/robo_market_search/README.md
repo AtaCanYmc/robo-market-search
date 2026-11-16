@@ -1,15 +1,19 @@
-# `robo_market_search` — Core Search Library Layer
+[← Ana Depoya Dön](../../README.md)
 
-`robo_market_search` projenin temel arama ve web kazıma (scraping) katmanıdır. Türkiye'nin en popüler 4 robotik ve elektronik pazarında (**Robolink, Robotistan, Robo90, Direnç.net**) eşzamanlı arama yapar.
+# `robo_market_search`: Temel Arama Kütüphanesi Katmanı
 
-> ⚠️ **ÖNEMLİ:** Bu katman **Sıfır Yapay Zeka (AI) Bağımlılığı** prensibiyle yazılmıştır. Kendi başına bağımsız, hafif ve ultra hızlı bir kütüphanedir.
+`robo_market_search`, projenin temel arama ve web kazıma (scraping) katmanıdır. Türkiye'nin en popüler 6 robotik ve elektronik pazarında (**Robotistan, Robolink, Robo90, Direnç.net, Özdisan, Motorobit**) eşzamanlı arama yapar.
+
+> ⚠️ **ÖNEMLİ:** Bu katman **Sıfır Yapay Zeka (AI) Bağımlılığı** prensibiyle yazılmıştır. Kendi başına bağımsız, hafif ve ultra hızlı bir Python kütüphanesidir.
 
 ---
 
 ## Özellikler
-- **4 Büyük Mağaza Desteği**: Robolink, Robotistan, Robo90 ve Direnç.net mağazalarını tarar.
+
+- **6 Büyük Mağaza Desteği**: Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarını tarar.
 - **Standart Veri Yapısı**: Tüm sonuçları `Product` veri modelinde döndürür.
-- **Yüksek Geriye Dönük Uyumluluk**: Mevcut `UnifiedSearchClient`, `RobotistanClient`, `RobolinkClient`, `Robo90Client`, `DirencnetClient` sınıflarını korur.
+- **Yüksek Geriye Dönük Uyumluluk**: Mevcut `UnifiedSearchClient`, `RobotistanClient`, `RobolinkClient`, `Robo90Client`, `DirencnetClient`, `OzdisanClient` ve `MotorobitClient` sınıflarını korur.
+- **Genişletilebilir Eklenti Mimarisi**: `BaseStore` ve `@register_store` ile yeni mağaza eklemeyi kolaylaştırır.
 
 ---
 
@@ -17,9 +21,16 @@
 
 ```
 robo_market_search/
-├── providers/        # Mağaza kazıyıcı istemciler (RobolinkClient, RobotistanClient, vb.)
+├── providers/        # Mağaza arayüzleri ve kayıt defteri (BaseStore, default_registry)
+├── robotistan/       # Robotistan kazıyıcı istemcisi
+├── robolink/         # Robolink Market kazıyıcı istemcisi
+├── robo90/           # Robo90 kazıyıcı istemcisi
+├── direncnet/        # Direnç.net JSON API ve HTML kazıyıcı istemcisi
+├── ozdisan/          # Özdisan endüstriyel komponent istemcisi
+├── motorobit/        # Motorobit robotik mağazası istemcisi
 ├── models/           # Temel veri modelleri (Product, ShippingInfo, CartSearchResult)
 ├── search/           # Temel arama fonksiyonları (search, search_multiple, search_provider)
+├── cart/             # Sepet ve kargo optimizasyon algoritmaları
 ├── shared/           # Ortak HTTP istemcileri ve önbellek mekanizması
 ├── unified/          # Birleştirilmiş paralel arama istemcisi (UnifiedSearchClient)
 ├── cli/              # Komut satırı (CLI) aracı (robo-search)
@@ -32,6 +43,7 @@ robo_market_search/
 ## Kullanım Örnekleri
 
 ### 1. Tüm Mağazalarda Arama Yapma (`search`)
+
 ```python
 from robo_market_search import search
 
@@ -43,6 +55,7 @@ for product in results:
 ```
 
 ### 2. Birden Fazla Sorguyu Eşzamanlı Arama (`search_multiple`)
+
 ```python
 from robo_market_search import search_multiple
 
@@ -56,6 +69,7 @@ for query, products in results_dict.items():
 ```
 
 ### 3. Belirli Bir Mağazada Arama Yapma (`search_provider`)
+
 ```python
 from robo_market_search import search_provider
 
@@ -69,5 +83,6 @@ for p in results:
 ---
 
 ## Bağımlılıklar
+
 - `curl_cffi` (HTTP istekleri ve SSL/TLS taklitleri için)
 - `beautifulsoup4` (HTML ayrıştırma için)

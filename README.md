@@ -454,6 +454,8 @@ sequenceDiagram
     participant M2  as robolink.com
     participant M3  as robo90.com
     participant M4  as direnc.net
+    participant M5  as ozdisan.com
+    participant M6  as motorobit.com
 
     User->>LLM: "ESP32-CAM için en ucuz fiyatı bul"
     LLM->>MCP: search_products(query="ESP32-CAM")
@@ -463,13 +465,17 @@ sequenceDiagram
         UC->>M1: GET /search?q=ESP32-CAM
         UC->>M2: GET /search?q=ESP32-CAM
         UC->>M3: GET /search?q=ESP32-CAM
-        UC->>M4: GET /search?q=ESP32-CAM
+        UC->>M4: POST /srv/service/product/search-json/ESP32-CAM
+        UC->>M5: GET /search?q=ESP32-CAM
+        UC->>M6: GET /arama?q=ESP32-CAM
     end
 
     M1-->>UC: [Product, ...]
     M2-->>UC: [Product, ...]
     M3-->>UC: [Product, ...]
     M4-->>UC: [Product, ...]
+    M5-->>UC: [Product, ...]
+    M6-->>UC: [Product, ...]
 
     UC-->>MCP: Birleşik & fiyata göre sıralı liste
     MCP-->>LLM: JSON product listesi
@@ -584,14 +590,14 @@ Arama yapıldığı an 6 marketin canlı arama API ve web sayfalarına anlık HT
 <summary><b>❓ Birden fazla farklı parça alırken kargo ücretlerini nasıl optimize ediyorsunuz?</b></summary>
 <br/>
 
-`cart_search` metodu veya web demomuzdaki sepet optimizasyonu özelliği sayesindedir. Sistem, listenizdeki parçaların hangi marketlerde olduğunu ve her marketin **ücretsiz kargo barajını (örn. 250 TL üzeri bedava kargo)** analiz eder. Ürünleri tek bir mağazadan toplu almak mı yoksa kargo limitlerini aşacak şekilde mağazalar arasında bölüşmek mi (split cart) daha ucuza gelir otomatik hesaplar.
+`cart_search` metodu veya masaüstü uygulamamızdaki sepet optimizasyonu özelliği sayesindedir. Sistem, listenizdeki parçaların hangi marketlerde olduğunu ve her marketin **ücretsiz kargo barajını (örn. 250 TL üzeri bedava kargo)** analiz eder. Ürünleri tek bir mağazadan toplu almak mı yoksa kargo limitlerini aşacak şekilde mağazalar arasında bölüşmek mi (split cart) daha ucuza gelir otomatik hesaplar.
 </details>
 
 <details>
 <summary><b>❓ Yeni bir elektronik mağazası eklemek istersem ne yapmalıyım?</b></summary>
 <br/>
 
-Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `robo_market_search/` altında yeni bir klasör açıp `search_component` metoduna sahip bir `BaseClient` türevi oluşturmanız yeterlidir. Katkıda bulunmak için [CONTRIBUTING.md](CONTRIBUTING.md) belgesini inceleyebilir veya Pull Request açabilirsiniz.
+Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `src/robo_market_search/` altında `BaseStore` sınıfından türeyen ve `@register_store` ile işaretlenen yeni bir istemci oluşturmanız yeterlidir. Katkıda bulunmak için [docs/providers.md](docs/providers.md) ve [CONTRIBUTING.md](CONTRIBUTING.md) belgelerini inceleyebilirsiniz.
 </details>
 
 <details>
@@ -626,7 +632,7 @@ Projede test, formatlama, tip kontrolü ve servis çalıştırma süreçlerini o
 
 Projemizin gelişmesinde emeği geçen ve katkıda bulunan tüm topluluk üyelerine teşekkür ederiz!
 
-- [**Sha-Dox**](https://github.com/Sha-Dox) — Sepet optimizasyonu, kargo ücreti hesaplaması ve multi-store split algoritmalarının (`cart_search`) geliştirilmesine katkılarından dolayı özel teşekkürler!
+- [**Sha-Dox**](https://github.com/Sha-Dox): Sepet optimizasyonu, kargo ücreti hesaplaması ve multi-store split algoritmalarının (`cart_search`) geliştirilmesine katkılarından dolayı özel teşekkürler!
 
 ## Güvenlik
 

@@ -1,38 +1,40 @@
-# `robo_market_agent` — AI Agent Layer & Bring Your Own API Key (BYOK)
+[← Ana Depoya Dön](../../README.md)
+
+# `robo_market_agent`: AI Ajan Katmanı ve Bring Your Own API Key (BYOK)
 
 `robo_market_agent`, projenin **Yapay Zeka ve LLM Orkestrasyon Katmanıdır**. Kullanıcının serbest metin formatındaki donanım projesi isteklerini anlar, Malzeme Listesi (BOM) oluşturur, uyumluluk kontrollerini yapar, `robo_market_service` üzerinden ürünleri aratır ve alışveriş sepetini optimize eder.
 
 ---
 
-## 🔑 Bring Your Own API Key (BYOK) Desteği
+## Bring Your Own API Key (BYOK) Desteği
 
 Ajan hem CLI hem de REST API katmanında **Bring Your Own API Key (BYOK)** mimarisini destekler. Kullanıcılar kendi API anahtarlarını istekle birlikte gönderebilir:
 
 - **HTTP Başlıkları (Headers)**: `X-API-Key`, `X-OpenAI-API-Key`, `X-Gemini-API-Key`, `X-Anthropic-API-Key`, `X-Provider`
 - **İstek Gövdesi (Request Body)**: `{ "prompt": "...", "api_key": "sk-...", "provider": "openai" }`
-- **Yerel Hafıza**: `~/.config/robo-market-agent/config.json` veya Web UI `localStorage`
+- **Yerel Hafıza**: `~/.config/robo-market-agent/config.json` veya Web / Masaüstü UI `localStorage`
 
 ---
 
-## 📸 Ajan Görsel Arayüz Ekranları (Visual UI Screens)
+## Ajan Görsel Arayüz Ekranları (Visual UI Screens)
 
 <div align="center">
-  <img src="../.github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Malzeme Listesi (BOM) Tab" />
+  <img src="../../.github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Malzeme Listesi (BOM) Tab" />
   &nbsp;
-  <img src="../.github/screenshots/agent_donanim_uyumlulugu.png" width="48%" alt="Donanım Uyumluluğu Tab" />
+  <img src="../../.github/screenshots/agent_donanim_uyumlulugu.png" width="48%" alt="Donanım Uyumluluğu Tab" />
   <br/><br/>
-  <img src="../.github/screenshots/agent_proje_ihtiyaclari.png" width="48%" alt="Proje İhtiyaçları Tab" />
+  <img src="../../.github/screenshots/agent_proje_ihtiyaclari.png" width="48%" alt="Proje İhtiyaçları Tab" />
   &nbsp;
-  <img src="../.github/screenshots/agent_example_cart.png" width="48%" alt="Sepet Mağaza Bölüşümü Tab" />
+  <img src="../../.github/screenshots/agent_example_cart.png" width="48%" alt="Sepet Mağaza Bölüşümü Tab" />
 </div>
 
 ---
 
-## 🤖 Donanım Asistanı CLI Kullanımı (`robo-agent`)
+## Donanım Asistanı CLI Kullanımı (`robo-agent`)
 
 `robo_market_agent` katmanı kendi başına terminalden çalıştırılabilen `robo-agent` komut satırı aracına sahiptir.
 
-### 🔑 API Key'leri Hafızaya Kaydetme (Bir kere kaydet, her zaman kullan)
+### API Anahtarlarını Kaydetme (Bir kere kaydet, her zaman kullan)
 
 ```bash
 # DeepSeek API Key'i kaydetme ve varsayılan yapma
@@ -51,7 +53,7 @@ robo-agent config show
 robo-agent config clear
 ```
 
-### Proje Analizi Çalıştırma:
+### Proje Analizi Çalıştırma
 
 ```bash
 # Kayıtlı varsayılan sağlayıcı ile doğrudan çalıştırma
@@ -60,7 +62,7 @@ robo-agent "WiFi üzerinden 4 valfli otomatik sulama sistemi"
 # Farklı bir kayıtlı sağlayıcı seçerek çalıştırma
 robo-agent "ESP32 tabanlı uzaktan sıcaklık takip cihazı" --provider deepseek
 
-# Mock sağlayıcı ile çevrimdışı/ücretsiz test etme
+# Mock sağlayıcı ile çevrimdışı ve ücretsiz test etme
 robo-agent "Bluetooth robot araba" --provider mock
 ```
 

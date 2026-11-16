@@ -94,4 +94,4 @@ We accept vulnerability reports in **English** or **Turkish**.
 We sincerely thank the following researchers for responsibly reporting
 vulnerabilities:
 
-_No entries yet — be the first!_
+_No entries yet: be the first!_
