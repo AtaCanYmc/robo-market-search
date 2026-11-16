@@ -2680,7 +2680,7 @@ dependencies = [
 
 [[package]]
 name = "robo-market-search-desktop"
-version = "1.11.0"
+version = "1.11.1"
 dependencies = [
  "serde",
  "serde_json",
