@@ -11,6 +11,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.11.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.10.0...v1.11.0) (2026-11-16)
+
+
+### ✨ Features
+
+* **cli:** enhance terminal ui/ux and add homebrew tap support ([90ea1c1](https://github.com/AtaCanYmc/robo-market-search/commit/90ea1c15c3381344d11de0685b694d937dc8e7e0))
+* **desktop:** add Tauri v2 desktop app, antislop UI/UX polish, and fix scraper typing ([3c757ef](https://github.com/AtaCanYmc/robo-market-search/commit/3c757ef7fba0b6586ded7642de4a433d61776aa4))
+* **desktop:** finalize macOS bundle build, icons, sidecar spawning, and verify desktop app ([d16d5bf](https://github.com/AtaCanYmc/robo-market-search/commit/d16d5bffdadccc088514f2edac1101e12ef97213))
+* **release:** configure dynamic versioning and multi-target release-please ([cedd06f](https://github.com/AtaCanYmc/robo-market-search/commit/cedd06fa27a65a4e3f5e415aabc9d9293edafbb2))
+* **scrapers:** implement OzdisanClient and MotorobitClient integrations ([3016fdc](https://github.com/AtaCanYmc/robo-market-search/commit/3016fdc41a37a59c062cb52cf2bca897075d2824))
+* **ui:** redesign app as a native-grade desktop application ([61022a6](https://github.com/AtaCanYmc/robo-market-search/commit/61022a656266d23e8183d80bcc2be5f0a9bc9f21))
+* **website:** create landing page and download hub for GitHub Pages deployment ([904d740](https://github.com/AtaCanYmc/robo-market-search/commit/904d740ed32de6530aed6a2da3bc255630cc2013))
+
+
+### 🐛 Bug Fixes
+
+* **build:** add build to dev dependencies and support uv build in Makefile ([0d69ee7](https://github.com/AtaCanYmc/robo-market-search/commit/0d69ee782c3e6ddb8516d18234bf534fd2679385))
+* **ci:** align lint Python with pre-commit ([e1d93d3](https://github.com/AtaCanYmc/robo-market-search/commit/e1d93d34b3a3ed94a728f20658d2a9ecbb853a0e))
+* **scrapers:** rewrite DirencnetClient with native JSON API and resilient DOM fallback ([b171c33](https://github.com/AtaCanYmc/robo-market-search/commit/b171c338cdf6660a17a687070e6dba6ecf20787a))
+
+
+### 📚 Documentation
+
+* audit and update documentation to reflect desktop app, 6 stores, and package layout ([76f104b](https://github.com/AtaCanYmc/robo-market-search/commit/76f104ba72822672497dc7c5ba1c19b98c7890a8))
+* **cli:** overhaul CLI guide, update commands, and enable smart routing across tools ([ab08403](https://github.com/AtaCanYmc/robo-market-search/commit/ab08403394b47865b46d9b628503d0e994ce0422))
+* **roadmap:** create root ROADMAP.md and modernize docs/roadmap.md ([a67746f](https://github.com/AtaCanYmc/robo-market-search/commit/a67746f8be180d6eca0bd5b62e9064693a6e36c5))
+
+
+### ♻️  Code Refactoring
+
+* **architecture:** rename demo to app and clean up legacy demo files ([4fc4d9e](https://github.com/AtaCanYmc/robo-market-search/commit/4fc4d9ee7648af24ca0451a6d09ab47b345b5ca8))
+* **structure:** migrate to standard src layout and resolve hidden typing bugs ([a2d9514](https://github.com/AtaCanYmc/robo-market-search/commit/a2d9514b85fb7cbd5354726f8960bddc3a15a142))
+
 ## [1.10.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.9.0...v1.10.0) (2026-11-15)
 
 

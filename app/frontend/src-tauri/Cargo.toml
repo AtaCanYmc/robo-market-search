@@ -1,6 +1,6 @@
 [package]
 name = "robo-market-search-desktop"
-version = "1.10.0"
+version = "1.11.0"
 description = "Robo Market Search Desktop App"
 authors = ["Ata Can"]
 edition = "2021"

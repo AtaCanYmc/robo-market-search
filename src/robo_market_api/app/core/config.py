@@ -16,7 +16,7 @@ except ImportError:
 try:
     _DEFAULT_API_VERSION = version("robo-market-search")
 except PackageNotFoundError:
-    _DEFAULT_API_VERSION = "1.10.0"  # x-release-please-version
+    _DEFAULT_API_VERSION = "1.11.0"  # x-release-please-version
 
 
 class Settings(BaseSettings):
