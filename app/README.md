@@ -87,14 +87,8 @@ npm run dev
 
 ## 🌐 Canlıya Dağıtım (Cloud Deployment)
 
-### 1. Frontend (Vercel)
-Vite önyüzü `app/frontend/vercel.json` yapılandırması ile Vercel üzerinde tek tıkla canlıya alınabilir:
-- **Root Directory**: `app/frontend`
-- **Framework Preset**: `Vite`
-- **Output Directory**: `dist`
-
-### 2. Backend (Render)
-FastAPI REST API `render.yaml` veya `app/backend/Dockerfile` yapılandırması ile Render üzerinde Web Service olarak yayınlanır:
+### Backend API (Render / Docker)
+FastAPI REST API `render.yaml` veya `app/backend/Dockerfile` yapılandırması ile Render veya herhangi bir Docker platformunda yayınlanır:
 - **Build Command**: `pip install -r requirements.txt && pip install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"`
 - **Start Command**: `python main.py`
 - **Healthcheck Endpoint**: `/health`
