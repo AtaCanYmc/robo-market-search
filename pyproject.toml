@@ -10,7 +10,7 @@ authors = [
 ]
 description = "A unified Python library and AI Agent system to search Robolink, Robotistan, Robo90, and Direncnet."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "curl_cffi>=0.5.10",
     "beautifulsoup4"

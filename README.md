@@ -188,9 +188,10 @@ pipx install "robo-market-search[all]"
 macOS veya Linux üzerinde Homebrew kullanıyorsanız tek komutla kurabilirsiniz:
 
 ```bash
-brew tap atacanymc/robo-market-search
-brew install robo-market-search
+brew install atacanymc/tap/robo-market-search
 ```
+
+Kurulum tamamlandıktan sonra `robo-search "ESP32"` şeklinde doğrudan çalıştırabilirsiniz.
 
 ---
 

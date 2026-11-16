@@ -2,25 +2,53 @@
 
 The `robo-search` and `robo-agent` command-line interfaces provide terminal commands for product searching, cart optimization, AI hardware analysis, and configuration management.
 
-![CLI Search Screenshot](../.github/screenshots/cli_example.png)
+---
+
+## 🍺 Kurulum (Homebrew & pip)
+
+### Homebrew ile Kurulum (macOS & Linux)
+```bash
+brew install atacanymc/tap/robo-market-search
+```
+
+### pip ile Kurulum
+```bash
+pip install "robo-market-search[cli]"
+```
 
 ---
 
-## ⌨️ `robo-search` (Product Search & Cart Optimization)
+## ⌨️ `robo-search` (Ürün Arama & Sepet Optimizasyonu)
 
-### 1. `search` Command (Default)
+`robo-search` doğrudan sorgu ile çalışabilen akıllı yönlendirmeye (smart routing) ve Rich terminal arayüzüne sahiptir.
 
-Search for a single product or batch CSV list across stores.
+### 1. `search` Komutu (Doğrudan veya Alt Komut)
+
+Herhangi bir alt komut yazmadan doğrudan ürün adı girerek veya `search` alt komutunu kullanarak arama yapabilirsiniz.
 
 ```bash
-robo-search [QUERY] [OPTIONS]
+# Doğrudan akıllı arama
+robo-search "ESP32-WROOM"
+
+# Parametrelerle arama
+robo-search "Raspberry Pi 5" -l 3 -s -m robolink
 ```
 
-#### Options:
-- `QUERY`: Product keyword (e.g. `"ESP32-WROOM"`).
-- `--csv PATH`: Path to a single-column CSV file containing component names.
-- `--limit INT`: Maximum results per store (default `10`).
-- `--sort / --no-sort`: Sort products from lowest to highest price (default `True`).
+#### Seçenekler:
+- `QUERY`: Ürün anahtar kelimesi (örn. `"ESP32-WROOM"`). Parametre girilmezse interaktif olarak sorulur.
+- `-c, --csv PATH`: Bileşen listesi içeren CSV dosyası.
+- `-l, --limit INT`: Market başına getirilecek maksimum sonuç sayısı (varsayılan: `10`).
+- `--sort / --no-sort`: Fiyata göre en ucuzdan sıralama (varsayılan: `True`).
+- `-s, --stock-only`: Yalnızca stokta bulunan ürünleri gösterir.
+- `-m, --store TEXT`: Yalnızca belirli bir mağazayı filtreler (`robotistan`, `robolink`, `robo90`, `direncnet`).
+- `--json`: Sonuçları JSON formatında çıktı verir.
+- `--markdown`: Sonuçları Markdown tablosu olarak yazdırır.
+- `-v, --version`: Sürüm bilgisini görüntüler.
+
+#### Arayüz Özellikleri:
+- **Tıklanabilir Linkler**: Terminaliniz destekliyorsa ürün adına veya `Aç ↗` bağlantısına tıklayarak doğrudan tarayıcıda açabilirsiniz.
+- **En Ucuz Rozeti**: Stokta bulunan en uygun fiyatlı üründe `★ EN UCUZ` etiketi vurgulanır.
+- **Özet Kartı**: Sorgu, toplam ürün, stok adedi ve en uygun fiyat panelde özetlenir.
 
 #### Examples:
 ```bash

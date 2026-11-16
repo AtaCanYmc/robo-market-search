@@ -5,6 +5,7 @@ CLI Cart optimization command module.
 import csv
 from typing import Dict, List, Optional
 
+from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -169,7 +170,7 @@ def cart_command(
             show_header=True,
             header_style="bold green",
             title_style="bold cyan",
-            box=None,
+            box=box.ROUNDED,
         )
         table.add_column("Ürün", style="cyan")
         table.add_column("Fiyat", style="bold yellow", justify="right")
@@ -179,7 +180,7 @@ def cart_command(
                 urun_adi = item.product.name if item.product else item.query
                 table.add_row(urun_adi, f"{item.price:.2f} TL")
             else:
-                table.add_row(f"[dim]{item.query} — bulunamadı[/dim]", "[red]—[/red]")
+                table.add_row(f"[dim]{item.query} (bulunamadı)[/dim]", "[red]-[/red]")
 
         table.add_section()
         table.add_row("Ara Toplam", f"{summary.total_price:.2f} TL")
@@ -199,7 +200,7 @@ def cart_command(
             show_header=True,
             header_style="bold cyan",
             title_style="bold yellow",
-            box=None,
+            box=box.ROUNDED,
         )
         split_table.add_column("Market", style="green")
         split_table.add_column("Ürün", style="cyan")
@@ -228,12 +229,12 @@ def cart_command(
             continue
         label = f"  {s.store}:  {s.total_price:.2f} TL + {s.shipping_cost:.2f} TL kargo = [bold]{s.total_with_shipping:.2f} TL[/bold]"
         if s.store == (result.cheapest_store.store if result.cheapest_store else ""):
-            label = f"[green]✅ {label}[/green]"
+            label = f"[green]✓ {label}[/green]"
         lines.append(label)
 
     if result.best_split:
         split_label = (
-            f"  {'✅ ' if not result.cheapest_store or result.best_split.grand_total < result.cheapest_store.total_with_shipping else '  '}"
+            f"  {'✓ ' if not result.cheapest_store or result.best_split.grand_total < result.cheapest_store.total_with_shipping else '  '}"
             f"Bölünmüş sipariş: [bold]{result.best_split.grand_total:.2f} TL[/bold]"
         )
         lines.append("")
@@ -247,7 +248,7 @@ def cart_command(
     if label:
         console.print(
             Panel(
-                f"[bold green]En ucuz seçenek: {label} — toplam {best_total:.2f} TL[/bold green]",
+                f"[bold green]En ucuz seçenek: {label} (toplam {best_total:.2f} TL)[/bold green]",
                 title="Öneri",
                 border_style="green",
             )
