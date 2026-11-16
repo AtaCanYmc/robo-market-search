@@ -19,6 +19,8 @@ interface Thresholds {
   robolink: number;
   robo90: number;
   direncnet: number;
+  ozdisan: number;
+  motorobit: number;
   shippingFee: number;
 }
 
@@ -27,7 +29,9 @@ const DEFAULT_THRESHOLDS: Thresholds = {
   robolink: 1500,
   robo90: 1500,
   direncnet: 1500,
-  shippingFee: 60,
+  ozdisan: 2000,
+  motorobit: 1500,
+  shippingFee: 50,
 };
 
 export const CartOptimizerTab: React.FC = () => {
@@ -97,18 +101,17 @@ export const CartOptimizerTab: React.FC = () => {
     { id: 'robolink', name: 'Robolink' },
     { id: 'robo90', name: 'Robo90' },
     { id: 'direncnet', name: 'Direnç.net' },
+    { id: 'ozdisan', name: 'Özdisan' },
+    { id: 'motorobit', name: 'Motorobit' },
   ];
 
   return (
     <div className="space-y-6 font-sans">
-      <div className="text-center pt-2 pb-1 space-y-1.5">
-        <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 rounded px-2.5 py-1 text-blue-600 dark:text-blue-400 text-xs font-medium">
-          <ShoppingBag className="w-3.5 h-3.5" /> {t('cartTitle')}
-        </div>
+      <div className="text-center pt-2 pb-1 space-y-1">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
           {t('cartTitle')}
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-xs sm:text-sm">
+        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-xs sm:text-sm">
           {t('cartSubtitle')}
         </p>
       </div>
@@ -147,7 +150,7 @@ export const CartOptimizerTab: React.FC = () => {
 
         {/* Editable Inputs */}
         {showSettings && (
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 text-xs">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5 text-xs">
             {stores.map((s) => (
               <div
                 key={s.id}

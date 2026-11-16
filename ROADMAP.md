@@ -57,6 +57,9 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 - **New Scraper Integrations**:
   - [x] Implement `OzdisanClient` for industrial electronic components and IC distribution.
   - [x] Implement `MotorobitClient` for robotics and automation hardware.
+- **Desktop Application Packaging (Tauri v2)**:
+  - [x] Cross-platform desktop release pipeline for macOS (.dmg), Windows (.msi/.exe), and Linux (.AppImage/.deb).
+  - [x] Standalone Python sidecar integration with zero external Python dependency.
 - **Distributed Cache Layer**:
   - Add optional Redis backend to `robo_market_service` alongside the in-memory cache.
   - Implement TTL-based cache invalidation per market source.

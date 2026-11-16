@@ -37,11 +37,16 @@ class OzdisanClient(BaseStore):
     def _resolve_category_slug(self, category: dict) -> str:
         slugs = category.get("slugs", [])
         for s in slugs:
-            if s.get("langCode") == "tr" or s.get("isDefault"):
-                return s.get("slug", "")
-        if slugs:
-            return slugs[0].get("slug", "")
-        return category.get("slug", "")
+            if isinstance(s, dict) and (s.get("langCode") == "tr" or s.get("isDefault")):
+                slug = s.get("slug")
+                if isinstance(slug, str):
+                    return slug
+        if slugs and isinstance(slugs[0], dict):
+            slug = slugs[0].get("slug")
+            if isinstance(slug, str):
+                return slug
+        slug = category.get("slug")
+        return str(slug) if slug else ""
 
     def _fetch_product_details(self, product_url: str) -> tuple[float, str, bool]:
         """Fetch individual product page to extract real-time price, currency and stock."""

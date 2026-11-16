@@ -48,14 +48,11 @@ export const BatchSearchTab: React.FC = () => {
 
   return (
     <div className="space-y-6 font-sans">
-      <div className="text-center pt-2 pb-1 space-y-1.5">
-        <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 rounded px-2.5 py-1 text-blue-600 dark:text-blue-400 text-xs font-medium">
-          <Layers className="w-3.5 h-3.5" /> {t('batchTitle')}
-        </div>
+      <div className="text-center pt-2 pb-1 space-y-1">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
           {t('batchTitle')}
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-xs sm:text-sm">
+        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-xs sm:text-sm">
           {t('batchSubtitle')}
         </p>
       </div>
