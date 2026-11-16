@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for robo-market-search API
 
-FROM python:3.11-slim as builder
+FROM python:3.15-slim as builder
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip wheel setuptools
 RUN pip install --no-cache-dir ".[all]"
 
 # Final lightweight runner stage
-FROM python:3.11-slim as runner
+FROM python:3.15-slim as runner
 
 WORKDIR /app
 
