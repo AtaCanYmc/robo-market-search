@@ -29,33 +29,10 @@ updates:
           - "*"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 2. Demo App Python Dependencies (demo/pyproject.toml, demo/requirements.txt)
+  # 2. App Backend Python Dependencies (app/backend/requirements.txt)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "pip"
-    directory: "/demo"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Europe/Istanbul"
-    open-pull-requests-limit: 10
-    versioning-strategy: "increase"
-    labels:
-      - "dependencies"
-      - "python"
-      - "demo"
-    commit-message:
-      prefix: "chore(deps)"
-    groups:
-      demo-dependencies:
-        patterns:
-          - "*"
-
-  # ──────────────────────────────────────────────────────────────────────────
-  # 3. Demo Backend Python Dependencies (demo/backend/requirements.txt)
-  # ──────────────────────────────────────────────────────────────────────────
-  - package-ecosystem: "pip"
-    directory: "/demo/backend"
+    directory: "/app/backend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -75,10 +52,10 @@ updates:
           - "*"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 4. Frontend npm Dependencies (demo/frontend/package.json)
+  # 3. App Frontend npm Dependencies (app/frontend/package.json)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "npm"
-    directory: "/demo/frontend"
+    directory: "/app/frontend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -118,10 +95,10 @@ updates:
       prefix: "chore(deps)"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 6. Demo Docker Compose (demo/docker-compose.yml)
+  # 5. App Docker Compose (app/docker-compose.yml)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "docker"
-    directory: "/demo"
+    directory: "/app"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -131,15 +108,15 @@ updates:
     labels:
       - "dependencies"
       - "docker"
-      - "demo"
+      - "app"
     commit-message:
       prefix: "chore(deps)"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 7. Demo Backend Dockerfile (demo/backend/Dockerfile)
+  # 6. App Backend Dockerfile (app/backend/Dockerfile)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "docker"
-    directory: "/demo/backend"
+    directory: "/app/backend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -154,10 +131,10 @@ updates:
       prefix: "chore(deps)"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 8. Demo Frontend Dockerfile (demo/frontend/Dockerfile)
+  # 7. App Frontend Dockerfile (app/frontend/Dockerfile)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "docker"
-    directory: "/demo/frontend"
+    directory: "/app/frontend"
     schedule:
       interval: "weekly"
       day: "monday"

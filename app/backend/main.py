@@ -3,7 +3,7 @@ Robo Market Search — API Backend Entrypoint.
 Starts the production-ready REST API (robo_market_api).
 
 Running directly:
-    cd demo/backend
+    cd app/backend
     python main.py
 """
 

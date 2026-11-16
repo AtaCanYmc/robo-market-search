@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Sidecar build script for Robo Market Search Tauri Desktop packaging.
-Compiles demo/backend/main.py with PyInstaller and places the target binary
-into demo/frontend/src-tauri/binaries/robo-backend-<triple>[.exe].
+Compiles app/backend/main.py with PyInstaller and places the target binary
+into app/frontend/src-tauri/binaries/robo-backend-<triple>[.exe].
 """
 
 import os
@@ -13,8 +13,8 @@ import subprocess
 import sys
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-ENTRYPOINT = REPO_ROOT / "demo" / "backend" / "main.py"
-BINARIES_DIR = REPO_ROOT / "demo" / "frontend" / "src-tauri" / "binaries"
+ENTRYPOINT = REPO_ROOT / "app" / "backend" / "main.py"
+BINARIES_DIR = REPO_ROOT / "app" / "frontend" / "src-tauri" / "binaries"
 
 
 def get_target_triple() -> str:

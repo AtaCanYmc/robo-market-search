@@ -105,7 +105,7 @@ Proje tam bağımsız mantıksal katmanlardan oluşur:
 graph TB
     subgraph Clients["🖥️ İstemciler & Uygulamalar"]
         direction LR
-        WEB["🌐 Vite Web UI<br/><code>demo/frontend</code>"]
+        WEB["🌐 Web & Masaüstü UI<br/><code>app/frontend</code>"]
         PY["🐍 Python SDK"]
         CLI["⌨️ CLI<br/><code>robo-search</code>"]
         MCP["🤖 MCP Sunucusu<br/><code>robo-mcp</code>"]
@@ -619,7 +619,7 @@ Projede test, formatlama, tip kontrolü ve servis çalıştırma süreçlerini o
 | `make fix` | Kod formatlama ve lint hatalarını otomatik düzeltir |
 | `make run-api` | FastAPI REST API sunucusunu ayağa kaldırır (port 8000) |
 | `make run-agent` | Donanım ajanını (CLI) başlatır |
-| `make demo-up` | Web demo ortamını (React + FastAPI) Docker ile başlatır |
+| `make app-up` | Uygulama ortamını (React + FastAPI) Docker ile başlatır |
 | `make clean` | Geçici derleme ve önbellek dosyalarını temizler |
 
 ---

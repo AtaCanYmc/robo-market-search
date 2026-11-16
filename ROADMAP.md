@@ -49,7 +49,7 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 
 #### v1.11.0: Automation & Dependency Governance
 - Dynamic CLI package version resolution via `importlib.metadata`.
-- Repository-wide Dependabot configuration covering root, `/demo`, `/demo/backend`, `/demo/frontend`, Dockerfiles, and GitHub Actions.
+- Repository-wide Dependabot configuration covering root, `/app/backend`, `/app/frontend`, Dockerfiles, and GitHub Actions.
 - Automated weekly pre-commit hook update workflow via GitHub Actions.
 - Dependency synchronization across Python packages and frontend build manifests.
 

@@ -58,7 +58,7 @@ setup: install-dev ## Full developer setup: install all dev tools and git pre-co
 	$(PRECOMMIT) install --hook-type commit-msg
 	@printf "$(GREEN)✓ Development environment and pre-commit hooks configured.$(RESET)\n"
 
-PYTHON_DIRS := src tests demo scripts
+PYTHON_DIRS := src tests app scripts
 
 # -----------------------------------------------------------------------------
 # 🔍 Code Quality, Linting & Formatting
@@ -127,10 +127,10 @@ run-cli: ## Show the Typer CLI command help
 	$(PYTHON) -m robo_market_search.cli.main --help
 
 # -----------------------------------------------------------------------------
-# 🐳 Docker & Demo
+# 🐳 Docker & App
 # -----------------------------------------------------------------------------
 
-.PHONY: docker-build docker-up docker-down demo-up demo-down
+.PHONY: docker-build docker-up docker-down app-up app-down demo-up demo-down
 
 docker-build: ## Build the production API Docker image
 	docker build -t robo-market-api .
@@ -141,11 +141,14 @@ docker-up: ## Start the API container with docker-compose
 docker-down: ## Stop the API container with docker-compose
 	docker compose down
 
-demo-up: ## Start the full demo stack (React Frontend + FastAPI Backend)
-	docker compose -f demo/docker-compose.yml up -d
+app-up: ## Start the full app stack (React Frontend + FastAPI Backend)
+	docker compose -f app/docker-compose.yml up -d
 
-demo-down: ## Stop the full demo stack
-	docker compose -f demo/docker-compose.yml down
+app-down: ## Stop the full app stack
+	docker compose -f app/docker-compose.yml down
+
+demo-up: app-up ## Alias for app-up
+demo-down: app-down ## Alias for app-down
 
 # -----------------------------------------------------------------------------
 # 🧹 Build & Maintenance

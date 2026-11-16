@@ -2,7 +2,7 @@ services:
   - type: web
     name: robo-market-search-api
     env: docker
-    dockerfilePath: demo/backend/Dockerfile
+    dockerfilePath: app/backend/Dockerfile
     dockerContext: .
     region: oregon
     plan: free

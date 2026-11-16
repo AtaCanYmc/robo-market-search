@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: demo/backend/Dockerfile
+      dockerfile: app/backend/Dockerfile
     container_name: robo-market-api-backend
     ports:
       - "8000:8000"
@@ -24,8 +24,8 @@ services:
   frontend:
     build:
       context: ..
-      dockerfile: demo/frontend/Dockerfile
-    container_name: robo-market-demo-frontend
+      dockerfile: app/frontend/Dockerfile
+    container_name: robo-market-app-frontend
     ports:
       - "3000:3000"
     environment:

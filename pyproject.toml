@@ -97,7 +97,7 @@ unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["ALL"]
-"demo/*" = [
+"app/*" = [
     "B008",
 ]
 "src/robo_market_search/bot/*" = [

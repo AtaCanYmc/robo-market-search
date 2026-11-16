@@ -21,7 +21,7 @@ robo-market-search/
 ├── robo_market_service/       # Caching, synonyms & ranking service
 ├── robo_market_agent/         # AI Hardware Agent & BYOK providers
 ├── robo_market_api/           # FastAPI REST API
-├── demo/                      # Web UI & Backend Docker files
+├── app/                       # Application layer (Desktop & Web)
 │   ├── frontend/              # Vite + React + Tailwind SPA
 │   └── backend/               # REST API container launcher
 ├── docs/                      # Documentation suite & ADRs
@@ -69,8 +69,8 @@ make help
 | `make docker-build` | Build API Docker image | `docker build -t robo-market-api .` |
 | `make docker-up` | Start API container via Docker Compose | `docker compose up -d` |
 | `make docker-down` | Stop API container via Docker Compose | `docker compose down` |
-| `make demo-up` | Start full demo stack (Frontend + Backend) | `docker compose -f demo/docker-compose.yml up -d` |
-| `make demo-down` | Stop full demo stack | `docker compose -f demo/docker-compose.yml down` |
+| `make app-up` | Start full application stack (Frontend + Backend) | `docker compose -f app/docker-compose.yml up -d` |
+| `make app-down` | Stop full application stack | `docker compose -f app/docker-compose.yml down` |
 | `make build` | Build wheel and sdist packages | `python -m build` |
 | `make clean` | Remove build artifacts, caches, and `.pyc` files | Cleans `build/`, `dist/`, `__pycache__`, `.pytest_cache/` |
 
@@ -146,9 +146,9 @@ make run-agent
 # Start MCP Server
 make run-mcp
 
-# Launch Demo Web Stack (React + FastAPI) in Docker
-make demo-up
-make demo-down
+# Launch Application Stack (React + FastAPI) in Docker
+make app-up
+make app-down
 ```
 
 ---

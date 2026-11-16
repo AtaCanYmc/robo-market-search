@@ -153,10 +153,10 @@ temp/
 # Node.js / Frontend / Tauri
 node_modules/
 dist/
-demo/frontend/node_modules/
-demo/frontend/dist/
-demo/frontend/src-tauri/target/
-demo/frontend/src-tauri/binaries/
+app/frontend/node_modules/
+app/frontend/dist/
+app/frontend/src-tauri/target/
+app/frontend/src-tauri/binaries/
 build_sidecar_dist/
 build_sidecar_work/
 *.spec
