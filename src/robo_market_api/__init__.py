@@ -5,4 +5,9 @@ Production-ready REST API layer for robo-market-search, robo-market-service,
 and robo-market-agent.
 """
 
-__version__ = "1.3.0"
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("robo-market-search")
+except PackageNotFoundError:
+    __version__ = "1.10.0"  # x-release-please-version

@@ -2,6 +2,7 @@
 Application configuration management using environment variables.
 """
 
+from importlib.metadata import PackageNotFoundError, version
 from typing import List, Optional
 
 try:
@@ -11,6 +12,11 @@ except ImportError:
     from pydantic import BaseModel as BaseSettings  # type: ignore
 
     SettingsConfigDict = None  # type: ignore
+
+try:
+    _DEFAULT_API_VERSION = version("robo-market-search")
+except PackageNotFoundError:
+    _DEFAULT_API_VERSION = "1.10.0"  # x-release-please-version
 
 
 class Settings(BaseSettings):
@@ -28,7 +34,7 @@ class Settings(BaseSettings):
         "Production-ready HTTP REST API providing unified hardware component search, "
         "store price comparison, cart optimization, and AI agent integration for Turkish electronics market."
     )
-    API_VERSION: str = "1.3.0"
+    API_VERSION: str = _DEFAULT_API_VERSION
     API_V1_PREFIX: str = "/api/v1"
 
     CORS_ORIGINS: List[str] = ["*"]

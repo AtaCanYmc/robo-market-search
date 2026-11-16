@@ -42,8 +42,8 @@ Returns system health status, active scrapers count, and version.
 ```json
 {
   "status": "healthy",
-  "version": "1.4.0",
-  "active_scrapers": ["Robolink", "Robotistan", "Robo90", "Direncnet"]
+  "version": "1.10.0",
+  "active_scrapers": ["Robolink", "Robotistan", "Robo90", "Direncnet", "Ozdisan", "Motorobit"]
 }
 ```
 

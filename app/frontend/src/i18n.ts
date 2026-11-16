@@ -1,3 +1,5 @@
+import { APP_VERSION } from './version';
+
 export type Language = 'tr' | 'en';
 
 export interface Translations {
@@ -127,7 +129,7 @@ export const translations: Record<Language, Translations> = {
   tr: {
     // Common / Global
     appName: "Robo Market Search",
-    appVersion: "v1.10.0",
+    appVersion: APP_VERSION,
     appSubtitle: "Türkiye Elektronik & Robotik Parça Arama Motoru",
     systemStatus: "SİSTEM:",
     systemOnline: "ÇEVRİMİÇİ",
@@ -249,7 +251,7 @@ export const translations: Record<Language, Translations> = {
   en: {
     // Common / Global
     appName: "Robo Market Search",
-    appVersion: "v1.10.0",
+    appVersion: APP_VERSION,
     appSubtitle: "Turkish Electronics & Robotics Sourcing Engine",
     systemStatus: "SYSTEM:",
     systemOnline: "ONLINE",

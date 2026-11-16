@@ -1,3 +1,5 @@
+from importlib.metadata import PackageNotFoundError, version
+
 from .direncnet.client import DirencnetClient
 from .motorobit.client import MotorobitClient
 from .ozdisan.client import OzdisanClient
@@ -29,6 +31,11 @@ from .unified.client import UnifiedSearchClient
 # Convenient alias for Developer Experience (DX)
 Client = UnifiedSearchClient
 
+try:
+    __version__ = version("robo-market-search")
+except PackageNotFoundError:
+    __version__ = "1.10.0"  # x-release-please-version
+
 __all__ = [
     "CaptchaDetectedError",
     "CartItemResult",
@@ -53,6 +60,7 @@ __all__ = [
     "StoreUnavailableError",
     "TimeoutError",
     "UnifiedSearchClient",
+    "__version__",
     "search",
     "search_multiple",
     "search_provider",

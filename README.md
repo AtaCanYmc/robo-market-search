@@ -305,7 +305,7 @@ curl -X GET http://localhost:8000/api/v1/health
 ```json
 {
   "status": "ok",
-  "version": "1.3.0"
+  "version": "1.10.0"
 }
 ```
 

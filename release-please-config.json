@@ -10,6 +10,27 @@
       "draft": false,
       "prerelease": false,
       "include-component-in-tag": false,
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "app/frontend/package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "app/frontend/src-tauri/tauri.conf.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "toml",
+          "path": "app/frontend/src-tauri/Cargo.toml",
+          "jsonpath": "$.package.version"
+        },
+        "src/robo_market_search/__init__.py",
+        "src/robo_market_api/__init__.py",
+        "src/robo_market_api/app/core/config.py",
+        "src/robo_market_search/cli/main.py"
+      ],
       "changelog-sections": [
         { "type": "feat",     "section": "✨ Features",            "hidden": false },
         { "type": "fix",      "section": "🐛 Bug Fixes",           "hidden": false },

@@ -11,9 +11,9 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 | Milestone | Target Scope | Status | Focus Area |
 | :--- | :--- | :--- | :--- |
 | **v1.0.0 - v1.9.0** | Foundation & Ecosystem | Completed | Core scrapers, Unified Search, MCP server, Telegram bot, Vite Web UI. |
-| **v1.10.0** | UI/UX & Packaging | Current Release | Rich CLI interface, Homebrew Tap integration, security hardening, Web standards. |
-| **v1.11.0** | Pipeline & Automation | Ready for Release | Full Dependabot ecosystem coverage, automated pre-commit updates, dynamic CLI metadata. |
-| **v1.12.0** | Scraper Expansion & Cache | In Development | Ozdisan scraper integration, Redis caching layer in `robo_market_service`. |
+| **v1.10.0** | Desktop App & Store Expansion | Current Release | Tauri v2 desktop app, Özdisan & Motorobit scrapers, `src/` migration, Release Please automation. |
+| **v1.11.0** | Pipeline & Automation | Planned | Full Dependabot ecosystem coverage, automated pre-commit updates, CI optimizations. |
+| **v1.12.0** | Distributed Cache & Queues | Planned | Redis caching layer in `robo_market_service`, rate-limiting backpressure. |
 | **v1.13.0** | Real-Time Streaming | Planned | Server-Sent Events (SSE) and WebSocket streaming for agent reasoning traces. |
 | **v2.0.0** | Graph & Multi-Currency | Future Architecture | Component pin-compatibility graph, multi-currency conversion, unified GraphQL API. |
 
@@ -34,14 +34,16 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 - Telegram bot interface for real-time component queries and cart calculation.
 - Web demonstration application using React 18, Tailwind CSS v3, and Vite.
 
-#### v1.10.0: Terminal Experience & Packaging Hardening
+#### v1.10.0: Desktop App, Store Expansion & Packaging Hardening
 - Complete redesign of the terminal interface using Rich with rounded box layouts.
 - Clickable terminal hyperlinks (OSC 8) for product titles and direct store links.
 - Smart subcommand routing: queries such as `robo-search "ESP32"` execute without explicit `search` keyword.
 - Best-price detection with visual in-stock badges.
 - Official Homebrew Tap distribution via `atacanymc/tap/robo-market-search`.
-- Frontend modern web guidance alignment: dark mode synchronization, standardized scrollbars, accessible color contrast.
-- Pre-commit pipeline modernization with Python 3.11 target alignment.
+- Scraper engine expansion with Özdisan and Motorobit client integrations.
+- Tauri v2 cross-platform desktop application with traffic-light drag regions, custom activity sidebar, status bar, and keyboard shortcuts (`⌘1`..`⌘4`, `⌘B`, `⌘K`).
+- Dynamic package metadata resolution across Python (`importlib.metadata`) and Frontend (`package.json`).
+- Automated multi-target version bumping with Release Please.
 
 ---
 

@@ -13,7 +13,7 @@ class HealthResponse(BaseModel):
     """
 
     status: str = Field(default="ok", json_schema_extra={"example": "ok"})
-    version: str = Field(default="1.3.0", json_schema_extra={"example": "1.3.0"})
+    version: str = Field(default="1.10.0", json_schema_extra={"example": "1.10.0"})
 
 
 class ProductModel(BaseModel):
