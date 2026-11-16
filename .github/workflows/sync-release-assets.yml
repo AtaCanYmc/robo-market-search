@@ -1,0 +1,33 @@
+name: 🔄 Sync Release Assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_tag:
+        description: 'Source Release Tag'
+        required: true
+        default: 'v1.11.0'
+      to_tag:
+        description: 'Destination Release Tag'
+        required: true
+        default: 'v1.11.1'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Copy Assets between Releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Assets via GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/release-assets
+          cd /tmp/release-assets
+          echo "[*] Downloading assets from ${{ inputs.from_tag }}..."
+          gh release download "${{ inputs.from_tag }}" --repo "${{ github.repository }}"
+          echo "[*] Uploading assets to ${{ inputs.to_tag }}..."
+          gh release upload "${{ inputs.to_tag }}" * --repo "${{ github.repository }}" --clobber
+          echo "[✓] Successfully synced assets to ${{ inputs.to_tag }}."
