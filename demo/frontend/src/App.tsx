@@ -47,7 +47,7 @@ const MainContent: React.FC = () => {
 
   // Periodic polling every 3 seconds while backend is offline
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (apiOnline === false) {
       interval = setInterval(() => {
         checkHealth();

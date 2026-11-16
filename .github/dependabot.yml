@@ -46,6 +46,10 @@ updates:
       - "demo"
     commit-message:
       prefix: "chore(deps)"
+    groups:
+      demo-dependencies:
+        patterns:
+          - "*"
 
   # ──────────────────────────────────────────────────────────────────────────
   # 3. Demo Backend Python Dependencies (demo/backend/requirements.txt)
@@ -65,6 +69,10 @@ updates:
       - "backend"
     commit-message:
       prefix: "chore(deps)"
+    groups:
+      backend-dependencies:
+        patterns:
+          - "*"
 
   # ──────────────────────────────────────────────────────────────────────────
   # 4. Frontend npm Dependencies (demo/frontend/package.json)
@@ -88,6 +96,9 @@ updates:
       frontend-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
 
   # ──────────────────────────────────────────────────────────────────────────
   # 5. Root Docker & Docker Compose (Dockerfile, docker-compose.yml)
