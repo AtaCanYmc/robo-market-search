@@ -2,7 +2,7 @@ version: 2
 
 updates:
   # ──────────────────────────────────────────────────────────────────────────
-  # Python pip dependencies (Root & Demo)
+  # 1. Root Python Dependencies (pyproject.toml, requirements.txt)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "pip"
     directory: "/"
@@ -11,7 +11,8 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Istanbul"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    versioning-strategy: "increase"
     labels:
       - "dependencies"
       - "python"
@@ -26,12 +27,29 @@ updates:
         dependency-type: "development"
         patterns:
           - "*"
-    ignore:
-      - dependency-name: "curl_cffi"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "beautifulsoup4"
-        update-types: ["version-update:semver-major"]
 
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. Demo App Python Dependencies (demo/pyproject.toml, demo/requirements.txt)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "pip"
+    directory: "/demo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    versioning-strategy: "increase"
+    labels:
+      - "dependencies"
+      - "python"
+      - "demo"
+    commit-message:
+      prefix: "chore(deps)"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 3. Demo Backend Python Dependencies (demo/backend/requirements.txt)
+  # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "pip"
     directory: "/demo/backend"
     schedule:
@@ -39,15 +57,17 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Istanbul"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    versioning-strategy: "increase"
     labels:
       - "dependencies"
       - "python"
+      - "backend"
     commit-message:
       prefix: "chore(deps)"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # Frontend npm dependencies
+  # 4. Frontend npm Dependencies (demo/frontend/package.json)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "npm"
     directory: "/demo/frontend"
@@ -56,15 +76,92 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Istanbul"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    versioning-strategy: "increase"
     labels:
       - "dependencies"
       - "javascript"
+      - "frontend"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      frontend-dependencies:
+        patterns:
+          - "*"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 5. Root Docker & Docker Compose (Dockerfile, docker-compose.yml)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
     commit-message:
       prefix: "chore(deps)"
 
   # ──────────────────────────────────────────────────────────────────────────
-  # GitHub Actions (keep action versions up to date)
+  # 6. Demo Docker Compose (demo/docker-compose.yml)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/demo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "demo"
+    commit-message:
+      prefix: "chore(deps)"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 7. Demo Backend Dockerfile (demo/backend/Dockerfile)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/demo/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "backend"
+    commit-message:
+      prefix: "chore(deps)"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 8. Demo Frontend Dockerfile (demo/frontend/Dockerfile)
+  # ──────────────────────────────────────────────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/demo/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "frontend"
+    commit-message:
+      prefix: "chore(deps)"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 9. GitHub Actions Workflows (.github/workflows)
   # ──────────────────────────────────────────────────────────────────────────
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -73,14 +170,13 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Istanbul"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     labels:
       - "dependencies"
       - "github-actions"
     commit-message:
       prefix: "chore(actions)"
     groups:
-      # Bundle all GitHub Actions updates into one PR per week
       github-actions:
         patterns:
           - "*"

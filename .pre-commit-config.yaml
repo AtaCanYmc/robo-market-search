@@ -7,14 +7,14 @@
 #   pre-commit run --all-files  # tüm dosyalarda manuel çalıştır
 # ─────────────────────────────────────────────────────────────────────────────
 default_language_version:
-  python: python3
+  python: python3.11
 
 default_stages: [pre-commit]
 
 repos:
   # ── 1. Genel dosya sağlığı ──────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace       # Satır sonu boşlukları sil
       - id: end-of-file-fixer         # Dosya sonu newline garantisi
@@ -31,7 +31,7 @@ repos:
 
   # ── 2. Ruff — Linter + Formatter ───────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.3
+    rev: v0.17.5
     hooks:
       # Lint: otomatik düzeltilebilir sorunları da fix et
       - id: ruff
@@ -43,7 +43,7 @@ repos:
 
   # ── 3. Mypy — Statik Tip Kontrolü ──────────────────────────────────────
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.1
+    rev: v2.4.1
     hooks:
       - id: mypy
         args:
@@ -59,7 +59,7 @@ repos:
 
   # ── 4. Conventional Commits zorunluluğu ────────────────────────────────
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.6.0
+    rev: v4.5.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]        # commit-msg aşamasında çalışır

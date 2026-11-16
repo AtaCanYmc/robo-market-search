@@ -1,0 +1,44 @@
+name: Pre-commit Auto-update
+
+on:
+  schedule:
+    # Run every Monday at 09:00 UTC
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autoupdate:
+    name: 🔄 Update Pre-commit Hooks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit autoupdate
+        run: pre-commit autoupdate
+
+      - name: Create Pull Request if hooks were updated
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/pre-commit-autoupdate
+          title: "chore(deps): autoupdate pre-commit hooks"
+          commit-message: "chore(deps): autoupdate pre-commit hooks to latest versions"
+          body: |
+            Automated weekly update of pre-commit hook versions across the repository.
+          labels: |
+            dependencies
+            pre-commit

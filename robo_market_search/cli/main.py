@@ -18,7 +18,12 @@ import typer
 from robo_market_search.cart import cart_command, read_csv
 from robo_market_search.unified.client import UnifiedSearchClient
 
-CLI_VERSION = "1.10.0"
+try:
+    from importlib.metadata import version as _get_version
+
+    CLI_VERSION = _get_version("robo-market-search")
+except Exception:
+    CLI_VERSION = "1.10.0"
 
 app = typer.Typer(
     help="Robo Market Search: Türkiye'nin Elektronik Market Arama Motoru",
