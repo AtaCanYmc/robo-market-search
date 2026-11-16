@@ -23,7 +23,7 @@ try:
 
     CLI_VERSION = _get_version("robo-market-search")
 except Exception:
-    CLI_VERSION = "1.11.1"  # x-release-please-version
+    CLI_VERSION = "1.12.0"  # x-release-please-version
 
 app = typer.Typer(
     help="Robo Market Search: Türkiye'nin Elektronik Market Arama Motoru",
