@@ -85,10 +85,8 @@ npm run dev
 
 ---
 
-## 🌐 Canlıya Dağıtım (Cloud Deployment)
+## 🐳 Konteyner & Sunucu Dağıtımı (Docker)
 
-### Backend API (Render / Docker)
-FastAPI REST API `render.yaml` veya `app/backend/Dockerfile` yapılandırması ile Render veya herhangi bir Docker platformunda yayınlanır:
-- **Build Command**: `pip install -r requirements.txt && pip install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"`
-- **Start Command**: `python main.py`
+FastAPI REST API `app/backend/Dockerfile` veya `app/docker-compose.yml` yapılandırması ile herhangi bir sunucuda veya Docker ortamında çalıştırılabilir:
+- **Docker Compose**: `docker compose up -d`
 - **Healthcheck Endpoint**: `/health`

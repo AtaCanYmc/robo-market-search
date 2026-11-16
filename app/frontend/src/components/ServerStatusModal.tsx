@@ -163,11 +163,11 @@ export const ServerStatusModal: React.FC<ServerStatusModalProps> = ({
 
           {/* Context / Helpful Advice Cards */}
           <div className="space-y-2 text-xs">
-            {/* Cloud (Render) Hint */}
+            {/* Backend Service Hint */}
             <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/30 text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
               <Cloud className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <span className="font-bold text-blue-600 dark:text-blue-400">Render Cloud:</span>{' '}
+                <span className="font-bold text-blue-600 dark:text-blue-400">Backend:</span>{' '}
                 {t('serverModalHintCloud')}
               </div>
             </div>

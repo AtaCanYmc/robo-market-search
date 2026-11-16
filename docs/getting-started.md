@@ -61,7 +61,7 @@ pip install "robo-market-search[api]"
 robo-api
 ```
 - Open Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Open Live Web Application: [https://robo-market-search.onrender.com](https://robo-market-search.onrender.com)
+- Desktop App: Run `npm run desktop:dev` in `app/frontend/` or install the native desktop package.
 
 ---
 

@@ -6,14 +6,11 @@ import {
   AgentResponse,
 } from '../types';
 
-const PRODUCTION_BACKEND = 'https://robo-market-search.onrender.com';
+const LOCAL_BACKEND = 'http://127.0.0.1:8000';
 
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api/v1' : `${PRODUCTION_BACKEND}/api/v1`);
-const HEALTH_URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/api\/v1\/?$/, '')}/health`
-  : import.meta.env.DEV
-  ? '/health'
-  : `${PRODUCTION_BACKEND}/health`;
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : LOCAL_BACKEND);
+const API_BASE = `${BASE_URL}/api/v1`;
+const HEALTH_URL = `${BASE_URL}/health`;
 
 async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
