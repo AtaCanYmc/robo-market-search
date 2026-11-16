@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.11.1](https://github.com/AtaCanYmc/robo-market-search/compare/v1.11.0...v1.11.1) (2026-11-16)
+
+
+### 🐛 Bug Fixes
+
+* **desktop-ci:** unignore and add app icons, fix windows sidecar deps, and add linux tools ([e7af351](https://github.com/AtaCanYmc/robo-market-search/commit/e7af3515066b472209c57a5a1880bbe7435cd41f))
+* **downloads:** wire dynamic release asset downloads and add tag input to desktop build dispatch ([1630182](https://github.com/AtaCanYmc/robo-market-search/commit/163018251dab5d62e6558020ee02b01a46389133))
+
 ## [1.11.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.10.0...v1.11.0) (2026-11-16)
 
 
