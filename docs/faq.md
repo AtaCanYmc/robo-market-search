@@ -25,4 +25,4 @@ Python **3.8, 3.9, 3.10, 3.11, 3.12, 3.13, and 3.14** are fully supported and ve
 ---
 
 ### Q5: How can I request support for a new store?
-You can request a new store by opening an issue on GitHub or implementing a scraper client yourself! See [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) for a step-by-step tutorial.
+You can request a new store by opening an issue on GitHub or implementing a scraper client yourself! See [providers.md](providers.md) for a step-by-step tutorial.

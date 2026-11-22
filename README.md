@@ -23,38 +23,62 @@ Türkiye'nin en popüler 6 elektronik ve robotik pazarında (**Robolink, Robotis
 Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context Protocol)** sunucusu, **Yapay Zeka Donanım Ajanı (BYOK destekli)** ve **Vite + React Web Önyüzü** içerir.
 
 ## Özellikler
-- **Unified Search (Birleştirilmiş Arama)**: 6 markette paralel (Thread) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
-- **Sepet Optimizasyonu & Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
-- **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) otonom donanım analizi ve BOM listesi çıkarma.
-- **Vite + React + Tailwind SPA Önyüz**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV/JSON/Markdown/Clipboard** formatlarında tek tıkla dışa aktarma.
-- **Dinamik Token Mimarisi**: API key veya token değişikliklerinde otomatik güncellenerek kesintisiz çalışır.
-- **Güçlü CLI**: Terminal üzerinden şık tablolar ve anlık yükleme animasyonları ile hızlı ürün araması.
-- **LLM/MCP Entegrasyonu**: Claude Desktop, Antigravity ve VS Code Cline/RooCode asistanlarına canlı mağaza fiyat sorgulama yeteneği.
+- **Unified Search (Birleştirilmiş Arama)**: 6 markette paralel (`ThreadPoolExecutor`) olarak eşzamanlı arama yapar ve ürünleri ucuzdan pahalıya sıralar.
+- **Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
+- **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) donanım analizi ve BOM listesi çıkarır.
+- **Masaüstü ve Web Önyüzü (Tauri + Vite + React)**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV / JSON / Markdown / Clipboard** dışa aktarma.
+- **Dinamik Token Mimarisi**: API anahtarı veya oturum token'ı değişikliklerinde otomatik yenilenir.
+- **CLI (`robo-search`)**: Terminal üzerinden tablolar ve canlı ilerleme çıktısıyla hızlı ürün araması.
+- **LLM/MCP Entegrasyonu (`robo-mcp`)**: Claude Desktop, Antigravity ve VS Code (Cline / RooCode) asistanlarına canlı mağaza fiyat sorgulama yeteneği.
+
+## Tanıtım Videosu
+
+<div align="center">
+  <a href="https://youtu.be/zGbcepQuVU0">
+    <img src="https://img.youtube.com/vi/zGbcepQuVU0/maxresdefault.jpg" alt="Robo Market Search Tanıtım Videosu (YouTube)" width="760" />
+  </a>
+  <p><a href="https://youtu.be/zGbcepQuVU0">YouTube'da İzle (20 sn): 6 Mağazada Paralel Arama, Split-Cart Optimizasyonu ve BYOK Donanım Ajanı</a></p>
+</div>
+
+## İçindekiler
+
+- [Dokümantasyon](#dokümantasyon)
+- [4 Katmanlı Mimari](#4-katmanlı-mimari-4-layered-architecture)
+- [Ekosistem Mimarisi](#ekosistem-mimarisi)
+- [Kurulum](#kurulum)
+- [Komut Satırı Arayüzü (CLI) Kullanımı](#komut-satırı-arayüzü-cli-kullanımı)
+- [REST API Sunucusu (`robo_market_api`)](#rest-api-sunucusu-robo_market_api)
+- [Telegram Bot Entegrasyonu](#telegram-bot-entegrasyonu)
+- [Model Context Protocol (MCP) Sunucusu](#model-context-protocol-mcp-sunucusu)
+- [Hızlı Başlangıç (Python SDK)](#hızlı-başlangıç-python-sdk--birleştirilmiş-arama)
+- [Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)](#sepet-optimizasyonu-ve-kargo-hesaplama-cart_search)
+- [Sıkça Sorulan Sorular](#sıkça-sorulan-sorular-sss--faq)
+- [Katkıda Bulunma](#katkıda-bulunma)
 
 ---
 
-## 📖 Kapsamlı Dokümantasyon (Documentation Suite)
+## Dokümantasyon
 
-Projenin tüm detayları kurumsal standartlarda hazırlanmış `docs/` dizininde yer almaktadır:
+Projenin tüm teknik belgeleri `docs/` dizininde yer alır:
 
 | Doküman | Açıklama | Bağlantı |
 | :--- | :--- | :--- |
-| **🚀 Getting Started** | Hızlı başlangıç ve ekosistem özeti | [getting-started.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/getting-started.md) |
-| **🏛️ Mimari (Architecture)** | 4 Katmanlı mimari, ThreadPool ve akış şemaları | [architecture.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/architecture.md) |
-| **📦 Kurulum (Installation)** | `pipx`, `brew`, `curl`, `pip`, `docker` kurulum matrisi | [installation.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/installation.md) |
-| **⚙️ Konfigürasyon** | Ortam değişkenleri, kargo limitleri ve BYOK anahtar yönetimi | [configuration.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/configuration.md) |
-| **🐍 Python SDK** | `Client`, `UnifiedSearchClient`, `RoboMarketAgent` API referansı | [sdk.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/sdk.md) |
-| **⌨️ CLI Referansı** | `robo-search` ve `robo-agent` terminal rehberi | [cli.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/cli.md) |
-| **🤖 MCP Sunucusu** | Claude Desktop, Cursor & VS Code MCP entegrasyonu | [mcp.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/mcp.md) |
-| **💬 Telegram Bot** | `robo-bot` kurulumu, BotFather & webhook rehberi | [telegram.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/telegram.md) |
-| **🚀 REST API** | FastAPI OpenAPI endpoints, BYOK HTTP başlıkları | [api.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/api.md) |
-| **🔌 Store Plugin Geliştirme** | `BaseStore` ve `@register_store` ile yeni market eklentisi yazma rehberi | [plugin-development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/plugin-development.md) |
-| **🔌 Provider Rehberi** | Yerleşik mağaza kazıyıcıları ve mimarisi | [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) |
-| **🛠️ Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` & CI/CD süreçleri | [development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/development.md) |
-| **❓ Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [troubleshooting.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/troubleshooting.md) |
-| **💡 SSS (FAQ)** | Sıkça sorulan sorular | [faq.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/faq.md) |
-| **🗺️ Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [roadmap.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/roadmap.md) |
-| **📐 Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [adr/](file:///Users/atacan/PycharmProjects/robo-market-search/docs/adr/) |
+| **Getting Started** | Hızlı başlangıç ve ekosistem özeti | [docs/getting-started.md](docs/getting-started.md) |
+| **Mimari (Architecture)** | 4 katmanlı mimari, ThreadPool ve akış şemaları | [docs/architecture.md](docs/architecture.md) |
+| **Kurulum (Installation)** | `pipx`, `brew`, `curl`, `pip`, `docker` kurulum matrisi | [docs/installation.md](docs/installation.md) |
+| **Konfigürasyon** | Ortam değişkenleri, kargo limitleri ve BYOK anahtar yönetimi | [docs/configuration.md](docs/configuration.md) |
+| **Python SDK** | `Client`, `UnifiedSearchClient`, `RoboMarketAgent` API referansı | [docs/sdk.md](docs/sdk.md) |
+| **CLI Referansı** | `robo-search` ve `robo-agent` terminal rehberi | [docs/cli.md](docs/cli.md) |
+| **MCP Sunucusu** | Claude Desktop, Cursor ve VS Code MCP entegrasyonu | [docs/mcp.md](docs/mcp.md) |
+| **Telegram Bot** | `robo-bot` kurulumu, BotFather ve webhook rehberi | [docs/telegram.md](docs/telegram.md) |
+| **REST API** | FastAPI OpenAPI uç noktaları, BYOK HTTP başlıkları | [docs/api.md](docs/api.md) |
+| **Store Plugin Geliştirme** | `BaseStore` ve `@register_store` ile yeni market eklentisi yazma | [docs/plugin-development.md](docs/plugin-development.md) |
+| **Provider Rehberi** | Yerleşik mağaza kazıyıcıları ve mimarisi | [docs/providers.md](docs/providers.md) |
+| **Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` ve CI/CD süreçleri | [docs/development.md](docs/development.md) |
+| **Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [docs/troubleshooting.md](docs/troubleshooting.md) |
+| **SSS (FAQ)** | Sıkça sorulan sorular | [docs/faq.md](docs/faq.md) |
+| **Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [docs/roadmap.md](docs/roadmap.md) |
+| **Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [docs/adr/](docs/adr/) |
 
 ---
 
@@ -157,18 +181,22 @@ graph TB
     REST --> AGENT
     AGENT --> UC
 
-    UC --> R1 & R2 & R3 & R4
+    UC --> R1 & R2 & R3 & R4 & R5 & R6
     R1 <-.->|token yenileme| TK
     R2 <-.->|token yenileme| TK
     R3 <-.->|token yenileme| TK
     R4 <-.->|token yenileme| TK
+    R5 <-.->|token yenileme| TK
+    R6 <-.->|token yenileme| TK
 
     R1 -->|HTTP / scrape| M1
     R2 -->|HTTP / scrape| M2
     R3 -->|HTTP / scrape| M3
     R4 -->|HTTP / scrape| M4
+    R5 -->|HTTP / scrape| M5
+    R6 -->|HTTP / scrape| M6
 
-    R1 & R2 & R3 & R4 --> MD
+    R1 & R2 & R3 & R4 & R5 & R6 --> MD
     MD -->|"ucuzdan pahalıya sıralı Product listesi"| UC
 
     style Clients fill:#1e293b,stroke:#38bdf8,color:#e2e8f0
@@ -182,72 +210,69 @@ graph TB
 
 ## Kurulum
 
-`robo-market-search` ihtiyacınıza göre farklı yöntemlerle kolayca kurulabilir:
+### Hızlı Başlangıç (Docker)
 
-### 1. 🚀 `pipx` (CLI Araçları İçin Modern Standart - Önerilen)
-Python global ortamını kirletmeden CLI, MCP ve AI Ajan araçlarını izole sanal ortama kurar:
+```bash
+git clone https://github.com/AtaCanYmc/robo-market-search.git
+cd robo-market-search
+docker compose up -d
+```
+
+REST API `http://localhost:8000/docs` adresinde ayağa kalkar.
+
+### 1. `pipx` (CLI ve Ekosistem İçin Önerilen)
+
+Global Python ortamını etkilemeden CLI, MCP ve AI ajan araçlarını izole sanal ortama kurar:
 
 ```bash
 pipx install "robo-market-search[all]"
 ```
-> Direct GitHub installation: `pipx install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"`
 
----
+Doğrudan GitHub üzerinden kurulum:
 
-### 2. 🍺 Homebrew Tap (macOS & Linux)
-macOS veya Linux üzerinde Homebrew kullanıyorsanız tek komutla kurabilirsiniz:
+```bash
+pipx install "robo-market-search[all] @ git+https://github.com/AtaCanYmc/robo-market-search.git"
+```
+
+### 2. Homebrew Tap (macOS ve Linux)
 
 ```bash
 brew install atacanymc/tap/robo-market-search
 ```
 
-Kurulum tamamlandıktan sonra `robo-search "ESP32"` şeklinde doğrudan çalıştırabilirsiniz.
+Kurulum sonrasında `robo-search "ESP32"` komutuyla doğrudan arama yapılabilir.
 
----
-
-### 3. ⚡ Tek Tıkla Kurulum Scripti (cURL / Shell)
-Otomatik bağımlılık kontrolü ve izole ortam kurulumu için terminalinizde çalıştırın:
+### 3. Tek Satır Kurulum Scripti (cURL / Shell)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash
 ```
 
----
+### 4. Bağımsız Masaüstü ve Binary Paketler
 
-### 4. 💾 Bağımsız Executable Binary (Python Kurulumu Gerektirmez)
-Bilgisayarınızda Python kurulu değilse, [GitHub Releases](https://github.com/AtaCanYmc/robo-market-search/releases) sayfasından işletim sisteminize uygun derlenmiş dosyayı (`.exe` veya executable) indirip doğrudan çalıştırabilirsiniz.
+Python kurulu olmayan sistemler için [GitHub Releases](https://github.com/AtaCanYmc/robo-market-search/releases) sayfasından macOS, Windows veya Linux kurulum paketini indirin.
 
----
-
-### 5. 📦 Python SDK & Geliştirici Kurulumu (`pip`)
-Projenizde kütüphane/SDK olarak import edip kullanmak için:
+### 5. Python SDK ve Geliştirici Kurulumu (`pip`)
 
 ```bash
-# Sadece Core SDK (kazıyıcılar & birleştirilmiş arama)
+# Sadece Core SDK (kazıyıcılar ve birleştirilmiş arama)
 pip install robo-market-search
 
 # Tüm ekosistem (REST API + CLI + MCP + AI Agent)
 pip install "robo-market-search[all]"
 ```
 
----
+### Masaüstü ve Web Arayüz Özellikleri
 
-### Web Arayüz Özellikleri:
-- **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
+- **Eşzamanlı Ürün Araması**: 6 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
 - **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
-- **Sepet Optimizasyonu**: Mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz etme.
-### Web Arayüz Özellikleri:
-- **Eşzamanlı Ürün Araması**: 4 markette paralel arama, canlı stok ve renkli mağaza rozetleri.
-- **Toplu Arama (Batch Search)**: Birden fazla bileşeni tek ekranda arama ve gruplama.
-- **Sepet Optimizasyonu**: Mağazalar arası kargo barajlarını (ücretsiz kargo limitlerini) analiz etme.
-- **BYOK Yapay Zeka Ajanı**: Kendi OpenAI, Gemini, Claude veya Ollama API anahtarınızla donanım analizi yapma.
-- **Sonuçları İndirme (Export)**: Arama sonuçlarını **CSV**, **JSON**, **Markdown** formatlarında indirme veya **Panoya Kopyalama**.
-
-<br/>
+- **Sepet Optimizasyonu**: Mağazalar arası ücretsiz kargo barajlarını ve bölünmüş sepet maliyetlerini analiz etme.
+- **BYOK Yapay Zeka Ajanı**: Kendi OpenAI, Gemini, Anthropic, DeepSeek, Groq veya Ollama anahtarınızla donanım analizi ve BOM oluşturma.
+- **Dışa Aktarma (Export)**: Arama sonuçlarını **CSV**, **JSON**, **Markdown** formatlarında indirme veya panoya kopyalama.
 
 ![Vite Web UI Arama Ekranı](.github/screenshots/web_demo_example.png)
 
-### 🤖 Yapay Zeka Donanım Ajanı Görsel Arayüzü (BYOK):
+### Yapay Zeka Donanım Ajanı Görsel Arayüzü (BYOK)
 
 <div align="center">
   <img src=".github/screenshots/agent_malzeme_listesi.png" width="48%" alt="Ajan Malzeme Listesi (BOM) Ekranı" />
@@ -284,7 +309,7 @@ robo-search "PLA Filament" --no-sort
 
 Production-ready FastAPI REST API katmanı ile `robo-market-search` özelliklerini HTTP servisleri olarak sunabilirsiniz.
 
-### 🚀 Çalıştırma
+### Çalıştırma
 
 ```bash
 # REST API başlatma
@@ -295,15 +320,15 @@ veya doğrudan Uvicorn ile:
 uvicorn robo_market_api.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 📖 API Dokümantasyonu (Swagger & ReDoc)
+### API Dokümantasyonu (Swagger ve ReDoc)
 
 - **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 - **OpenAPI JSON**: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
 
-### 📌 Örnek Endpoint İletişimleri
+### Örnek Endpoint İletişimleri
 
-#### 🔹 Sağlık Kontrolü (`GET /health` veya `GET /api/v1/health`)
+#### Sağlık Kontrolü (`GET /health` veya `GET /api/v1/health`)
 ```bash
 curl -X GET http://localhost:8000/api/v1/health
 ```
@@ -311,11 +336,11 @@ curl -X GET http://localhost:8000/api/v1/health
 ```json
 {
   "status": "ok",
-  "version": "1.10.0"
+  "version": "1.11.1"
 }
 ```
 
-#### 🔹 Ürün Arama (`POST /api/v1/search`)
+#### Ürün Arama (`POST /api/v1/search`)
 ```bash
 curl -X POST http://localhost:8000/api/v1/search \
   -H "Content-Type: application/json" \
@@ -340,19 +365,19 @@ curl -X POST http://localhost:8000/api/v1/search \
 }
 ```
 
-#### 🔹 Toplu Arama (`POST /api/v1/search/batch`)
+#### Toplu Arama (`POST /api/v1/search/batch`)
 ```bash
 curl -X POST http://localhost:8000/api/v1/search/batch \
   -H "Content-Type: application/json" \
   -d '{"queries": ["ESP32", "Relay 5V", "OLED 0.96"]}'
 ```
 
-#### 🔹 Mağaza Sağlayıcıları (`GET /api/v1/providers`)
+#### Mağaza Sağlayıcıları (`GET /api/v1/providers`)
 ```bash
 curl -X GET http://localhost:8000/api/v1/providers
 ```
 
-#### 🔹 Belirli Bir Mağazada Arama (`POST /api/v1/providers/{provider}`)
+#### Belirli Bir Mağazada Arama (`POST /api/v1/providers/{provider}`)
 ```bash
 curl -X POST http://localhost:8000/api/v1/providers/robotistan \
   -H "Content-Type: application/json" \
@@ -542,7 +567,7 @@ products = client.search_component("esp32", limit=3)
 
 ## Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)
 
-> 👨🏻‍💻 [**Sha-Dox**](https://github.com/Sha-Dox) tarafından projeye kazandırılmıştır.*
+> [**Sha-Dox**](https://github.com/Sha-Dox) tarafından projeye kazandırılmıştır.
 
 Birden fazla malzeme satın almak istediğinizde, parçaları tek bir mağazadan mı yoksa kargo limitlerini (ücretsiz kargo eşiklerini) dikkate alarak farklı mağazalar arasında bölüşerek mi almanızın daha ucuza geleceğini otomatik hesaplayabilirsiniz:
 
@@ -570,7 +595,7 @@ if result.best_split:
 ## Sıkça Sorulan Sorular (S.S.S. / FAQ)
 
 <details>
-<summary><b>❓ Hangi sitenin SEO'su daha iyi ise ona arama sonuçlarında öncelik veriliyor mu?</b></summary>
+<summary><b>Hangi sitenin SEO'su daha iyi ise ona arama sonuçlarında öncelik veriliyor mu?</b></summary>
 <br/>
 
 **Hayır, kesinlikle hayır.**
@@ -586,28 +611,28 @@ Dolayısıyla hiçbir markete SEO veya popülerlik avantajı tanınmaz; kullanı
 </details>
 
 <details>
-<summary><b>❓ Ürünlerin fiyat ve stok bilgileri ne kadar güncel?</b></summary>
+<summary><b>Ürünlerin fiyat ve stok bilgileri ne kadar güncel?</b></summary>
 <br/>
 
 Arama yapıldığı an 6 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir.
 </details>
 
 <details>
-<summary><b>❓ Birden fazla farklı parça alırken kargo ücretlerini nasıl optimize ediyorsunuz?</b></summary>
+<summary><b>Birden fazla farklı parça alırken kargo ücretlerini nasıl optimize ediyorsunuz?</b></summary>
 <br/>
 
 `cart_search` metodu veya masaüstü uygulamamızdaki sepet optimizasyonu özelliği sayesindedir. Sistem, listenizdeki parçaların hangi marketlerde olduğunu ve her marketin **ücretsiz kargo barajını (örn. 250 TL üzeri bedava kargo)** analiz eder. Ürünleri tek bir mağazadan toplu almak mı yoksa kargo limitlerini aşacak şekilde mağazalar arasında bölüşmek mi (split cart) daha ucuza gelir otomatik hesaplar.
 </details>
 
 <details>
-<summary><b>❓ Yeni bir elektronik mağazası eklemek istersem ne yapmalıyım?</b></summary>
+<summary><b>Yeni bir elektronik mağazası eklemek istersem ne yapmalıyım?</b></summary>
 <br/>
 
 Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `src/robo_market_search/` altında `BaseStore` sınıfından türeyen ve `@register_store` ile işaretlenen yeni bir istemci oluşturmanız yeterlidir. Katkıda bulunmak için [docs/providers.md](docs/providers.md) ve [CONTRIBUTING.md](CONTRIBUTING.md) belgelerini inceleyebilirsiniz.
 </details>
 
 <details>
-<summary><b>❓ Claude, ChatGPT veya VS Code üzerinde MCP (Model Context Protocol) olarak nasıl kullanabilirim?</b></summary>
+<summary><b>Claude, ChatGPT veya VS Code üzerinde MCP (Model Context Protocol) olarak nasıl kullanabilirim?</b></summary>
 <br/>
 
 `pip install "robo-market-search[all]"` kurulumundan sonra gelen `robo-mcp` komutunu Claude Desktop veya VS Code (Cline / RooCode) ayarlarınızdaki `mcpServers` bölümüne eklemeniz yeterlidir. Detaylı rehber yukarıdaki **Model Context Protocol (MCP) Sunucusu** başlığında adım adım açıklanmıştır.
@@ -617,7 +642,7 @@ Projemiz modüler bir mimariye sahiptir! Yeni bir market eklemek için `src/robo
 
 Katkılarınızı memnuniyetle karşılıyoruz! Detaylı bilgi için [CONTRIBUTING.md](CONTRIBUTING.md) ve [docs/development.md](docs/development.md) sayfalarını inceleyebilirsiniz.
 
-### 🛠️ Makefile ile Hızlı Geliştirici Komutları
+### Makefile ile Hızlı Geliştirici Komutları
 
 Projede test, formatlama, tip kontrolü ve servis çalıştırma süreçlerini otomatikleştiren bir [`Makefile`](Makefile) bulunmaktadır:
 

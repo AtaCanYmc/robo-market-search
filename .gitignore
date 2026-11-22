@@ -165,3 +165,7 @@ build_sidecar_work/
 
 # Antislop reports & audit artifacts
 anti-slop/
+
+# Brag launch video outputs & intermediates
+brag-output/
+brag-output-*/

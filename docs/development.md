@@ -34,7 +34,7 @@ robo-market-search/
 
 ## ⚡ Quick Start with Makefile
 
-A comprehensive [`Makefile`](file:///Users/atacan/PycharmProjects/robo-market-search/Makefile) is provided to automate common development workflows. If `.venv` exists, `make` targets automatically detect and use virtual environment binaries.
+A [`Makefile`](../Makefile) automates common development workflows. If `.venv` exists, `make` targets automatically detect and use virtual environment binaries.
 
 Run `make help` to inspect all available targets:
 

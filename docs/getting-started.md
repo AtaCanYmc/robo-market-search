@@ -1,29 +1,37 @@
 # Getting Started with Robo Market Search
 
-Welcome to **Robo Market Search**! This guide will help you quickly understand the ecosystem, install the tools, and perform your first e-commerce search across Turkey's leading electronics and robotics stores (**Robotistan, Robolink, Robo90, Direnç.net, Özdisan, Motorobit**).
+**Robo Market Search** queries Turkey's 6 major electronics and robotics stores (**Robotistan, Robolink, Robo90, Direnç.net, Özdisan, Motorobit**) in parallel, ranks live prices, optimizes split-store shipping thresholds, and generates hardware BOMs via BYOK LLM providers.
+
+- Launch Demo (20s): [Watch on YouTube](https://youtu.be/zGbcepQuVU0)
 
 ---
 
-## 🌟 What is Robo Market Search?
+## Architecture Overview
 
-Robo Market Search is a production-grade, open-source Python e-commerce aggregator and hardware AI assistant. Rather than a single scraper script, it is structured as a **4-layered ecosystem**:
+Rather than a single scraper script, the repository is structured as a **4-layered ecosystem**:
 
-1. **Core SDK (`robo_market_search`)**: Zero-dependency Python library with parallel store scrapers, dynamic token refreshers, and cart optimization logic.
-2. **Search Service (`robo_market_service`)**: High-level service layer providing memory/disk caching, synonym expansions, and product ranking.
-3. **AI Hardware Agent (`robo_market_agent`)**: Otonom hardware BOM generator and compatibility checker supporting **Bring Your Own API Key (BYOK)** for OpenAI, Gemini, Claude, DeepSeek, Groq, and Ollama.
-4. **REST API & Interfaces (`robo_market_api`, Vite Web UI, CLI, MCP Server, Telegram Bot)**: Access methods for any workflow.
+1. **Core SDK (`robo_market_search`)**: Zero-AI-dependency Python library with parallel store scrapers, dynamic token refreshers, and split-cart optimization logic.
+2. **Search Service (`robo_market_service`)**: Service layer providing memory/disk caching, synonym expansion, deduplication, and product ranking.
+3. **AI Hardware Agent (`robo_market_agent`)**: Autonomous hardware BOM generator and compatibility checker supporting **Bring Your Own API Key (BYOK)** for OpenAI, Gemini, Anthropic, DeepSeek, Groq, and Ollama.
+4. **REST API and Interfaces (`robo_market_api`, Tauri + Vite Desktop/Web UI, CLI, MCP Server, Telegram Bot)**: Access methods sharing the same core.
 
 ---
 
-## 🚀 Quick Start in 60 Seconds
+## Quick Start
+
+### 0. Docker (Fastest Local Stack)
+
+```bash
+git clone https://github.com/AtaCanYmc/robo-market-search.git
+cd robo-market-search
+docker compose up -d
+```
 
 ### 1. Command Line Interface (CLI)
 
-The fastest way to try Robo Market Search is via `pipx` or `pip`:
-
 ```bash
 # Install CLI
-pip install "robo-market-search[cli]"
+pipx install "robo-market-search[cli]"
 
 # Search for a product across all 6 stores
 robo-search "ESP32-WROOM" --limit 5
@@ -36,52 +44,48 @@ robo-search cart "ESP32-WROOM" "5V Relay Module" "OLED Display"
 
 ### 2. Python SDK
 
-Include Robo Market Search in your own Python projects:
-
 ```python
 from robo_market_search import UnifiedSearchClient
 
 client = UnifiedSearchClient()
 
-# Eşzamanlı arama (6 markette paralel)
+# Parallel live search across all 6 stores
 results = client.search("Arduino Uno R3", limit_per_store=3)
 
 for product in results:
-    print(f"[{product.store}] {product.name} - {product.price} TL (Stok: {product.in_stock})")
+    print(f"[{product.store}] {product.name} - {product.price} TL (Stock: {product.in_stock})")
 ```
 
 ---
 
-### 3. REST API & Web UI
-
-Launch the production REST API server locally:
+### 3. REST API and Desktop UI
 
 ```bash
 pip install "robo-market-search[api]"
 robo-api
 ```
-- Open Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Desktop App: Run `npm run desktop:dev` in `app/frontend/` or install the native desktop package.
+- Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Desktop App: Run `npm run desktop:dev` in `app/frontend/` or download a binary from [GitHub Releases](https://github.com/AtaCanYmc/robo-market-search/releases).
 
 ---
 
-## 📚 Documentation Index
+## Documentation Index
 
 Explore the full documentation suite:
 
 | Topic | Description | Link |
 | :--- | :--- | :--- |
-| **Architecture** | 4-Layer design, ThreadPool engine, scrapers & token refreshers | [architecture.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/architecture.md) |
-| **Installation** | Full installation matrix (`pipx`, `brew`, `curl`, `pip`, `docker`) | [installation.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/installation.md) |
-| **Configuration** | Environment variables, BYOK keys, free shipping thresholds | [configuration.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/configuration.md) |
-| **Python SDK** | Complete API reference for `UnifiedSearchClient` & models | [sdk.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/sdk.md) |
-| **CLI Reference** | Man-page style guide for `robo-search` & `robo-agent` | [cli.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/cli.md) |
-| **MCP Server** | Claude Desktop, Cursor & VS Code MCP integration | [mcp.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/mcp.md) |
-| **Telegram Bot** | Setting up `robo-bot` with BotFather and webhooks | [telegram.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/telegram.md) |
-| **REST API** | OpenAPI endpoints, BYOK HTTP headers & Pydantic models | [api.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/api.md) |
-| **Providers Guide** | Step-by-step tutorial on adding new store scrapers | [providers.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/providers.md) |
-| **Development** | Contributing, running pytest, ruff formatting & CI/CD | [development.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/development.md) |
-| **Troubleshooting** | Fixing 403 Cloudflare, token refresh, and LLM SDK errors | [troubleshooting.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/troubleshooting.md) |
-| **FAQ** | Frequently Asked Questions | [faq.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/faq.md) |
-| **Roadmap** | Future feature roadmap and upcoming milestones | [roadmap.md](file:///Users/atacan/PycharmProjects/robo-market-search/docs/roadmap.md) |
-| **Architecture Decision Records (ADRs)** | Architectural decisions rationale | [adr/](file:///Users/atacan/PycharmProjects/robo-market-search/docs/adr/) |
+| **Architecture** | 4-Layer design, ThreadPool engine, scrapers and token refreshers | [architecture.md](architecture.md) |
+| **Installation** | Full installation matrix (`pipx`, `brew`, `curl`, `pip`, `docker`) | [installation.md](installation.md) |
+| **Configuration** | Environment variables, BYOK keys, free shipping thresholds | [configuration.md](configuration.md) |
+| **Python SDK** | Complete API reference for `UnifiedSearchClient` and models | [sdk.md](sdk.md) |
+| **CLI Reference** | Command guide for `robo-search` and `robo-agent` | [cli.md](cli.md) |
+| **MCP Server** | Claude Desktop, Cursor and VS Code MCP integration | [mcp.md](mcp.md) |
+| **Telegram Bot** | Setting up `robo-bot` with BotFather and webhooks | [telegram.md](telegram.md) |
+| **REST API** | OpenAPI endpoints, BYOK HTTP headers and Pydantic models | [api.md](api.md) |
+| **Providers Guide** | Step-by-step tutorial on adding new store scrapers | [providers.md](providers.md) |
+| **Development** | Contributing, running pytest, ruff formatting and CI/CD | [development.md](development.md) |
+| **Troubleshooting** | Fixing 403 Cloudflare, token refresh, and LLM SDK errors | [troubleshooting.md](troubleshooting.md) |
+| **FAQ** | Technical Frequently Asked Questions | [faq.md](faq.md) |
+| **Roadmap** | Feature roadmap and upcoming milestones | [roadmap.md](roadmap.md) |
+| **Architecture Decision Records (ADRs)** | Architectural decisions rationale | [adr/](adr/) |
