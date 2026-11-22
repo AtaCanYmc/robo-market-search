@@ -573,6 +573,12 @@ products = client.search_component("esp32", limit=3)
 
 > [**Sha-Dox**](https://github.com/Sha-Dox) tarafından projeye kazandırılmıştır.
 
+<div align="center">
+  <a href="https://youtu.be/zGbcepQuVU0">
+    <img src=".github/screenshots/demo_en_iyi_fiyat.jpg" alt="Robo Market Search: Bölünmüş Sepet ve Kargo Optimizasyonu" width="760" />
+  </a>
+</div>
+
 Birden fazla malzeme satın almak istediğinizde, parçaları tek bir mağazadan mı yoksa kargo limitlerini (ücretsiz kargo eşiklerini) dikkate alarak farklı mağazalar arasında bölüşerek mi almanızın daha ucuza geleceğini otomatik hesaplayabilirsiniz:
 
 ```python
