@@ -35,7 +35,11 @@ Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context P
 
 <div align="center">
   <a href="https://youtu.be/zGbcepQuVU0">
-    <img src="https://img.youtube.com/vi/zGbcepQuVU0/maxresdefault.jpg" alt="Robo Market Search Tanıtım Videosu (YouTube)" width="760" />
+    <img src=".github/screenshots/demo_tek_seferde.jpg" alt="Robo Market Search: 6 Mağazada Tek Seferde Arama" width="48%" />
+  </a>
+  &nbsp;
+  <a href="https://youtu.be/zGbcepQuVU0">
+    <img src=".github/screenshots/demo_tek_tikla_tara.jpg" alt="Robo Market Search: Tek Tıkla Tara" width="48%" />
   </a>
   <p><a href="https://youtu.be/zGbcepQuVU0">YouTube'da İzle (20 sn): 6 Mağazada Paralel Arama, Split-Cart Optimizasyonu ve BYOK Donanım Ajanı</a></p>
 </div>

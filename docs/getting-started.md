@@ -4,6 +4,8 @@
 
 - Launch Demo (20s): [Watch on YouTube](https://youtu.be/zGbcepQuVU0)
 
+[![Robo Market Search: 6 Stores in One Search](../.github/screenshots/demo_tek_seferde.jpg)](https://youtu.be/zGbcepQuVU0)
+
 ---
 
 ## Architecture Overview
