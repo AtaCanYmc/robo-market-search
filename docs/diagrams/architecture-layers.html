@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robo Market Search | 4-Layered Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:      #060913;
+      --color-paper-2:    #0F172A;
+      --color-ink:        #F8FAFC;
+      --color-muted:      #94A3B8;
+      --color-soft:       #7C8EA6;
+      --color-rule:       rgba(248, 250, 252, 0.14);
+      --color-rule-solid: rgba(148, 163, 184, 0.32);
+      --color-accent:     #00F0FF;
+      --color-accent-tint:rgba(0, 240, 255, 0.08);
+      --color-link:       #38BDF8;
+      --font-sans:        'Geist', system-ui, sans-serif;
+      --font-serif:       'Instrument Serif', serif;
+      --font-mono:        'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1120px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 1000px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Layer Stack · Robo Market Search</p>
+    <h1>Decoupled 4-Layer Architecture</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1000 456" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-layers-title architecture-layers-desc">
+        <title id="architecture-layers-title">Robo Market Search 4-Layered Architecture</title>
+        <desc id="architecture-layers-desc">Vertical layer stack showing how Applications, REST API, BYOK Hardware Agent, and Search Service build on the zero-AI-dependency robo_market_search Core SDK.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#94A3B8"/>
+          </marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#00F0FF"/>
+          </marker>
+        </defs>
+
+        <!-- Canvas -->
+        <rect width="1000" height="456" fill="#060913"/>
+
+        <!-- Left margin direction indicator (outside stack) -->
+        <line x1="72" y1="48" x2="72" y2="352" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <rect x="24" y="188" width="96" height="20" rx="2" fill="#060913"/>
+        <text x="72" y="201" fill="#7C8EA6" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="500" text-anchor="middle" letter-spacing="0.16em">CALL FLOW</text>
+
+        <!-- Outer Stack Frame (5 bands: UI + 4 Python layers) -->
+        <rect x="144" y="32" width="816" height="340" rx="6" fill="#0F172A" stroke="rgba(148, 163, 184, 0.32)" stroke-width="1"/>
+
+        <!-- Band 1: Applications / UI -->
+        <rect x="144" y="32" width="816" height="68" rx="6" fill="#0B1120"/>
+        <rect x="164" y="56" width="88" height="20" rx="2" fill="#0F172A" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+        <text x="208" y="69" fill="#7C8EA6" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="500" text-anchor="middle" letter-spacing="0.14em">INTERFACES</text>
+        <text x="280" y="71" fill="#F8FAFC" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600">Applications &amp; Clients</text>
+        <text x="936" y="70" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="10" text-anchor="end">Tauri Desktop · Vite Web · CLI · MCP · Bot</text>
+        <line x1="144" y1="100" x2="960" y2="100" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+
+        <!-- Band 2: REST API -->
+        <rect x="144" y="100" width="816" height="68" fill="#0F172A"/>
+        <rect x="164" y="124" width="88" height="20" rx="2" fill="#060913" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+        <text x="208" y="137" fill="#7C8EA6" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="500" text-anchor="middle" letter-spacing="0.14em">L4 · API</text>
+        <text x="280" y="139" fill="#F8FAFC" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600">robo_market_api</text>
+        <text x="936" y="138" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="10" text-anchor="end">FastAPI · Pydantic v2 · OpenAPI · BYOK Headers</text>
+        <line x1="144" y1="168" x2="960" y2="168" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+
+        <!-- Band 3: AI Hardware Agent -->
+        <rect x="144" y="168" width="816" height="68" fill="#0B1120"/>
+        <rect x="164" y="192" width="88" height="20" rx="2" fill="#0F172A" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+        <text x="208" y="205" fill="#7C8EA6" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="500" text-anchor="middle" letter-spacing="0.14em">L3 · AGENT</text>
+        <text x="280" y="207" fill="#F8FAFC" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600">robo_market_agent</text>
+        <text x="936" y="206" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="10" text-anchor="end">7-Step BOM Pipeline · 6 BYOK LLM Providers</text>
+        <line x1="144" y1="236" x2="960" y2="236" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+
+        <!-- Band 4: Search Service -->
+        <rect x="144" y="236" width="816" height="68" fill="#0F172A"/>
+        <rect x="164" y="260" width="88" height="20" rx="2" fill="#060913" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+        <text x="208" y="273" fill="#7C8EA6" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="500" text-anchor="middle" letter-spacing="0.14em">L2 · SERVICE</text>
+        <text x="280" y="275" fill="#F8FAFC" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600">robo_market_service</text>
+        <text x="936" y="274" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="10" text-anchor="end">SQLite Cache · Synonyms · Dedupe · Ranking</text>
+
+        <!-- Band 5: Focal Core SDK -->
+        <rect x="144" y="304" width="816" height="68" rx="6" fill="rgba(0, 240, 255, 0.08)" stroke="#00F0FF" stroke-width="1.5"/>
+        <rect x="164" y="328" width="88" height="20" rx="2" fill="#060913" stroke="#00F0FF" stroke-width="1"/>
+        <text x="208" y="341" fill="#00F0FF" font-family="'Geist Mono', ui-monospace, monospace" font-size="8" font-weight="600" text-anchor="middle" letter-spacing="0.14em">L1 · CORE</text>
+        <text x="280" y="343" fill="#F8FAFC" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600">robo_market_search</text>
+        <text x="936" y="342" fill="#00F0FF" font-family="'Geist Mono', ui-monospace, monospace" font-size="10" text-anchor="end">BaseStore · ThreadPool · cart_search · Zero AI Deps</text>
+
+        <!-- Bottom Legend Strip -->
+        <line x1="144" y1="400" x2="960" y2="400" stroke="rgba(248, 250, 252, 0.14)" stroke-width="1"/>
+        <rect x="144" y="416" width="12" height="12" rx="2" fill="#0F172A" stroke="rgba(148, 163, 184, 0.32)" stroke-width="1"/>
+        <text x="164" y="426" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="9">UPPER LAYER (OPTIONAL EXTRAS)</text>
+
+        <rect x="384" y="416" width="12" height="12" rx="2" fill="rgba(0, 240, 255, 0.08)" stroke="#00F0FF" stroke-width="1.2"/>
+        <text x="404" y="426" fill="#94A3B8" font-family="'Geist Mono', ui-monospace, monospace" font-size="9">FOCAL CORE SDK (ZERO HTTP/AI FRAMEWORK DEPS)</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

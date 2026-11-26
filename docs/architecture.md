@@ -4,46 +4,11 @@ This document details the software architecture, design principles, concurrency 
 
 ---
 
-## 🏛️ The 4-Layered Architecture
+## The 4-Layered Architecture
 
 The project is structured into four decoupled logical layers:
 
-```
-                            ┌───────────────────────────┐
-                            │      Applications / UI    │
-                            │ (Vite Web UI, CLI, Bot,   │
-                            │  MCP Server, Mobile Apps) │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │      robo_market_api      │
-                            │ (REST API Layer: FastAPI, │
-                            │  OpenAPI, BYOK Headers)   │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_agent      │
-                            │ (AI Layer: Requirements,  │
-                            │  BOM, BYOK Providers)     │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_service    │
-                            │ (Search Service: Cache,   │
-                            │  Synonyms, Rank, Dedupe)  │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_search     │
-                            │ (Commerce Search Framework│
-                            │  BaseStore, Registry, HTTP│
-                            │  Engine, Event Dispatcher)│
-                            └───────────────────────────┘
-```
+![Robo Market Search 4-Layered Architecture](diagrams/architecture-layers.svg)
 
 ### 1. Commerce Search Framework Core Layer (`robo_market_search`)
 - Pure Python SDK with zero heavy web or AI dependencies.
@@ -70,38 +35,19 @@ The project is structured into four decoupled logical layers:
 
 ---
 
-## ⚡ Concurrency & Scraper Pipeline
+## Ecosystem Topology
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant CLI as CLI / API / SDK
-    participant Client as Client (UnifiedSearchClient)
-    participant Events as EventDispatcher
-    participant TP as ThreadPoolExecutor
-    participant Registry as StoreRegistry
-    participant Stores as BaseStore Providers
-
-    User->>CLI: Search("ESP32-WROOM")
-    CLI->>Client: search(query="ESP32-WROOM", limit=5)
-    Client->>Events: emit_request(store, query)
-    Client->>TP: Dispatch parallel search tasks across registered stores
-    par Concurrent Fetching & Pipeline
-        TP->>Stores: BaseStore.search("ESP32-WROOM")
-        Note over Stores: Fetch -> Validate -> Parse -> Normalize
-    end
-    Stores-->>TP: Return Product list
-    TP-->>Client: Aggregate store results
-    Client->>Events: emit_product(p) & emit_result(query, results)
-    Client->>Client: Sort combined products (Price Ascending)
-    Client-->>CLI: Return sorted Product list
-    CLI-->>User: Render Rich Table / JSON Response
-```
+![Robo Market Search Ecosystem Architecture](diagrams/ecosystem-architecture.svg)
 
 ---
 
-## 🛡️ Exception Hierarchy
+## Concurrency & Scraper Pipeline
+
+![MCP and Parallel Store Search Sequence](diagrams/mcp-search-sequence.svg)
+
+---
+
+## Exception Hierarchy
 
 ```
 RoboMarketError

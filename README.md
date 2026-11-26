@@ -90,41 +90,7 @@ Projenin tüm teknik belgeleri `docs/` dizininde yer alır:
 
 Proje tam bağımsız mantıksal katmanlardan oluşur:
 
-```
-                            ┌───────────────────────────┐
-                            │      Applications / UI    │
-                            │ (Vite Web UI, CLI, Bot,   │
-                            │  MCP Server, Mobile Apps) │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │      robo_market_api      │
-                            │ (REST API Layer: FastAPI, │
-                            │  OpenAPI, BYOK Headers)   │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_agent      │
-                            │ (AI Layer: Requirements,  │
-                            │  BOM, BYOK Providers)     │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_service    │
-                            │ (Search Service: Cache,   │
-                            │  Synonyms, Rank, Dedupe)  │
-                            └─────────────┬─────────────┘
-                                          │
-                                          ▼
-                            ┌───────────────────────────┐
-                            │    robo_market_search     │
-                            │ (Core Search Library:     │
-                            │  Zero AI/HTTP Dependencies│
-                            └───────────────────────────┘
-```
+![Robo Market Search 4 Katmanlı Mimari](docs/diagrams/architecture-layers.svg)
 
 1. **`robo_market_api`**: Üretim ortamına hazır HTTP REST API katmanı. FastAPI, Pydantic v2, Swagger UI (`/docs`), ReDoc (`/redoc`) ve Bring Your Own API Key (BYOK) desteği sunar.
 2. **`robo_market_agent`**: Yapay Zeka Ajanı. Pydantic modelleri ve takılabilir LLM Sağlayıcıları (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama, Mock) üzerinden 7 adımlı boru hattı çalıştırır.
@@ -135,80 +101,7 @@ Proje tam bağımsız mantıksal katmanlardan oluşur:
 
 ## Ekosistem Mimarisi
 
-```mermaid
-graph TB
-    subgraph Clients["🖥️ İstemciler & Uygulamalar"]
-        direction LR
-        WEB["🌐 Web & Masaüstü UI<br/><code>app/frontend</code>"]
-        PY["🐍 Python SDK"]
-        CLI["⌨️ CLI<br/><code>robo-search</code>"]
-        MCP["🤖 MCP Sunucusu<br/><code>robo-mcp</code>"]
-        BOT["💬 Telegram Bot<br/><code>robo-bot</code>"]
-    end
-
-    subgraph API["🚀 REST API & AI Ajanı"]
-        REST["robo_market_api<br/><code>FastAPI</code>"]
-        AGENT["robo_market_agent<br/><code>BYOK LLM Providers</code>"]
-    end
-
-    subgraph Core["⚙️ Çekirdek Arama Kütüphanesi"]
-        UC["UnifiedSearchClient"]
-        subgraph Scrapers["Market İstemcileri (Paralel Thread'ler)"]
-            direction LR
-            R1["RobotistanClient"]
-            R2["RobolinkClient"]
-            R3["Robo90Client"]
-            R4["DirencnetClient"]
-            R5["OzdisanClient"]
-            R6["MotorobitClient"]
-        end
-        TK["🔑 Dinamik Token Yenileyici"]
-        MD["📦 Product Model"]
-    end
-
-    subgraph Markets["🛒 Türkiye Elektronik Pazarları"]
-        direction LR
-        M1["robotistan.com"]
-        M2["robolink.com"]
-        M3["robo90.com"]
-        M4["direnc.net"]
-        M5["ozdisan.com"]
-        M6["motorobit.com"]
-    end
-
-    WEB --> REST
-    PY  --> UC
-    CLI --> UC
-    MCP --> UC
-    BOT --> UC
-
-    REST --> AGENT
-    AGENT --> UC
-
-    UC --> R1 & R2 & R3 & R4 & R5 & R6
-    R1 <-.->|token yenileme| TK
-    R2 <-.->|token yenileme| TK
-    R3 <-.->|token yenileme| TK
-    R4 <-.->|token yenileme| TK
-    R5 <-.->|token yenileme| TK
-    R6 <-.->|token yenileme| TK
-
-    R1 -->|HTTP / scrape| M1
-    R2 -->|HTTP / scrape| M2
-    R3 -->|HTTP / scrape| M3
-    R4 -->|HTTP / scrape| M4
-    R5 -->|HTTP / scrape| M5
-    R6 -->|HTTP / scrape| M6
-
-    R1 & R2 & R3 & R4 & R5 & R6 --> MD
-    MD -->|"ucuzdan pahalıya sıralı Product listesi"| UC
-
-    style Clients fill:#1e293b,stroke:#38bdf8,color:#e2e8f0
-    style API     fill:#1e1b4b,stroke:#818cf8,color:#e2e8f0
-    style Core    fill:#0f172a,stroke:#6366f1,color:#e2e8f0
-    style Markets fill:#1e293b,stroke:#34d399,color:#e2e8f0
-    style Scrapers fill:#0f172a,stroke:#818cf8,color:#c7d2fe
-```
+![Robo Market Search Ekosistem Mimarisi](docs/diagrams/ecosystem-architecture.svg)
 
 ---
 
@@ -479,43 +372,7 @@ LLM, arka planda `robo-mcp` aracını çağırıp güncel fiyat/stok bilgilerini
 
 ### MCP Arama Akışı
 
-```mermaid
-sequenceDiagram
-    actor User as 👤 Kullanıcı
-    participant LLM as 🤖 Claude / LLM
-    participant MCP as robo-mcp
-    participant UC  as UnifiedSearchClient
-    participant M1  as robotistan.com
-    participant M2  as robolink.com
-    participant M3  as robo90.com
-    participant M4  as direnc.net
-    participant M5  as ozdisan.com
-    participant M6  as motorobit.com
-
-    User->>LLM: "ESP32-CAM için en ucuz fiyatı bul"
-    LLM->>MCP: search_products(query="ESP32-CAM")
-    MCP->>UC: search(query="ESP32-CAM")
-
-    par Paralel HTTP İstekleri
-        UC->>M1: GET /search?q=ESP32-CAM
-        UC->>M2: GET /search?q=ESP32-CAM
-        UC->>M3: GET /search?q=ESP32-CAM
-        UC->>M4: POST /srv/service/product/search-json/ESP32-CAM
-        UC->>M5: GET /search?q=ESP32-CAM
-        UC->>M6: GET /arama?q=ESP32-CAM
-    end
-
-    M1-->>UC: [Product, ...]
-    M2-->>UC: [Product, ...]
-    M3-->>UC: [Product, ...]
-    M4-->>UC: [Product, ...]
-    M5-->>UC: [Product, ...]
-    M6-->>UC: [Product, ...]
-
-    UC-->>MCP: Birleşik & fiyata göre sıralı liste
-    MCP-->>LLM: JSON product listesi
-    LLM-->>User: "En ucuzu Robotistan'da 142₺"
-```
+![MCP ve Paralel Mağaza Arama Akışı](docs/diagrams/mcp-search-sequence.svg)
 
 ## Hızlı Başlangıç (Python SDK / Birleştirilmiş Arama)
 
