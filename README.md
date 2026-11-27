@@ -88,6 +88,7 @@ Projenin tüm teknik belgeleri `docs/` dizininde yer alır:
 | **Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **SSS (FAQ)** | Sıkça sorulan sorular | [docs/faq.md](docs/faq.md) |
 | **Entegrasyonlar** | `bom-sourcing` skill'i ve bomTR Chrome eklentisi | [docs/integrations.md](docs/integrations.md) |
+| **Bulut Barındırma** | `robo-api` için ücretsiz bulut seçenekleri (Oracle, HF Spaces, Cloud Run) | [docs/hosting.md](docs/hosting.md) |
 | **Bruno API Koleksiyonu** | Uç nokta istekleri ve doğrulamaları, `make test-api` ile çalışır | [bruno/README.md](bruno/README.md) |
 | **Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [docs/roadmap.md](docs/roadmap.md) |
 | **Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [docs/adr/](docs/adr/) |

@@ -81,6 +81,9 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 - **Price Alerting**:
   - Webhook delivery mechanism for component price drops and restock alerts.
   - Configurable target price threshold alerts via CLI and REST API.
+- **Cloud Hosting & Deploy Templates**:
+  - [x] Free cloud hosting guide (`docs/hosting.md`) covering Oracle Cloud Always Free, Hugging Face Spaces (Docker), and Google Cloud Run.
+  - Ready-to-use Hugging Face Spaces `Dockerfile` and Oracle Cloud Always Free setup templates.
 
 #### v2.0.0: Advanced Component Graph & Enterprise Features
 - **Component Equivalence Graph**:
