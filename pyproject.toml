@@ -22,9 +22,9 @@ keywords = ["robotistan", "robolink", "robo90", "direncnet", "search", "scraper"
 cli = ["typer", "rich"]
 mcp = ["mcp; python_version >= '3.10'", "anyio"]
 bot = ["aiogram"]
-agent = ["pydantic>=2.14.3", "typer", "rich", "openai>=3.50.0", "groq>=1.7.0", "anthropic>=2.8.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
+agent = ["pydantic>=2.14.3", "typer", "rich", "openai>=3.57.0", "groq>=1.7.0", "anthropic>=2.11.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
 api = ["fastapi", "uvicorn[standard]", "pydantic-settings>=2.15.0"]
-all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.14.3", "fastapi", "uvicorn[standard]", "pydantic-settings>=2.15.0", "openai>=3.50.0", "groq>=1.7.0", "anthropic>=2.8.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
+all = ["typer", "rich", "mcp; python_version >= '3.10'", "anyio", "aiogram", "pydantic>=2.14.3", "fastapi", "uvicorn[standard]", "pydantic-settings>=2.15.0", "openai>=3.57.0", "groq>=1.7.0", "anthropic>=2.11.0", "google-generativeai>=0.8.6", "ollama>=0.6.3"]
 dev = [
     "build",
     "pre-commit",
