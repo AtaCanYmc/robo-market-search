@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robo Market Search — Elektronik & Robotik Tedarik İstihbaratı</title>
-    <meta name="description" content="Türkiye'nin 6 büyük elektronik komponent mağazasını milisaniyeler içinde tarayan, AI destekli BOM üreten ve kargo dahil en ucuz sepeti optimize eden açık kaynak ekosistem.">
+    <meta name="description" content="Türkiye'nin 6 büyük elektronik komponent mağazasını eşzamanlı tarayan, AI destekli BOM üreten ve kargo dahil en ucuz sepeti optimize eden açık kaynak ekosistem.">
 
     <!-- Google Fonts: Space Grotesk, Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,7 +169,7 @@
             </a>
 
             <div class="hidden md:flex items-center gap-7 text-xs font-medium text-zinc-400">
-                <a href="#playground" class="hover:text-white transition-colors" data-i18n="nav_demo">Canlı Simülasyon</a>
+                <a href="#playground" class="hover:text-white transition-colors" data-i18n="nav_demo">Örnek Demo</a>
                 <a href="#bento" class="hover:text-white transition-colors" data-i18n="nav_features">Ekosistem</a>
                 <a href="#architecture" class="hover:text-white transition-colors" data-i18n="nav_arch">Mimari</a>
                 <a href="#showcase" class="hover:text-white transition-colors" data-i18n="nav_interfaces">Arayüzler</a>
@@ -223,7 +223,7 @@
             <!-- Primary CTA & Quick Install Pill -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
                 <a href="#playground" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-accent text-obsidian font-display font-bold text-sm sm:text-base hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,245,212,0.3)]">
-                    <span data-i18n="hero_cta_primary">Canlı Motoru Deneyimle</span>
+                    <span data-i18n="hero_cta_primary">Örnek Çıktıyı Gör</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </a>
 
@@ -245,8 +245,8 @@
                     <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_1">Paralel ThreadPool Tarama</div>
                 </div>
                 <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
-                    <div class="font-display font-bold text-2xl sm:text-3xl text-accent">&lt; 1.2s</div>
-                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_2">Ortalama Yanıt & Önbellek</div>
+                    <div class="font-display font-bold text-2xl sm:text-3xl text-accent">2 sa</div>
+                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_2">Varsayılan Önbellek Süresi</div>
                 </div>
                 <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
                     <div class="font-display font-bold text-2xl sm:text-3xl text-white">7 LLM</div>
@@ -303,11 +303,11 @@
                 <div>
                     <span class="font-mono text-xs text-accent uppercase tracking-widest">// Interactive Engine Simulator</span>
                     <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2" data-i18n="play_title">
-                        Motoru Canlı Test Edin
+                        Motoru Deneyin (Örnek Veri)
                     </h2>
                 </div>
                 <p class="text-zinc-400 text-sm max-w-md" data-i18n="play_desc">
-                    Gerçek zamanlı çoklu market fiyat karşılaştırmasını veya AI Agent'ın doğal dilden BOM + Sepet optimizasyonu üretmesini deneyimleyin.
+                    Bu bölüm bir simülasyondur: ürünler, fiyatlar ve süreler örnek veridir, mağazalara istek atılmaz. Gerçek arama için CLI, API veya masaüstü uygulamasını kullanın.
                 </p>
             </div>
 
@@ -753,7 +753,7 @@ brew upgrade robo-market-search</code></pre>
                             <div class="text-[11px] text-emerald-400 font-mono">${item.stock}</div>
                             <div class="font-display font-bold text-xl text-white mt-0.5">₺${item.price.toFixed(2)}</div>
                         </div>
-                        <span class="text-xs font-mono text-accent">0.38s →</span>
+
                     </div>
                 </div>
             `).join('');
@@ -838,7 +838,7 @@ brew upgrade robo-market-search</code></pre>
         let currentLang = 'tr';
         const i18n = {
             tr: {
-                nav_demo: 'Canlı Simülasyon',
+                nav_demo: 'Örnek Demo',
                 nav_features: 'Ekosistem',
                 nav_arch: 'Mimari',
                 nav_interfaces: 'Arayüzler',
@@ -847,17 +847,17 @@ brew upgrade robo-market-search</code></pre>
                 hero_title_1: 'Donanım Tedarikinde',
                 hero_title_2: 'Otonom İstihbarat.',
                 hero_subtitle: "Türkiye'nin önde gelen 6 elektronik komponent marketini eşzamanlı tarayın. Proje fikrinizi yazın; AI ajanımız malzeme listesini (BOM) çıkarsın, uyumluluğu denetlesin ve kargo dahil en ucuz sepeti saniyeler içinde oluştursun.",
-                hero_cta_primary: 'Canlı Motoru Deneyimle',
+                hero_cta_primary: 'Örnek Çıktıyı Gör',
                 stat_1: 'Paralel ThreadPool Tarama',
-                stat_2: 'Ortalama Yanıt & Önbellek',
+                stat_2: 'Varsayılan Önbellek Süresi',
                 stat_3: 'OpenAI, Claude, Gemini, Ollama...',
                 stat_4: 'SDK, CLI, API, MCP, Bot, App',
-                play_title: 'Motoru Canlı Test Edin',
-                play_desc: "Gerçek zamanlı çoklu market fiyat karşılaştırmasını veya AI Agent'ın doğal dilden BOM + Sepet optimizasyonu üretmesini deneyimleyin.",
+                play_title: 'Motoru Deneyin (Örnek Veri)',
+                play_desc: "Bu bölüm bir simülasyondur: ürünler, fiyatlar ve süreler örnek veridir, mağazalara istek atılmaz. Gerçek arama için CLI, API veya masaüstü uygulamasını kullanın.",
                 bento_title: 'Mühendislik Odaklı Tasarlandı.'
             },
             en: {
-                nav_demo: 'Live Simulator',
+                nav_demo: 'Sample Demo',
                 nav_features: 'Ecosystem',
                 nav_arch: 'Architecture',
                 nav_interfaces: 'Interfaces',
@@ -866,13 +866,13 @@ brew upgrade robo-market-search</code></pre>
                 hero_title_1: 'Autonomous Intelligence',
                 hero_title_2: 'for Hardware Sourcing.',
                 hero_subtitle: 'Scan 6 major electronics component stores simultaneously. Describe your project idea; our AI agent generates the BOM, validates hardware compatibility, and optimizes the cheapest cart including shipping.',
-                hero_cta_primary: 'Try Live Engine',
+                hero_cta_primary: 'See Sample Output',
                 stat_1: 'Parallel ThreadPool Search',
-                stat_2: 'Avg Response & TTL Cache',
+                stat_2: 'Default Cache TTL',
                 stat_3: 'OpenAI, Claude, Gemini, Ollama...',
                 stat_4: 'SDK, CLI, API, MCP, Bot, App',
-                play_title: 'Test the Engine Live',
-                play_desc: 'Experience real-time multi-store price comparison or let the AI Agent generate an optimized BOM + Cart plan from natural language.',
+                play_title: 'Try the Engine (Sample Data)',
+                play_desc: 'This section is a simulation: products, prices and timings are sample data and no store is queried. Use the CLI, API or desktop app for real searches.',
                 bento_title: 'Engineered for Builders.'
             }
         };
