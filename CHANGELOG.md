@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.13.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.12.0...v1.13.0) (2026-11-27)
+
+
+### ✨ Features
+
+* add Bruno API collection and Makefile targets ([51958a0](https://github.com/AtaCanYmc/robo-market-search/commit/51958a07ff52a3527450d2d67df613e89640f795))
+* circuit breaker, per-source TTL, optional Redis cache, fallback headers ([b99826c](https://github.com/AtaCanYmc/robo-market-search/commit/b99826c2832ea3cb07b7c090d3456ad49050183d))
+* **website:** add desktop app download section ([1f45864](https://github.com/AtaCanYmc/robo-market-search/commit/1f45864332e9a69c9764792e193c063143f6e631))
+* **website:** add Homebrew install card ([cddb8bc](https://github.com/AtaCanYmc/robo-market-search/commit/cddb8bcc3611f075fa5e119d2c8fbe70eb71e34d))
+* **website:** replace landing page with showcase design ([2bc86a2](https://github.com/AtaCanYmc/robo-market-search/commit/2bc86a2a9a1ec99ec3e9d2532a763e2e838ec321))
+
+
+### 🐛 Bug Fixes
+
+* **ci:** split pages build and deploy into separate jobs ([4372413](https://github.com/AtaCanYmc/robo-market-search/commit/437241363c7e768f497c2591243c166d23a42859))
+* **website:** label demo as sample data, drop unmeasured timings ([19423bc](https://github.com/AtaCanYmc/robo-market-search/commit/19423bc09508077891ab0c7c1cb443a46c7fa4cd))
+
+
+### 📚 Documentation
+
+* add bom-sourcing skill and bomTR extension ([dbde930](https://github.com/AtaCanYmc/robo-market-search/commit/dbde9309e2364d3259608245ff252b7a11fb22d3))
+* add split-cart promo visual to README cart_search section ([a8b37e0](https://github.com/AtaCanYmc/robo-market-search/commit/a8b37e0d736651a6338ec6d8fafc8be2fdc9a582))
+* document cache, resilience, Bruno collection ([f59de40](https://github.com/AtaCanYmc/robo-market-search/commit/f59de401872731eab33966d67ad182eaef6feb44))
+* update README with additional badges for PyPI downloads and Homebrew tap ([bfe74b0](https://github.com/AtaCanYmc/robo-market-search/commit/bfe74b04f015cf53d21933b932bcbc3da68930e9))
+* update roadmap for v1.12.0 ([782b175](https://github.com/AtaCanYmc/robo-market-search/commit/782b175e556e41ad057c2357e78bed6d814f4969))
+* upgrade architecture and MCP sequence diagrams to branded SVGs ([d3a9469](https://github.com/AtaCanYmc/robo-market-search/commit/d3a94698de861a924f59a988d4d27833111ca0cd))
+* upgrade README and docs with YouTube demo and ignore brag outputs ([e2b62b5](https://github.com/AtaCanYmc/robo-market-search/commit/e2b62b597dac0da6b6cf26efb73dfa066c0310db))
+* use uploaded promo visuals for YouTube demo in README and getting-started ([8a844c2](https://github.com/AtaCanYmc/robo-market-search/commit/8a844c2a83f213f42ae24fcd749396e47bb0f9d2))
+
 ## [1.12.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.11.1...v1.12.0) (2026-11-16)
 
 
