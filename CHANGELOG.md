@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.14.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.13.0...v1.14.0) (2026-11-27)
+
+
+### ✨ Features
+
+* **deploy:** add Hugging Face Spaces setup and sync workflow ([8e410e6](https://github.com/AtaCanYmc/robo-market-search/commit/8e410e610c33bc8e3f386e0671ec09ce40010bd5))
+
+
+### 📚 Documentation
+
+* add free cloud hosting guide and roadmap item ([7d9678f](https://github.com/AtaCanYmc/robo-market-search/commit/7d9678f2b19fcb28a48d1a4a82eed90d1f9f1b49))
+* **hosting:** add Hugging Face Spaces Docker template ([11ba1f2](https://github.com/AtaCanYmc/robo-market-search/commit/11ba1f23f8402db23942c371e4ed8e27590dcc02))
+* **hosting:** add Koyeb setup and note HF Docker PRO requirement ([48ce080](https://github.com/AtaCanYmc/robo-market-search/commit/48ce08001a4d502de3e1b418b9378ddb1bf6dbfe))
+
 ## [1.13.0](https://github.com/AtaCanYmc/robo-market-search/compare/v1.12.0...v1.13.0) (2026-11-27)
 
 
