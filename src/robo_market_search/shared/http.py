@@ -27,6 +27,13 @@ DEFAULT_USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 
+# Tried in order after a bot-protection challenge. Index 0 is the default header set.
+FALLBACK_USER_AGENTS = [
+    DEFAULT_USER_AGENT,
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
+]
+
 
 class HTTPClient:
     """
@@ -101,6 +108,8 @@ class HTTPClient:
             except (CaptchaDetectedError, RateLimitError, StoreUnavailableError) as err:
                 last_exception = err
                 retries += 1
+                if isinstance(err, CaptchaDetectedError) and "User-Agent" not in (headers or {}):
+                    req_headers["User-Agent"] = FALLBACK_USER_AGENTS[retries % len(FALLBACK_USER_AGENTS)]
                 if retries <= self.max_retries:
                     sleep_time = self.backoff_factor * (2 ** (retries - 1))
                     logger.warning(

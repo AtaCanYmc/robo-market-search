@@ -67,11 +67,12 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 
 #### v1.13.0: Cache, Resilience & Streaming
 - **Distributed Cache Layer**:
-  - Add optional Redis backend to `robo_market_service` alongside the in-memory cache.
-  - Implement TTL-based cache invalidation per market source.
+  - [x] Optional Redis backend (`ROBO_REDIS_URL`, `pip install "robo-market-search[redis]"`) alongside the SQLite cache.
+  - [x] Implement TTL-based cache invalidation per market source.
 - **Scraper Resilience**:
-  - Circuit-breaker pattern to gracefully isolate failing market endpoints.
-  - Automated fallback headers and catalog pagination recovery.
+  - [x] Circuit-breaker pattern to gracefully isolate failing market endpoints.
+  - [x] Fallback `User-Agent` rotation after a bot-protection challenge.
+  - Catalog pagination recovery.
 - **Agent Streaming Protocol**:
   - Server-Sent Events (SSE) endpoint in `robo_market_api` for step-by-step BOM generation.
   - Real-time token streaming from LLM providers (OpenAI, Anthropic, Gemini, Groq, Ollama).

@@ -16,7 +16,8 @@ from robo_market_search.ozdisan.client import OzdisanClient
 from robo_market_search.robo90.client import Robo90Client
 from robo_market_search.robolink.client import RobolinkClient
 from robo_market_search.robotistan.client import RobotistanClient
-from robo_market_search.shared.cache import SearchCache
+from robo_market_search.shared.breaker import get_breaker
+from robo_market_search.shared.cache import make_cache
 from robo_market_search.shared.events import (
     ErrorCallback,
     EventDispatcher,
@@ -36,6 +37,21 @@ from robo_market_search.shared.models import (
 )
 
 logger = logging.getLogger("robo_market_search.unified")
+
+
+def _guarded(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
+    """Skip a store whose circuit is open. Record the outcome otherwise."""
+    breaker = get_breaker(store_name)
+    if not breaker.allow():
+        logger.warning("Circuit open for %s, skipping", store_name)
+        return []
+    try:
+        prods = fn()
+    except Exception:
+        breaker.record_failure()
+        raise
+    breaker.record_success()
+    return prods
 
 STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet", "Ozdisan", "Motorobit"]
 
@@ -63,7 +79,7 @@ class UnifiedSearchClient:
         self.ozdisan = OzdisanClient()
         self.motorobit = MotorobitClient()
         self.use_cache = use_cache
-        self.cache = SearchCache(default_ttl_seconds=cache_ttl_seconds) if use_cache else None
+        self.cache = make_cache(default_ttl_seconds=cache_ttl_seconds) if use_cache else None
         self.events = EventDispatcher()
 
     # Convenience Hook Registrations
@@ -96,7 +112,7 @@ class UnifiedSearchClient:
             self.events.emit_request(store_name, query)
             start_time = time.perf_counter()
             try:
-                prods = await loop.run_in_executor(None, fn)
+                prods = await loop.run_in_executor(None, lambda: _guarded(store_name, fn))
                 elapsed = (time.perf_counter() - start_time) * 1000
                 logger.debug("Store: %s Elapsed: %.1fms Products: %d", store_name, elapsed, len(prods))
                 for p in prods:
@@ -146,7 +162,7 @@ class UnifiedSearchClient:
         def _run_store(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
             self.events.emit_request(store_name, query)
             start_time = time.perf_counter()
-            prods = fn()
+            prods = _guarded(store_name, fn)
             elapsed = (time.perf_counter() - start_time) * 1000
             logger.debug("Store: %s Elapsed: %.1fms Products: %d", store_name, elapsed, len(prods))
             for p in prods:
