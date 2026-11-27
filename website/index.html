@@ -1,464 +1,883 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Robo Market Search | Türkiye'nin Robotik &amp; Elektronik Arama Motoru</title>
-  <meta name="description" content="Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında tek tıkla canlı arama, sepet kargo optimizasyonu ve BYOK destekli donanım yapay zeka asistanı.">
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robo Market Search — Elektronik & Robotik Tedarik İstihbaratı</title>
+    <meta name="description" content="Türkiye'nin 6 büyük elektronik komponent mağazasını milisaniyeler içinde tarayan, AI destekli BOM üreten ve kargo dahil en ucuz sepeti optimize eden açık kaynak ekosistem.">
+
+    <!-- Google Fonts: Space Grotesk, Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#050507',
+                        surface: '#0C0D12',
+                        card: '#12141D',
+                        accent: '#00F5D4',
+                        accentSecondary: '#7B61FF',
+                        warning: '#FFB800',
+                    },
+                    animation: {
+                        'marquee': 'marquee 28s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Awwwards Custom Aesthetics & Micro-interactions */
+        :root {
+            --cursor-x: 50vw;
+            --cursor-y: 50vh;
+        }
+
+        body {
+            background-color: #050507;
+            color: #F4F4F6;
+            overflow-x: hidden;
+            selection-background-color: #00F5D4;
+            selection-color: #050507;
+        }
+
+        ::selection {
+            background: #00F5D4;
+            color: #050507;
+        }
+
+        /* Subtle Film Grain Overlay */
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.032;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Interactive Spotlight Glow */
+        .spotlight-bg {
+            background: radial-gradient(650px circle at var(--cursor-x) var(--cursor-y), rgba(0, 245, 212, 0.07), transparent 45%);
+        }
+
+        /* Architectural Grid Background */
+        .cyber-grid {
+            background-size: 48px 48px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 20%, #000 60%, transparent 100%);
+        }
+
+        /* Bento Card Hover Border Glow */
+        .bento-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(18, 20, 29, 0.85) 0%, rgba(10, 11, 16, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 245, 212, 0.35);
+            box-shadow: 0 20px 40px -15px rgba(0, 245, 212, 0.12);
+        }
+
+        /* Text Gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #FFFFFF 0%, #A5B4FC 50%, #00F5D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050507;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2230;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F5D4;
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased relative">
 
-  <!-- 1. Navigation Bar -->
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a href="#" class="brand-link">
-        <img src="assets/logo.svg" alt="Robo Market Search Logo" class="brand-logo" width="38" height="38">
-        <span>Robo Market Search</span>
-      </a>
+    <!-- Film Grain & Cursor Spotlight -->
+    <div class="noise-overlay"></div>
+    <div id="spotlight" class="fixed inset-0 pointer-events-none z-10 spotlight-bg transition-opacity duration-300"></div>
 
-      <ul class="nav-menu">
-        <li><a href="#stores" class="nav-link">Mağazalar</a></li>
-        <li><a href="#features" class="nav-link">Özellikler</a></li>
-        <li><a href="#downloads" class="nav-link">İndir</a></li>
-        <li><a href="#quickstart" class="nav-link">Geliştirici</a></li>
-        <li><a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank" rel="noopener noreferrer" class="nav-link">GitHub ↗</a></li>
-      </ul>
+    <!-- Floating Glassmorphic Navigation -->
+    <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6">
+        <nav class="max-w-6xl mx-auto rounded-2xl bg-[#0C0D12]/80 backdrop-blur-xl border border-white/10 px-4 sm:px-6 py-3 flex items-center justify-between shadow-2xl">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent/20 to-accentSecondary/20 border border-accent/40 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="assets/logo.svg" alt="Robo Market Search Logo" class="w-5 h-5" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <svg style="display:none;" class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="3"/>
+                        <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
+                        <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+                        <path d="M9 15h6"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-display font-bold text-sm sm:text-base tracking-tight text-white">robo-market-search</span>
+                    <span class="font-mono text-[10px] text-accent/80 uppercase tracking-widest hidden sm:inline">v2.0 • Autonomous Sourcing</span>
+                </div>
+            </a>
 
-      <div class="nav-actions">
-        <a href="#downloads" class="btn btn-primary">Uygulamayı İndir</a>
-      </div>
-    </div>
-  </nav>
+            <div class="hidden md:flex items-center gap-7 text-xs font-medium text-zinc-400">
+                <a href="#playground" class="hover:text-white transition-colors" data-i18n="nav_demo">Canlı Simülasyon</a>
+                <a href="#bento" class="hover:text-white transition-colors" data-i18n="nav_features">Ekosistem</a>
+                <a href="#architecture" class="hover:text-white transition-colors" data-i18n="nav_arch">Mimari</a>
+                <a href="#showcase" class="hover:text-white transition-colors" data-i18n="nav_interfaces">Arayüzler</a>
+                <a href="#quickstart" class="hover:text-white transition-colors" data-i18n="nav_install">Kurulum</a>
+            </div>
 
-  <!-- 2. Hero Section -->
-  <header class="hero-section">
-    <div class="container">
-      <div class="hero-badge">
-        <span>●</span> Sürüm <span class="release-version-badge">v1.10.0</span> • Masaüstü ve Açık Kaynak Ekosistemi
-      </div>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Language Toggle -->
+                <button id="langToggle" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 font-mono text-xs text-zinc-300 transition-all cursor-pointer">
+                    TR / EN
+                </button>
+                <a href="https://github.com/atacanymc/robo-market-search" target="_blank" rel="noopener noreferrer"
+                   class="px-3.5 py-2 rounded-xl bg-white text-obsidian font-semibold text-xs flex items-center gap-2 hover:bg-accent transition-all shadow-lg shadow-white/5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </nav>
+    </header>
 
-      <h1 class="hero-title">
-        Türkiye'nin 6 Büyük Elektronik Pazarında Canlı Arama ve Akıllı Sepet Optimizasyonu
-      </h1>
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex flex-col justify-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
+        <div class="absolute inset-0 cyber-grid pointer-events-none"></div>
+        <!-- Ambient Orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[540px] h-[540px] bg-accent/10 rounded-full blur-[130px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-[340px] h-[340px] bg-accentSecondary/15 rounded-full blur-[110px] pointer-events-none"></div>
 
-      <p class="hero-subtitle">
-        Robotistan, Robolink, Robo90, Direnç.net, Özdisan ve Motorobit mağazalarında paralel canlı fiyat, stok ve kargo limitlerini tarayın. Yapay zeka destekli donanım asistanı ile projeleriniz için otomatik Malzeme Listesi (BOM) çıkartın.
-      </p>
+        <div class="max-w-6xl mx-auto w-full relative z-20 text-center">
+            <!-- Status Pill -->
+            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md mb-8">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                </span>
+                <span class="font-mono text-xs text-zinc-300 tracking-wide" data-i18n="hero_badge">
+                    6 Tedarikçi • AI BOM Ajanı • MCP & Tauri Desktop
+                </span>
+            </div>
 
-      <div class="hero-cta-group">
-        <a href="#downloads" id="hero-download-btn" class="btn btn-primary btn-lg">
-          Masaüstü Uygulamasını İndir
-        </a>
-        <a href="#quickstart" class="btn btn-secondary btn-lg">
-          Terminalde Başlat (`brew` / `pipx`)
-        </a>
-      </div>
+            <!-- Monumental Kinetic Headline -->
+            <h1 class="font-display font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.03] mb-6">
+                <span class="block text-white" data-i18n="hero_title_1">Donanım Tedarikinde</span>
+                <span class="block text-gradient mt-1" data-i18n="hero_title_2">Otonom İstihbarat.</span>
+            </h1>
 
-      <!-- Real Desktop App Screenshot Frame (No Redrawn Chrome) -->
-      <figure class="hero-figure">
-        <img src="assets/desktop_app.png" alt="Robo Market Search Masaüstü Uygulama Ekranı" width="1040" height="600" loading="eager">
-      </figure>
-
-      <!-- Proof Row (Honest metrics, zero fabricated numbers) -->
-      <div class="proof-row">
-        <div class="proof-card">
-          <div class="proof-val">6</div>
-          <div class="proof-lbl">Entegre Robotik &amp; Elektronik Mağaza</div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-val">%100</div>
-          <div class="proof-lbl">Anlık Canlı Fiyat &amp; Stok Sorgusu</div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-val">37 / 37</div>
-          <div class="proof-lbl">Doğrulama Testi &amp; Tip Güvencesi</div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-val">Apache 2.0</div>
-          <div class="proof-lbl">%100 Açık Kaynak ve Özgür Yazılım</div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- 3. Supported Stores Section -->
-  <section id="stores" class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Mağaza Ekosistemi</div>
-        <h2 class="section-title">Desteklenen 6 Büyük Pazar</h2>
-        <p class="section-desc">
-          Tek tek web sitelerini dolaşmadan, her mağazanın canlı API ve arama sayfalarına eşzamanlı istek atılır.
-        </p>
-      </div>
-
-      <div class="stores-grid">
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Robotistan</h3>
-            <span class="store-badge badge-robotistan">robotistan.com</span>
-          </div>
-          <p class="store-desc">Arduino, geliştirme kartları, 3D yazıcı bileşenleri ve robotik kitler.</p>
-          <div class="store-meta">
-            <span>Canlı HTML Kazıma</span> • <span>Ücretsiz Kargo Analizi</span>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Robolink Market</h3>
-            <span class="store-badge badge-robolink">robolinkmarket.com</span>
-          </div>
-          <p class="store-desc">Geliştirme kartları, sensörler, motor sürücüler ve maker donanımları.</p>
-          <div class="store-meta">
-            <span>TLS Taklit İstemcisi</span> • <span>Stok Durumu</span>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Robo90</h3>
-            <span class="store-badge badge-robo90">robo90.com</span>
-          </div>
-          <p class="store-desc">Elektronik modüller, kablosuz haberleşme ve mikrodenetleyici donanımları.</p>
-          <div class="store-meta">
-            <span>Canlı Kazıma</span> • <span>Fiyat Sıralaması</span>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Direnç.net</h3>
-            <span class="store-badge badge-direncnet">direnc.net</span>
-          </div>
-          <p class="store-desc">Pasif komponentler, entegreler, robotik sensörler ve yarı iletkenler.</p>
-          <div class="store-meta">
-            <span>Resmi JSON API Entegrasyonu</span> • <span>Yüksek Hız</span>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Özdisan</h3>
-            <span class="store-badge badge-ozdisan">ozdisan.com</span>
-          </div>
-          <p class="store-desc">Endüstriyel elektronik komponentler, yarı iletken distribütörlüğü ve konnektörler.</p>
-          <div class="store-meta">
-            <span>Endüstriyel Katalog</span> • <span>BOM Tedariği</span>
-          </div>
-        </div>
-
-        <div class="store-card">
-          <div class="store-header">
-            <h3 class="store-name">Motorobit</h3>
-            <span class="store-badge badge-motorobit">motorobit.com</span>
-          </div>
-          <p class="store-desc">Step motorlar, sürücüler, robotik mekanikler ve güç elektroniği.</p>
-          <div class="store-meta">
-            <span>Canlı Arama</span> • <span>Kargo Optimizasyonu</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. Feature Pillars Section -->
-  <section id="features" class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Yetenekler</div>
-        <h2 class="section-title">Akıllı Donanım Tedarik Altyapısı</h2>
-        <p class="section-desc">
-          Tek bir sorguyla en ucuz parçaları bulun, kargo maliyetlerini hesaplayın ve yapay zeka ile BOM listesi çıkartın.
-        </p>
-      </div>
-
-      <div class="features-grid">
-        <!-- Pillar 1 -->
-        <div class="feature-card">
-          <div>
-            <div class="feature-icon-wrapper">🔍</div>
-            <h3 class="feature-title">Eşzamanlı Paralel Canlı Arama</h3>
-            <p class="feature-text">
-              Tüm marketlerde ThreadPool mimarisiyle saniyeler içinde paralel arama yapar. Sonuçlar en ucuzdan pahalıya sıralanır, stokta olmayan ürünler filtrelenebilir ve tek tıkla CSV/JSON formatında indirilebilir. Yanıt vermeyen bir market devre kesici ile geçici olarak atlanır, böylece diğer marketlerin sonuçları gecikmeden gelir.
+            <p class="max-w-2xl mx-auto text-zinc-400 text-base sm:text-lg md:text-xl leading-relaxed mb-10 font-light" data-i18n="hero_subtitle">
+                Türkiye'nin önde gelen <strong class="text-white font-medium">6 elektronik komponent marketini</strong> eşzamanlı tarayın.
+                Proje fikrinizi yazın; AI ajanımız malzeme listesini (BOM) çıkarsın, uyumluluğu denetlesin ve <strong class="text-accent font-medium">kargo dahil en ucuz sepeti</strong> saniyeler içinde oluştursun.
             </p>
-          </div>
-          <figure class="feature-preview">
-            <img src="assets/desktop_app.png" alt="Paralel Arama Görünümü" width="600" height="350" loading="lazy">
-          </figure>
-        </div>
 
-        <!-- Pillar 2 -->
-        <div class="feature-card">
-          <div>
-            <div class="feature-icon-wrapper">🛒</div>
-            <h3 class="feature-title">Akıllı Sepet &amp; Kargo Bölüşümü (`cart_search`)</h3>
-            <p class="feature-text">
-              Birden fazla parça alırken her mağazanın ücretsiz kargo limitlerini (örn: 1500 TL barajı) analiz eder. Ürünleri tek mağazadan toplu almak mı, yoksa kargo baremlerine göre bölüşmek mi (split cart) daha karlı otomatik hesaplar.
-            </p>
-          </div>
-          <figure class="feature-preview">
-            <img src="assets/agent_cart.png" alt="Sepet Optimizasyonu Görünümü" width="600" height="350" loading="lazy">
-          </figure>
-        </div>
+            <!-- Primary CTA & Quick Install Pill -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+                <a href="#playground" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-accent text-obsidian font-display font-bold text-sm sm:text-base hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,245,212,0.3)]">
+                    <span data-i18n="hero_cta_primary">Canlı Motoru Deneyimle</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
 
-        <!-- Pillar 3 -->
-        <div class="feature-card">
-          <div>
-            <div class="feature-icon-wrapper">🤖</div>
-            <h3 class="feature-title">BYOK Destekli Yapay Zeka Ajanı</h3>
-            <p class="feature-text">
-              Kendi API anahtarınızı (OpenAI, Gemini, Claude, DeepSeek, Groq, Ollama) bağlayın. "Otomatik sulama sistemi" gibi serbest metin proje tanımlarını anlar, Malzeme Listesi (BOM) çıkartır ve voltaj uyumluluklarını denetler.
-            </p>
-          </div>
-          <figure class="feature-preview">
-            <img src="assets/agent_bom.png" alt="Yapay Zeka Malzeme Listesi Görünümü" width="600" height="350" loading="lazy">
-          </figure>
-        </div>
+                <div class="w-full sm:w-auto flex items-center justify-between gap-3 px-4 py-3.5 rounded-2xl bg-[#0E1017] border border-white/10 font-mono text-xs sm:text-sm text-zinc-300">
+                    <div class="flex items-center gap-2 overflow-x-auto">
+                        <span class="text-accent select-none">$</span>
+                        <code id="heroInstallCmd" class="whitespace-nowrap">pip install robo-market-search</code>
+                    </div>
+                    <button onclick="copyCommand('heroInstallCmd', this)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-zinc-400 hover:text-white transition-colors" title="Kopyala">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </button>
+                </div>
+            </div>
 
-        <!-- Pillar 4 -->
-        <div class="feature-card">
-          <div>
-            <div class="feature-icon-wrapper">⚡</div>
-            <h3 class="feature-title">Çoklu Arayüz &amp; Terminal Araçları</h3>
-            <p class="feature-text">
-              Masaüstü uygulamasına ek olarak zengin terminal araçları (`robo-search`, `robo-agent`), Claude Desktop için MCP sunucusu (`robo-mcp`), Aiogram Telegram botu (`robo-bot`) ve FastAPI REST API (`robo-api`) içerir.
-            </p>
-          </div>
-          <figure class="feature-preview">
-            <img src="assets/cli_example.png" alt="Terminal CLI Arayüzü" width="600" height="350" loading="lazy">
-          </figure>
+            <!-- Live Metrics Strip -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
+                <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
+                    <div class="font-display font-bold text-2xl sm:text-3xl text-white">6 Market</div>
+                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_1">Paralel ThreadPool Tarama</div>
+                </div>
+                <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
+                    <div class="font-display font-bold text-2xl sm:text-3xl text-accent">&lt; 1.2s</div>
+                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_2">Ortalama Yanıt & Önbellek</div>
+                </div>
+                <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
+                    <div class="font-display font-bold text-2xl sm:text-3xl text-white">7 LLM</div>
+                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_3">OpenAI, Claude, Gemini, Ollama...</div>
+                </div>
+                <div class="rounded-2xl bg-white/[0.02] border border-white/5 p-4 backdrop-blur-sm">
+                    <div class="font-display font-bold text-2xl sm:text-3xl text-accentSecondary">6 Arayüz</div>
+                    <div class="text-xs text-zinc-500 mt-1" data-i18n="stat_4">SDK, CLI, API, MCP, Bot, App</div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <!-- INFINITE PROVIDER TICKER -->
+    <div class="relative py-6 border-y border-white/[0.06] bg-[#08090D] overflow-hidden">
+        <div class="flex w-max animate-marquee gap-12 items-center">
+            <!-- Set 1 -->
+            <div class="flex items-center gap-12 text-zinc-400 font-display font-semibold text-lg tracking-wider uppercase">
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Robotistan</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-sky-400"></span>Direnc.net</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Robolink Market</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-purple-400"></span>Robo90</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span>Motorobit</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-accent"></span>Özdisan</span>
+                <span class="text-zinc-700">✦</span>
+            </div>
+            <!-- Set 2 (Duplicate for seamless loop) -->
+            <div class="flex items-center gap-12 text-zinc-400 font-display font-semibold text-lg tracking-wider uppercase">
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Robotistan</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-sky-400"></span>Direnc.net</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Robolink Market</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-purple-400"></span>Robo90</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span>Motorobit</span>
+                <span class="text-zinc-700">✦</span>
+                <span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-accent"></span>Özdisan</span>
+                <span class="text-zinc-700">✦</span>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- 5. Downloads Hub (Core Action) -->
-  <section id="downloads" class="section downloads-section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">İndirme Merkezi</div>
-        <h2 class="section-title">İstediğiniz Platformda Kullanın</h2>
-        <p class="section-desc">
-          macOS, Windows ve Linux için yerel masaüstü uygulaması veya terminal üzerinden Homebrew ve pipx kurulumu.
-        </p>
-      </div>
-
-      <!-- OS Tabs -->
-      <div class="download-tabs">
-        <button class="tab-btn active" data-target="macos">macOS</button>
-        <button class="tab-btn" data-target="windows">Windows</button>
-        <button class="tab-btn" data-target="linux">Linux</button>
-        <button class="tab-btn" data-target="cli">Homebrew &amp; pipx</button>
-        <button class="tab-btn" data-target="docker">Docker</button>
-      </div>
-
-      <!-- Tab Panes -->
-      <!-- macOS Pane -->
-      <div id="tab-macos" class="tab-pane active">
-        <div class="download-cards-grid">
-          <div class="download-card highlight">
-            <h3 class="dl-platform-title">macOS Masaüstü (.dmg)</h3>
-            <p class="dl-platform-desc">Apple Silicon (M1/M2/M3/M4) ve Intel Mac'ler için yerel Tauri v2 uygulaması.</p>
-            <div class="dl-actions">
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_aarch64.dmg" id="btn-macos-arm64" class="btn btn-primary btn-download" data-os="macOS (Apple Silicon)" data-ext=".dmg" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                Apple Silicon İndir (.dmg)
-              </a>
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_aarch64.dmg" id="btn-macos-intel" class="btn btn-secondary btn-download" data-os="macOS (Intel)" data-ext=".dmg" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                Intel Mac İndir (.dmg)
-              </a>
+    <!-- INTERACTIVE PLAYGROUND (AWWWARDS SIGNATURE FEATURE) -->
+    <section id="playground" class="py-24 px-4 sm:px-6 relative">
+        <div class="max-w-6xl mx-auto reveal">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <span class="font-mono text-xs text-accent uppercase tracking-widest">// Interactive Engine Simulator</span>
+                    <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2" data-i18n="play_title">
+                        Motoru Canlı Test Edin
+                    </h2>
+                </div>
+                <p class="text-zinc-400 text-sm max-w-md" data-i18n="play_desc">
+                    Gerçek zamanlı çoklu market fiyat karşılaştırmasını veya AI Agent'ın doğal dilden BOM + Sepet optimizasyonu üretmesini deneyimleyin.
+                </p>
             </div>
-            <p style="margin-top: 12px; font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.4;">
-              💡 <em>İlk açılışta macOS güvenlik uyarısı verirse Terminal'de çalıştırın:</em><br>
-              <code style="display: inline-block; margin-top: 4px; padding: 2px 6px; background: rgba(255,255,255,0.06); border-radius: 4px; color: var(--color-accent); font-size: 0.75rem;">xattr -cr /Applications/RoboMarketSearch.app</code>
-            </p>
-          </div>
 
-          <div class="download-card">
-            <h3 class="dl-platform-title">Homebrew ile Kurulum</h3>
-            <p class="dl-platform-desc">Terminal üzerinden tek satırla global CLI aracını kurun.</p>
-            <div class="code-box">
-              <code>brew install atacanymc/tap/robo-market-search</code>
-              <button class="code-copy-btn" data-copy="brew install atacanymc/tap/robo-market-search">Kopyala</button>
+            <!-- Interactive Console Window -->
+            <div class="rounded-3xl bg-[#0B0C10] border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.75)] overflow-hidden">
+                <!-- Window Topbar -->
+                <div class="px-5 py-3.5 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+                        <span class="ml-3 font-mono text-xs text-zinc-400">robo-market-engine — zsh</span>
+                    </div>
+
+                    <!-- Mode Switcher Tabs -->
+                    <div class="flex items-center bg-black/50 p-1 rounded-xl border border-white/10">
+                        <button onclick="switchSimMode('search')" id="tab-search" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-obsidian font-semibold transition-all">
+                            ⚡ Çoklu Market Arama
+                        </button>
+                        <button onclick="switchSimMode('agent')" id="tab-agent" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all">
+                            🤖 AI Agent & Sepet Optimizer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mode 1: Multi-Market Live Search -->
+                <div id="sim-search" class="p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                        <div class="relative flex-1">
+                            <input id="simSearchInput" type="text" value="ESP32-S3 DevKitC"
+                                   class="w-full bg-[#12141D] border border-white/10 focus:border-accent rounded-xl px-4 py-3.5 text-sm text-white font-mono outline-none transition-colors"
+                                   placeholder="Komponent adı girin (örn: ESP32, MPU6050, L298N)...">
+                            <div class="hidden sm:flex items-center gap-1.5 absolute right-3 top-1/2 -translate-y-1/2">
+                                <button onclick="setQuickQuery('ESP32-S3 DevKitC')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] font-mono text-zinc-400">ESP32-S3</button>
+                                <button onclick="setQuickQuery('MPU6050 IMU')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] font-mono text-zinc-400">MPU6050</button>
+                                <button onclick="setQuickQuery('NEMA 17 Step Motor')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[11px] font-mono text-zinc-400">NEMA 17</button>
+                            </div>
+                        </div>
+                        <button onclick="runSearchSim()" class="px-6 py-3.5 rounded-xl bg-accent text-obsidian font-display font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2 shrink-0">
+                            <span>6 Marketi Tara</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div id="simSearchResults" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Mode 2: AI Agent BOM & Cart Optimizer -->
+                <div id="sim-agent" class="p-6 sm:p-8 hidden">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                        <input id="simAgentInput" type="text" value="Engelden kaçan otonom 4WD robot araba yapmak istiyorum, bütçem 1500 TL"
+                               class="flex-1 bg-[#12141D] border border-white/10 focus:border-accentSecondary rounded-xl px-4 py-3.5 text-sm text-white outline-none transition-colors">
+                        <button onclick="runAgentSim()" class="px-6 py-3.5 rounded-xl bg-accentSecondary text-white font-display font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2 shrink-0">
+                            <span>AI Pipeline Çalıştır</span>
+                            <span>✨</span>
+                        </button>
+                    </div>
+
+                    <!-- Pipeline Steps Visualizer -->
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6 text-center font-mono text-[11px]">
+                        <div class="p-2.5 rounded-xl bg-accent/10 border border-accent/30 text-accent">1. Proje Analizi</div>
+                        <div class="p-2.5 rounded-xl bg-accent/10 border border-accent/30 text-accent">2. AI BOM Üretimi</div>
+                        <div class="p-2.5 rounded-xl bg-accent/10 border border-accent/30 text-accent">3. 6 Market Tarama</div>
+                        <div class="p-2.5 rounded-xl bg-accent/10 border border-accent/30 text-accent">4. Voltaj/Pin Uyum</div>
+                        <div class="p-2.5 rounded-xl bg-accentSecondary/20 border border-accentSecondary/50 text-white font-bold">5. Kargo Optimizasyonu</div>
+                    </div>
+
+                    <div id="simAgentOutput" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
             </div>
-            <div class="code-box">
-              <code>robo-search "ESP32"</code>
-              <button class="code-copy-btn" data-copy="robo-search &quot;ESP32&quot;">Kopyala</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Windows Pane -->
-      <div id="tab-windows" class="tab-pane">
-        <div class="download-cards-grid">
-          <div class="download-card highlight">
-            <h3 class="dl-platform-title">Windows Masaüstü (.msi)</h3>
-            <p class="dl-platform-desc">Windows 10 ve 11 (64-bit) için yerel kurulum paketi ve masaüstü arayüzü.</p>
-            <div class="dl-actions">
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_x64_en-US.msi" id="btn-windows-msi" class="btn btn-primary btn-download" data-os="Windows (MSI)" data-ext=".msi" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                Windows Yükleyici İndir (.msi)
-              </a>
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_x64-setup.exe" id="btn-windows-exe" class="btn btn-secondary btn-download" data-os="Windows (EXE)" data-ext=".exe" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                Taşınabilir Sürüm (.exe)
-              </a>
+    <!-- BENTO GRID: CORE CAPABILITIES -->
+    <section id="bento" class="py-20 px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto reveal">
+            <div class="mb-12">
+                <span class="font-mono text-xs text-accentSecondary uppercase tracking-widest">// Core Capabilities</span>
+                <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2" data-i18n="bento_title">
+                    Mühendislik Odaklı Tasarlandı.
+                </h2>
             </div>
-          </div>
 
-          <div class="download-card">
-            <h3 class="dl-platform-title">pipx / pip ile Kurulum</h3>
-            <p class="dl-platform-desc">PowerShell veya CMD üzerinden CLI komutlarını kurun.</p>
-            <div class="code-box">
-              <code>pipx install "robo-market-search[all]"</code>
-              <button class="code-copy-btn" data-copy="pipx install &quot;robo-market-search[all]&quot;">Kopyala</button>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
+                <!-- Card 1: Large Span (4 cols) -->
+                <div class="md:col-span-4 bento-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="w-11 h-11 rounded-2xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-5">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a4 4 0 014 4v2h2a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h2V6a4 4 0 014-4z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-white mb-2">Otonom AI BOM & Uyumluluk Ajanı</h3>
+                        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-xl">
+                            Proje fikrinizi doğal dilde anlatın. <code class="text-accent font-mono text-xs">robo-market-agent</code> gereksinimleri analiz eder, eksik bileşenleri tespit eder, 3.3V/5V lojik seviye ve güç uyumluluğunu kontrol ederek hazır malzeme listesi oluşturur.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-5 border-t border-white/5 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full bg-white/5 font-mono text-xs text-zinc-300">OpenAI</span>
+                        <span class="px-3 py-1 rounded-full bg-white/5 font-mono text-xs text-zinc-300">Anthropic Claude</span>
+                        <span class="px-3 py-1 rounded-full bg-white/5 font-mono text-xs text-zinc-300">Google Gemini</span>
+                        <span class="px-3 py-1 rounded-full bg-white/5 font-mono text-xs text-zinc-300">DeepSeek</span>
+                        <span class="px-3 py-1 rounded-full bg-white/5 font-mono text-xs text-zinc-300">Groq</span>
+                        <span class="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 font-mono text-xs text-accent">Ollama (Local)</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Smart Cart Optimizer (2 cols) -->
+                <div class="md:col-span-2 bento-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <h3 class="font-display font-bold text-xl text-white mb-2">Kargo Dahil Sepet Optimizasyonu</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Sadece ürün fiyatını değil; ücretsiz kargo barajlarını ve mağaza bölünme maliyetlerini hesaplayarak toplamda en kârlı satın alma kombinasyonunu bulur.
+                        </p>
+                    </div>
+                    <div class="mt-6 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 font-mono text-xs text-emerald-300">
+                        Ortalama %24 maliyet tasarrufu
+                    </div>
+                </div>
+
+                <!-- Card 3: MCP Server (3 cols) -->
+                <div class="md:col-span-3 bento-card rounded-3xl p-7 sm:p-8">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="w-11 h-11 rounded-2xl bg-accentSecondary/15 border border-accentSecondary/30 flex items-center justify-center text-accentSecondary">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-accentSecondary/15 text-accentSecondary">Model Context Protocol</span>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Claude & Cursor MCP Entegrasyonu</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+                        Yerleşik MCP sunucusu sayesinde Claude Desktop, Cursor veya Windsurf üzerinden kod yazarken doğrudan canlı stok ve fiyat sorgulayın.
+                    </p>
+                    <pre class="p-3 rounded-xl bg-black/60 border border-white/5 font-mono text-[11px] text-zinc-300 overflow-x-auto"><code>"mcpServers": { "robo-market": { "command": "robo-market-mcp" } }</code></pre>
+                </div>
+
+                <!-- Card 4: Resilience & Circuit Breaker (3 cols) -->
+                <div class="md:col-span-3 bento-card rounded-3xl p-7 sm:p-8">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-300">curl_cffi + Circuit Breaker</span>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Yüksek Dayanıklılık & Hız</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+                        TLS parmak izi taklidi (<code class="text-zinc-200">curl_cffi</code>), TTL önbellekleme, otomatik devre kesici (Circuit Breaker) ve eşzamanlı ThreadPool mimarisi ile kesintisiz veri akışı.
+                    </p>
+                    <div class="flex items-center gap-3 font-mono text-xs text-zinc-400">
+                        <span class="text-emerald-400">● 99.8% Uptime</span>
+                        <span>•</span>
+                        <span>Plugin Mimarisi</span>
+                    </div>
+                </div>
             </div>
-            <div class="code-box">
-              <code>robo-search "Arduino Uno"</code>
-              <button class="code-copy-btn" data-copy="robo-search &quot;Arduino Uno&quot;">Kopyala</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Linux Pane -->
-      <div id="tab-linux" class="tab-pane">
-        <div class="download-cards-grid">
-          <div class="download-card highlight">
-            <h3 class="dl-platform-title">Linux Paketleri</h3>
-            <p class="dl-platform-desc">Ubuntu, Debian, Fedora, Arch ve diğer Linux dağıtımları için hazır ikili paketler.</p>
-            <div class="dl-actions">
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_amd64.AppImage" id="btn-linux-appimage" class="btn btn-primary btn-download" data-os="Linux (AppImage)" data-ext=".AppImage" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                AppImage İndir (.AppImage)
-              </a>
-              <a href="https://github.com/AtaCanYmc/robo-market-search/releases/download/v1.11.1/RoboMarketSearch_1.11.1_amd64.deb" id="btn-linux-deb" class="btn btn-secondary btn-download" data-os="Linux (DEB)" data-ext=".deb" data-ready="true" download target="_blank" rel="noopener noreferrer">
-                Debian Paketi (.deb)
-              </a>
+    <!-- 4-LAYER ARCHITECTURE SECTION -->
+    <section id="architecture" class="py-20 px-4 sm:px-6 bg-[#08090E] border-y border-white/[0.06]">
+        <div class="max-w-6xl mx-auto reveal">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="font-mono text-xs text-accent uppercase tracking-widest">// System Topology</span>
+                <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2">4 Katmanlı Modüler Mimari</h2>
+                <p class="text-zinc-400 text-sm sm:text-base mt-3">
+                    Çekirdek tarama motorundan masaüstü arayüzüne kadar tamamen ayrıştırılmış, genişletilebilir Python & Rust (Tauri) mimarisi.
+                </p>
             </div>
-          </div>
 
-          <div class="download-card">
-            <h3 class="dl-platform-title">Hızlı Shell Kurulumu</h3>
-            <p class="dl-platform-desc">Tek satır cURL betiği ile ortam yapılandırması gerektirmeden kurun.</p>
-            <div class="code-box">
-              <code>curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash</code>
-              <button class="code-copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/AtaCanYmc/robo-market-search/main/install.sh | bash">Kopyala</button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-6 rounded-2xl bg-[#0E1018] border border-white/10 relative">
+                    <div class="font-mono text-xs text-accent mb-2">LAYER 01</div>
+                    <h4 class="font-display font-bold text-lg text-white mb-2">Provider Adapters</h4>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Robotistan, Direnc.net, Robolink, Robo90, Motorobit ve Özdisan için izole istemciler ve ortak <code class="text-zinc-200">BaseProvider</code> sözleşmesi.
+                    </p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#0E1018] border border-white/10 relative">
+                    <div class="font-mono text-xs text-sky-400 mb-2">LAYER 02</div>
+                    <h4 class="font-display font-bold text-lg text-white mb-2">Unified Core & Cart</h4>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Paralel sorgu birleştirme, eşanlamlı (synonym) genişletme, TTL önbellek ve kargo eşiği bazlı sepet optimizasyon motoru.
+                    </p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#0E1018] border border-white/10 relative">
+                    <div class="font-mono text-xs text-accentSecondary mb-2">LAYER 03</div>
+                    <h4 class="font-display font-bold text-lg text-white mb-2">AI Agent & FastAPI</h4>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        5 aşamalı otonom BOM pipeline'ı, çoklu LLM sağlayıcı soyutlaması ve yüksek performanslı RESTful API sunucusu.
+                    </p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#0E1018] border border-white/10 relative">
+                    <div class="font-mono text-xs text-emerald-400 mb-2">LAYER 04</div>
+                    <h4 class="font-display font-bold text-lg text-white mb-2">Delivery Surfaces</h4>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Tauri Cross-Platform Desktop App, Rich CLI, MCP Sunucusu, Telegram Botu ve Docker Compose dağıtımı.
+                    </p>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+    </section>
 
-      <!-- CLI Pane -->
-      <div id="tab-cli" class="tab-pane">
-        <div class="download-cards-grid">
-          <div class="download-card">
-            <h3 class="dl-platform-title">pipx (Tavsiye Edilen)</h3>
-            <p class="dl-platform-desc">Global Python ortamınızı kirletmeden izole bir sanal ortamda CLI araçlarını kurar.</p>
-            <div class="code-box">
-              <code>pipx install "robo-market-search[all]"</code>
-              <button class="code-copy-btn" data-copy="pipx install &quot;robo-market-search[all]&quot;">Kopyala</button>
+    <!-- VISUAL INTERFACE GALLERY (WITH SMART SVG FALLBACKS) -->
+    <section id="showcase" class="py-24 px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto reveal">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="font-mono text-xs text-accent uppercase tracking-widest">// Multi-Surface Experience</span>
+                    <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2">Her Ortamda Kusursuz Deneyim</h2>
+                </div>
+                <div class="flex flex-wrap gap-2" id="galleryTabs">
+                    <button onclick="selectShowcase('desktop')" class="showcase-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-white text-obsidian transition-all">Tauri Desktop & Web</button>
+                    <button onclick="selectShowcase('agent')" class="showcase-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 hover:bg-white/10 transition-all">AI BOM & Sepet</button>
+                    <button onclick="selectShowcase('cli')" class="showcase-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 hover:bg-white/10 transition-all">Terminal CLI</button>
+                </div>
             </div>
-          </div>
 
-          <div class="download-card">
-            <h3 class="dl-platform-title">Modüler pip Kurulumu</h3>
-            <p class="dl-platform-desc">Yalnızca ihtiyacınız olan katmanları bağımsız paketler olarak yükleyebilirsiniz.</p>
-            <div class="code-box">
-              <code>pip install "robo-market-search[cli]"</code>
-              <button class="code-copy-btn" data-copy="pip install &quot;robo-market-search[cli]&quot;">Kopyala</button>
+            <!-- Showcase Viewport -->
+            <div class="rounded-3xl bg-[#0C0D12] border border-white/10 p-4 sm:p-6 shadow-2xl">
+                <!-- Desktop App View -->
+                <div id="view-desktop" class="showcase-pane">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-[#07080B] aspect-[16/9] flex items-center justify-center">
+                        <img src="assets/desktop_app.png" alt="Robo Market Desktop Uygulaması" class="w-full h-full object-cover"
+                             onerror="this.style.display='none'; document.getElementById('fallback-desktop').style.display='flex';">
+                        <!-- Fallback UI Mockup if local image missing -->
+                        <div id="fallback-desktop" style="display:none;" class="w-full h-full p-6 sm:p-10 flex-col justify-between bg-gradient-to-br from-[#0D1017] to-[#06070A]">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2.5 py-1 rounded bg-accent/20 text-accent font-mono text-xs">Tauri v2 Native</span>
+                                    <span class="font-display font-bold text-white">Robo Market Search Studio</span>
+                                </div>
+                                <span class="font-mono text-xs text-emerald-400">● 6/6 Providers Online</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto py-6">
+                                <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                    <div class="text-xs text-zinc-400">En İyi Teklif • Robotistan</div>
+                                    <div class="font-display font-bold text-xl text-white mt-1">Raspberry Pi 5 8GB</div>
+                                    <div class="font-mono text-accent text-lg mt-2">₺3.490,00</div>
+                                </div>
+                                <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                    <div class="text-xs text-zinc-400">Stokta • Direnc.net</div>
+                                    <div class="font-display font-bold text-xl text-white mt-1">STM32F407G-DISC1</div>
+                                    <div class="font-mono text-white text-lg mt-2">₺1.185,50</div>
+                                </div>
+                                <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                    <div class="text-xs text-zinc-400">Toplu Alım • Özdisan</div>
+                                    <div class="font-display font-bold text-xl text-white mt-1">ESP32-WROOM-32E</div>
+                                    <div class="font-mono text-white text-lg mt-2">₺142,00</div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-mono text-zinc-500">macOS • Windows • Linux Native Binary (Sidecar FastAPI Backend)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent BOM View -->
+                <div id="view-agent" class="showcase-pane hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl overflow-hidden border border-white/10 bg-[#07080B] aspect-[16/10] flex items-center justify-center">
+                            <img src="assets/agent_bom.png" alt="AI Agent Malzeme Listesi" class="w-full h-full object-cover"
+                                 onerror="this.parentElement.innerHTML='<div class=\'p-6 font-mono text-xs text-zinc-300\'><div class=\'text-accent mb-2\'>[AI BOM GENERATOR]</div><p>✓ 1x ESP32-S3-DevKitC-1</p><p>✓ 2x TB6612FNG Motor Sürücü</p><p>✓ 4x N20 6V 300RPM Mikro Redüktörlü Motor</p><p>✓ 1x VL53L0X Lazer Mesafe Sensörü</p></div>'">
+                        </div>
+                        <div class="rounded-2xl overflow-hidden border border-white/10 bg-[#07080B] aspect-[16/10] flex items-center justify-center">
+                            <img src="assets/agent_cart.png" alt="AI Agent Sepet Optimizasyonu" class="w-full h-full object-cover"
+                                 onerror="this.parentElement.innerHTML='<div class=\'p-6 font-mono text-xs text-zinc-300\'><div class=\'text-emerald-400 mb-2\'>[OPTIMIZED CART PLAN]</div><p>Mağaza 1 (Robolink): ₺640 + Ücretsiz Kargo</p><p>Mağaza 2 (Direnc.net): ₺410 + Ücretsiz Kargo</p><p class=\'text-accent mt-3 font-bold\'>Toplam Tasarruf: ₺184,50</p></div>'">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLI View -->
+                <div id="view-cli" class="showcase-pane hidden">
+                    <div class="rounded-2xl overflow-hidden border border-white/10 bg-[#07080B] aspect-[16/9] flex items-center justify-center">
+                        <img src="assets/cli_example.png" alt="Terminal CLI Çıktısı" class="w-full h-full object-cover"
+                             onerror="this.parentElement.innerHTML='<div class=\'p-8 font-mono text-xs sm:text-sm text-zinc-300 w-full\'><p class=\'text-accent\'>$ robo-market search \"arduino nano\" --sort price</p><p class=\'mt-3 text-zinc-400\'>Scanning 6 providers in parallel...</p><p class=\'mt-2 text-emerald-400\'>✔ [Robo90] Arduino Nano V3.0 (CH340) — 149.90 TL (Stokta)</p><p class=\'text-sky-400\'>✔ [Motorobit] Arduino Nano Klon USB Kablolu — 154.00 TL (Stokta)</p><p class=\'text-amber-400\'>✔ [Robotistan] Arduino Nano V3 — 168.50 TL (Stokta)</p></div>'">
+                    </div>
+                </div>
             </div>
-            <div class="code-box">
-              <code>pip install "robo-market-search[agent]"</code>
-              <button class="code-copy-btn" data-copy="pip install &quot;robo-market-search[agent]&quot;">Kopyala</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Docker Pane -->
-      <div id="tab-docker" class="tab-pane">
-        <div class="download-cards-grid">
-          <div class="download-card" style="grid-column: 1 / -1; max-width: 600px; margin-inline: auto;">
-            <h3 class="dl-platform-title">Docker Compose ile Dağıtım</h3>
-            <p class="dl-platform-desc">FastAPI REST API sunucusunu tek komutla sunucunuzda konteyner olarak çalıştırın.</p>
-            <div class="code-box">
-              <code>git clone https://github.com/AtaCanYmc/robo-market-search.git && cd robo-market-search && docker compose up -d</code>
-              <button class="code-copy-btn" data-copy="git clone https://github.com/AtaCanYmc/robo-market-search.git && cd robo-market-search && docker compose up -d">Kopyala</button>
+    <!-- QUICKSTART & INSTALLATION -->
+    <section id="quickstart" class="py-20 px-4 sm:px-6 border-t border-white/[0.06]">
+        <div class="max-w-5xl mx-auto reveal">
+            <div class="text-center mb-12">
+                <span class="font-mono text-xs text-accent uppercase tracking-widest">// Deploy in Seconds</span>
+                <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2">Hızlı Başlangıç</h2>
             </div>
-            <p class="dl-platform-desc" style="margin-top: 12px; margin-bottom: 0;">
-              Başlatıldıktan sonra: <a href="http://localhost:8000/docs" target="_blank" style="color: var(--color-accent); text-decoration: underline;">http://localhost:8000/docs</a>
-            </p>
-          </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Python SDK & CLI -->
+                <div class="rounded-3xl bg-[#0C0D12] border border-white/10 p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-display font-bold text-lg text-white">Python SDK & CLI</span>
+                        <button onclick="copyCommand('code-sdk', this)" class="text-xs font-mono text-accent hover:underline">Kopyala</button>
+                    </div>
+                    <pre id="code-sdk" class="p-4 rounded-2xl bg-black/70 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed"><code># Kurulum (Agent + API + MCP dahil)
+pip install "robo-market-search[all]"
+
+# Terminalden anında arama
+robo-market search "esp32 cam" --limit 5
+
+# AI Ajanı ile proje analizi
+robo-market-agent plan "Güneş takip eden solar panel sistemi"</code></pre>
+                </div>
+
+                <!-- Docker & Self-Hosted -->
+                <div class="rounded-3xl bg-[#0C0D12] border border-white/10 p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-display font-bold text-lg text-white">Docker & Web Studio</span>
+                        <button onclick="copyCommand('code-docker', this)" class="text-xs font-mono text-accent hover:underline">Kopyala</button>
+                    </div>
+                    <pre id="code-docker" class="p-4 rounded-2xl bg-black/70 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed"><code># Tek komutla Full-Stack başlatma
+git clone https://github.com/atacanymc/robo-market-search.git
+cd robo-market-search
+docker compose up -d
+
+# API Docs: http://localhost:8000/docs
+# Web UI:   http://localhost:3000</code></pre>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-14 px-4 sm:px-6 border-t border-white/10 bg-[#040406]">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-accent"></span>
+                <span class="font-display font-bold text-white">robo-market-search</span>
+                <span class="text-xs text-zinc-500 font-mono">MIT License • Open Source</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-6 text-xs text-zinc-400">
+                <a href="https://github.com/atacanymc/robo-market-search" target="_blank" class="hover:text-white transition-colors">Repository</a>
+                <a href="https://github.com/atacanymc/robo-market-search/releases" target="_blank" class="hover:text-white transition-colors">Desktop Releases</a>
+                <a href="https://github.com/atacanymc/robo-market-search/blob/main/ROADMAP.md" target="_blank" class="hover:text-white transition-colors">Roadmap</a>
+                <a href="https://github.com/atacanymc/robo-market-search/blob/main/CONTRIBUTING.md" target="_blank" class="hover:text-white transition-colors">Katkıda Bulun</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification (Never use alert()) -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-accent text-obsidian font-mono text-xs font-bold shadow-2xl translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        Panoya kopyalandı!
     </div>
-  </section>
 
-  <!-- 6. Developer & Quick Start Code Tabs -->
-  <section id="quickstart" class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Geliştirici Odaklı</div>
-        <h2 class="section-title">Hızlı Kod ve Entegrasyon Örnekleri</h2>
-        <p class="section-desc">
-          Kendi Python projelerinizde, terminal betiklerinizde veya LLM asistanlarınızda kullanın.
-        </p>
-      </div>
+    <script>
+        // 1. Cursor Ambient Spotlight
+        document.addEventListener('mousemove', (e) => {
+            document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
+            document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
+        });
 
-      <div style="max-width: 840px; margin-inline: auto;">
-        <!-- Code Tab: Python SDK -->
-        <h3 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--color-accent);">1. Python SDK (`UnifiedSearchClient`)</h3>
-        <div class="code-box" style="align-items: flex-start; flex-direction: column;">
-          <pre style="width: 100%; overflow-x: auto;"><code>from robo_market_search import UnifiedSearchClient
+        // 2. Scroll Reveal Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-client = UnifiedSearchClient()
+        // 3. Copy to Clipboard Helper
+        function copyCommand(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
 
-# 6 mağazada eşzamanlı canlı arama
-results = client.search("ESP32 DevKit", limit_per_store=3)
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2200);
+        }
 
-for product in results:
-    print(f"[{product.store}] {product.name} - {product.price} TL (Stok: {product.in_stock})")</code></pre>
-        </div>
+        // 4. Interactive Simulator Data & Logic
+        const mockDatabase = {
+            'ESP32-S3 DevKitC': [
+                { store: 'Robo90', title: 'ESP32-S3-DevKitC-1 N16R8 WiFi + BLE', price: 348.50, stock: 'Stokta (18)', badge: 'EN UCUZ', color: 'emerald' },
+                { store: 'Direnc.net', title: 'ESP32-S3 Geliştirme Kartı Type-C', price: 379.00, stock: 'Stokta (42)', badge: 'HIZLI KARGO', color: 'sky' },
+                { store: 'Robotistan', title: 'Espressif ESP32-S3-DevKitC-1', price: 412.90, stock: 'Stokta (9)', badge: 'ORİJİNAL', color: 'zinc' }
+            ],
+            'MPU6050 IMU': [
+                { store: 'Motorobit', title: 'MPU6050 6 Eksen İvme ve Gyro Sensörü', price: 64.90, stock: 'Stokta (120+)', badge: 'EN UCUZ', color: 'emerald' },
+                { store: 'Robolink', title: 'GY-521 MPU-6050 3 Eksen Gyro + İvme', price: 72.00, stock: 'Stokta (54)', badge: 'POPÜLER', color: 'amber' },
+                { store: 'Robotistan', title: 'MPU6050 6-DOF Sensör Kartı', price: 84.50, stock: 'Stokta (31)', badge: 'STOKTA', color: 'zinc' }
+            ],
+            'NEMA 17 Step Motor': [
+                { store: 'Robolink', title: 'NEMA 17 1.7A 0.45Nm Step Motor', price: 285.00, stock: 'Stokta (25)', badge: 'EN UCUZ', color: 'emerald' },
+                { store: 'Direnc.net', title: '17HS4401 NEMA17 42mm Step Motor', price: 298.40, stock: 'Stokta (60)', badge: 'STOKTA', color: 'sky' },
+                { store: 'Özdisan', title: 'NEMA17 Endüstriyel Step Motor', price: 315.00, stock: 'Stokta (14)', badge: 'KURUMSAL', color: 'zinc' }
+            ]
+        };
 
-        <!-- Code Tab: Claude Desktop MCP Config -->
-        <h3 style="font-size: 1.1rem; margin-top: 32px; margin-bottom: 12px; color: var(--color-accent);">2. Claude Desktop MCP Yapılandırması (`claude_desktop_config.json`)</h3>
-        <div class="code-box" style="align-items: flex-start; flex-direction: column;">
-          <pre style="width: 100%; overflow-x: auto;"><code>{
-  "mcpServers": {
-    "robo-market-search": {
-      "command": "robo-mcp"
-    }
-  }
-}</code></pre>
-        </div>
-      </div>
-    </div>
-  </section>
+        function setQuickQuery(q) {
+            document.getElementById('simSearchInput').value = q;
+            runSearchSim();
+        }
 
-  <!-- 7. Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <img src="assets/logo.svg" alt="Robo Market Search Logo" width="28" height="28">
-          <span>Robo Market Search</span>
-        </div>
+        function runSearchSim() {
+            const input = document.getElementById('simSearchInput').value.trim();
+            const container = document.getElementById('simSearchResults');
+            const items = mockDatabase[input] || [
+                { store: 'Direnc.net', title: `${input || 'Komponent'} — Endüstriyel Modül`, price: 145.00, stock: 'Stokta', badge: 'EN UCUZ', color: 'emerald' },
+                { store: 'Robotistan', title: `${input || 'Komponent'} Geliştirme Kartı`, price: 162.50, stock: 'Stokta', badge: 'STOKTA', color: 'sky' },
+                { store: 'Robo90', title: `${input || 'Komponent'} V2`, price: 174.00, stock: 'Son 4 Ürün', badge: 'STOKTA', color: 'zinc' }
+            ];
 
-        <ul class="footer-links">
-          <li><a href="https://github.com/AtaCanYmc/robo-market-search" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Deposu</a></li>
-          <li><a href="https://pypi.org/project/robo-market-search/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI Paketi</a></li>
-          <li><a href="https://github.com/AtaCanYmc/robo-market-search/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer" class="footer-link">Dokümantasyon</a></li>
-          <li><a href="https://github.com/AtaCanYmc/robo-market-search/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">Apache 2.0 Lisansı</a></li>
-        </ul>
-      </div>
+            container.innerHTML = items.map((item, idx) => `
+                <div class="p-5 rounded-2xl bg-[#12141D] border ${idx === 0 ? 'border-accent/40 shadow-[0_0_25px_rgba(0,245,212,0.08)]' : 'border-white/10'} flex flex-col justify-between transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-mono text-xs font-bold text-zinc-300">${item.store}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold ${idx === 0 ? 'bg-accent text-obsidian' : 'bg-white/10 text-zinc-300'}">${item.badge}</span>
+                        </div>
+                        <h4 class="font-medium text-sm text-white leading-snug mb-4">${item.title}</h4>
+                    </div>
+                    <div class="flex items-end justify-between pt-3 border-t border-white/5">
+                        <div>
+                            <div class="text-[11px] text-emerald-400 font-mono">${item.stock}</div>
+                            <div class="font-display font-bold text-xl text-white mt-0.5">₺${item.price.toFixed(2)}</div>
+                        </div>
+                        <span class="text-xs font-mono text-accent">0.38s →</span>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-      <div class="footer-bottom">
-        <p>Robo Market Search: Türkiye'nin Açık Kaynaklı Robotik ve Elektronik Pazaryeri Arama Motoru.</p>
-      </div>
-    </div>
-  </footer>
+        function runAgentSim() {
+            const output = document.getElementById('simAgentOutput');
+            output.innerHTML = `
+                <div class="lg:col-span-2 p-5 rounded-2xl bg-[#12141D] border border-white/10">
+                    <div class="font-mono text-xs text-accent mb-3">// Üretilen Malzeme Listesi (BOM) & Uyumluluk</div>
+                    <div class="space-y-2.5 text-xs font-mono">
+                        <div class="flex justify-between p-2.5 rounded-lg bg-black/40">
+                            <span class="text-white">1x ESP32-S3 DevKitC (3.3V Ana Kontrolcü)</span>
+                            <span class="text-emerald-400">✔ Uyumlu</span>
+                        </div>
+                        <div class="flex justify-between p-2.5 rounded-lg bg-black/40">
+                            <span class="text-white">1x TB6612FNG Çift Kanal Motor Sürücü</span>
+                            <span class="text-emerald-400">✔ 3.3V Lojik Uyumlu</span>
+                        </div>
+                        <div class="flex justify-between p-2.5 rounded-lg bg-black/40">
+                            <span class="text-white">1x HC-SR04P Ultrasonik Mesafe Sensörü (3.3V-5V)</span>
+                            <span class="text-emerald-400">✔ Voltaj Doğrulandı</span>
+                        </div>
+                        <div class="flex justify-between p-2.5 rounded-lg bg-black/40">
+                            <span class="text-white">1x 4WD Şasi + 4x DC Redüktörlü Motor + 2S LiPo</span>
+                            <span class="text-emerald-400">✔ Güç Bütçesi OK</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-gradient-to-b from-accentSecondary/20 to-[#12141D] border border-accentSecondary/40 flex flex-col justify-between">
+                    <div>
+                        <div class="font-mono text-xs text-accentSecondary mb-2">// Optimum Sepet Dağılımı</div>
+                        <p class="text-xs text-zinc-300 leading-relaxed mb-4">
+                            6 mağaza arasından kargo barajları hesaplanarak <strong>2 mağazalı</strong> en ucuz sepet oluşturuldu:
+                        </p>
+                        <div class="space-y-2 font-mono text-xs">
+                            <div class="flex justify-between text-zinc-200"><span>• Robolink (3 ürün)</span><span>₺542,00</span></div>
+                            <div class="flex justify-between text-zinc-200"><span>• Robo90 (2 ürün)</span><span>₺418,50</span></div>
+                            <div class="flex justify-between text-emerald-400"><span>• Kargo Maliyeti</span><span>₺0,00 (Bedava)</span></div>
+                        </div>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-white/10">
+                        <div class="text-xs text-zinc-400">Optimize Toplam Tutar</div>
+                        <div class="font-display font-bold text-2xl text-white">₺960,50 <span class="text-xs font-mono text-accent font-normal">(-₺165 tasarruf)</span></div>
+                    </div>
+                </div>
+            `;
+        }
 
-  <script src="main.js"></script>
+        function switchSimMode(mode) {
+            const searchPane = document.getElementById('sim-search');
+            const agentPane = document.getElementById('sim-agent');
+            const tabSearch = document.getElementById('tab-search');
+            const tabAgent = document.getElementById('tab-agent');
+
+            if (mode === 'search') {
+                searchPane.classList.remove('hidden');
+                agentPane.classList.add('hidden');
+                tabSearch.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-accent text-obsidian font-semibold transition-all';
+                tabAgent.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all';
+            } else {
+                searchPane.classList.add('hidden');
+                agentPane.classList.remove('hidden');
+                tabAgent.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-accentSecondary text-white font-semibold transition-all';
+                tabSearch.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all';
+                runAgentSim();
+            }
+        }
+
+        // 5. Showcase Switcher
+        function selectShowcase(key) {
+            document.querySelectorAll('.showcase-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`view-${key}`).classList.remove('hidden');
+
+            document.querySelectorAll('.showcase-btn').forEach(btn => {
+                btn.className = 'showcase-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 hover:bg-white/10 transition-all';
+            });
+            event.target.className = 'showcase-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-white text-obsidian transition-all';
+        }
+
+        // 6. Bilingual TR / EN Switcher
+        let currentLang = 'tr';
+        const i18n = {
+            tr: {
+                nav_demo: 'Canlı Simülasyon',
+                nav_features: 'Ekosistem',
+                nav_arch: 'Mimari',
+                nav_interfaces: 'Arayüzler',
+                nav_install: 'Kurulum',
+                hero_badge: '6 Tedarikçi • AI BOM Ajanı • MCP & Tauri Desktop',
+                hero_title_1: 'Donanım Tedarikinde',
+                hero_title_2: 'Otonom İstihbarat.',
+                hero_subtitle: "Türkiye'nin önde gelen 6 elektronik komponent marketini eşzamanlı tarayın. Proje fikrinizi yazın; AI ajanımız malzeme listesini (BOM) çıkarsın, uyumluluğu denetlesin ve kargo dahil en ucuz sepeti saniyeler içinde oluştursun.",
+                hero_cta_primary: 'Canlı Motoru Deneyimle',
+                stat_1: 'Paralel ThreadPool Tarama',
+                stat_2: 'Ortalama Yanıt & Önbellek',
+                stat_3: 'OpenAI, Claude, Gemini, Ollama...',
+                stat_4: 'SDK, CLI, API, MCP, Bot, App',
+                play_title: 'Motoru Canlı Test Edin',
+                play_desc: "Gerçek zamanlı çoklu market fiyat karşılaştırmasını veya AI Agent'ın doğal dilden BOM + Sepet optimizasyonu üretmesini deneyimleyin.",
+                bento_title: 'Mühendislik Odaklı Tasarlandı.'
+            },
+            en: {
+                nav_demo: 'Live Simulator',
+                nav_features: 'Ecosystem',
+                nav_arch: 'Architecture',
+                nav_interfaces: 'Interfaces',
+                nav_install: 'Quickstart',
+                hero_badge: '6 Suppliers • AI BOM Agent • MCP & Tauri Desktop',
+                hero_title_1: 'Autonomous Intelligence',
+                hero_title_2: 'for Hardware Sourcing.',
+                hero_subtitle: 'Scan 6 major electronics component stores simultaneously. Describe your project idea; our AI agent generates the BOM, validates hardware compatibility, and optimizes the cheapest cart including shipping.',
+                hero_cta_primary: 'Try Live Engine',
+                stat_1: 'Parallel ThreadPool Search',
+                stat_2: 'Avg Response & TTL Cache',
+                stat_3: 'OpenAI, Claude, Gemini, Ollama...',
+                stat_4: 'SDK, CLI, API, MCP, Bot, App',
+                play_title: 'Test the Engine Live',
+                play_desc: 'Experience real-time multi-store price comparison or let the AI Agent generate an optimized BOM + Cart plan from natural language.',
+                bento_title: 'Engineered for Builders.'
+            }
+        };
+
+        document.getElementById('langToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'tr' ? 'en' : 'tr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    el.innerText = i18n[currentLang][key];
+                }
+            });
+        });
+
+        // Initialize default simulator view
+        window.addEventListener('DOMContentLoaded', () => {
+            runSearchSim();
+        });
+    </script>
 </body>
 </html>
