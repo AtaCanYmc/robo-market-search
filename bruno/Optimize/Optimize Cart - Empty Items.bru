@@ -1,0 +1,21 @@
+meta {
+  name: Optimize Cart - Empty Items
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/optimize
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "items": []
+  }
+}
+
+assert {
+  res.status: eq 422
+}

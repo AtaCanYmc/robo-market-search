@@ -1,0 +1,22 @@
+meta {
+  name: Search Products - Limit Too High
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/search
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": "ESP32",
+    "limit": 101
+  }
+}
+
+assert {
+  res.status: eq 422
+}

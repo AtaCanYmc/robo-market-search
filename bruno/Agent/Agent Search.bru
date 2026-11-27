@@ -1,0 +1,23 @@
+meta {
+  name: Agent Search
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/agent/search
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": "ESP32",
+    "limit": 5
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.products: isArray
+}

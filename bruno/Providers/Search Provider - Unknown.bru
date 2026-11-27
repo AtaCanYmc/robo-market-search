@@ -1,0 +1,22 @@
+meta {
+  name: Search Provider - Unknown
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/providers/not-a-store
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": "ESP32"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.success: eq false
+}

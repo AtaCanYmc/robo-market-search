@@ -1,0 +1,28 @@
+meta {
+  name: Generate BOM
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/agent/bom
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{apiKey}}
+}
+
+body:json {
+  {
+    "prompt": "Smart plant watering system with WiFi",
+    "budget": 500,
+    "provider": "mock"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+}

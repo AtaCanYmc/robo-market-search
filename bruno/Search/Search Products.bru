@@ -1,0 +1,28 @@
+meta {
+  name: Search Products
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/search
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": "ESP32",
+    "limit": 5,
+    "sort_by_price": true,
+    "use_cache": true,
+    "expand_synonyms": true
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+  res.body.query: eq ESP32
+  res.body.products: isArray
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Analyze - Prompt Too Short
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/agent/analyze
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "prompt": "ab"
+  }
+}
+
+assert {
+  res.status: eq 422
+}

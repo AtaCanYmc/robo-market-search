@@ -1,0 +1,21 @@
+meta {
+  name: Batch Search - Empty List
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/search/batch
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "queries": []
+  }
+}
+
+assert {
+  res.status: eq 422
+}

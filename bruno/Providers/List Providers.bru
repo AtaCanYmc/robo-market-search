@@ -1,0 +1,18 @@
+meta {
+  name: List Providers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{apiPrefix}}/providers/
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+  res.body.providers: isArray
+  res.body.count: gt 0
+}

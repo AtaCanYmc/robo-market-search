@@ -1,0 +1,30 @@
+meta {
+  name: Optimize Cart
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/optimize
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "items": [
+      "ESP32",
+      "Relay 5V"
+    ],
+    "quantities": {
+      "ESP32": 2,
+      "Relay 5V": 1
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+  res.body.details: isDefined
+}

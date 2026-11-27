@@ -1,0 +1,21 @@
+meta {
+  name: Search Products - Empty Query
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/search
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": ""
+  }
+}
+
+assert {
+  res.status: eq 422
+}

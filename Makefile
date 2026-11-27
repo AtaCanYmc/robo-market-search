@@ -35,7 +35,7 @@ BOLD    := \033[1m
 .PHONY: help
 help: ## Show this help message with available commands
 	@printf "\n$(BOLD)Robo Market Search$(RESET) — Available Make Commands:\n\n"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 	@printf "\n"
 
 # -----------------------------------------------------------------------------
@@ -94,7 +94,13 @@ fix: format lint-fix ## Auto-format code and fix lint issues
 # 🧪 Testing
 # -----------------------------------------------------------------------------
 
-.PHONY: test test-v test-cov
+.PHONY: test test-v test-cov test-api test-api-docker
+
+test-api: ## Run Bruno API tests against a running API (needs: npm i -g @usebruno/cli)
+	cd bruno && bru run --env local
+
+test-api-docker: ## Run Bruno API tests using the docker environment
+	cd bruno && bru run --env docker
 
 test: ## Run the pytest test suite
 	$(PYTEST)
@@ -130,7 +136,7 @@ run-cli: ## Show the Typer CLI command help
 # 🐳 Docker & App
 # -----------------------------------------------------------------------------
 
-.PHONY: docker-build docker-up docker-down app-up app-down demo-up demo-down
+.PHONY: docker-build docker-up docker-down docker-logs app-up app-down demo-up demo-down
 
 docker-build: ## Build the production API Docker image
 	docker build -t robo-market-api .
@@ -140,6 +146,9 @@ docker-up: ## Start the API container with docker-compose
 
 docker-down: ## Stop the API container with docker-compose
 	docker compose down
+
+docker-logs: ## Tail API container logs
+	docker compose logs -f
 
 app-up: ## Start the full app stack (React Frontend + FastAPI Backend)
 	docker compose -f app/docker-compose.yml up -d

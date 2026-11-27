@@ -1,0 +1,25 @@
+meta {
+  name: Agent Optimize
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/agent/optimize
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "items": [
+      "ESP32",
+      "Relay 5V"
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+}

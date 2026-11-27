@@ -1,0 +1,28 @@
+meta {
+  name: Batch Search
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}{{apiPrefix}}/search/batch
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "queries": [
+      "ESP32",
+      "Relay 5V",
+      "OLED 0.96"
+    ],
+    "limit": 5
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+  res.body.results: isJson
+}
