@@ -10,10 +10,14 @@
   </p>
 
   [![PyPI version](https://img.shields.io/pypi/v/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
-  [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+  [![PyPI downloads](https://img.shields.io/pypi/dm/robo-market-search.svg)](https://pypi.org/project/robo-market-search/)
+  [![Homebrew tap](https://img.shields.io/badge/brew-atacanymc%2Ftap-FBB040?logo=homebrew&logoColor=white)](https://github.com/AtaCanYmc/homebrew-tap)
+  [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
   [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
   [![CI](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/test.yml/badge.svg)](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/test.yml)
   [![Release](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/release-please.yml/badge.svg)](https://github.com/AtaCanYmc/robo-market-search/actions/workflows/release-please.yml)
+  [![GitHub stars](https://img.shields.io/github/stars/AtaCanYmc/robo-market-search.svg?style=flat)](https://github.com/AtaCanYmc/robo-market-search/stargazers)
+  [![Last commit](https://img.shields.io/github/last-commit/AtaCanYmc/robo-market-search.svg)](https://github.com/AtaCanYmc/robo-market-search/commits/main)
   [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 </div>
 
