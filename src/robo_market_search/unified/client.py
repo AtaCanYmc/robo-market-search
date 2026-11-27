@@ -53,6 +53,7 @@ def _guarded(store_name: str, fn: Callable[[], List[Product]]) -> List[Product]:
     breaker.record_success()
     return prods
 
+
 STORE_NAMES = ["Robolink", "Robotistan", "Robo90", "Direncnet", "Ozdisan", "Motorobit"]
 
 SHIPPING_DEFAULTS: Dict[str, ShippingInfo] = {

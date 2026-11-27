@@ -5,11 +5,11 @@ SQLite and memory-backed TTL caching layer for Robo Market Search.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import sqlite3
 import time
-import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from robo_market_search.shared.models import Product
 
@@ -236,14 +236,12 @@ class RedisSearchCache:
         raw = self._r.get(self._make_key(query, limit_per_store))
         return None if raw is None else _load(raw)
 
-    def set(
-        self, query: str, limit_per_store: int, products: List[Product], ttl_seconds: Optional[int] = None
-    ) -> None:
+    def set(self, query: str, limit_per_store: int, products: List[Product], ttl_seconds: Optional[int] = None) -> None:
         ttl = ttl_seconds if ttl_seconds is not None else self.ttl_for(products)
         self._r.setex(self._make_key(query, limit_per_store), ttl, _dump(products))
 
 
-def make_cache(db_path: Optional[str] = None, default_ttl_seconds: int = 7200):
+def make_cache(db_path: Optional[str] = None, default_ttl_seconds: int = 7200) -> Union[SearchCache, RedisSearchCache]:
     """Redis when ROBO_REDIS_URL is set, otherwise SQLite."""
     if os.environ.get("ROBO_REDIS_URL"):
         return RedisSearchCache(default_ttl_seconds=default_ttl_seconds)
