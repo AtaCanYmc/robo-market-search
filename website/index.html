@@ -632,6 +632,19 @@ docker compose up -d
 # API Docs: http://localhost:8000/docs
 # Web UI:   http://localhost:3000</code></pre>
                 </div>
+
+                <!-- Homebrew -->
+                <div class="md:col-span-2 rounded-3xl bg-[#0C0D12] border border-white/10 p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-display font-bold text-lg text-white">Homebrew (macOS &amp; Linux)</span>
+                        <button onclick="copyCommand('code-brew', this)" class="text-xs font-mono text-accent hover:underline">Kopyala</button>
+                    </div>
+                    <pre id="code-brew" class="p-4 rounded-2xl bg-black/70 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed"><code># Kurulum
+brew install atacanymc/tap/robo-market-search
+
+# Güncelleme
+brew upgrade robo-market-search</code></pre>
+                </div>
             </div>
         </div>
     </section>
