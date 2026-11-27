@@ -174,6 +174,7 @@
                 <a href="#architecture" class="hover:text-white transition-colors" data-i18n="nav_arch">Mimari</a>
                 <a href="#showcase" class="hover:text-white transition-colors" data-i18n="nav_interfaces">Arayüzler</a>
                 <a href="#quickstart" class="hover:text-white transition-colors" data-i18n="nav_install">Kurulum</a>
+                <a href="#companions" class="hover:text-white transition-colors">Skill &amp; Eklenti</a>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
@@ -644,6 +645,30 @@ brew install atacanymc/tap/robo-market-search
 
 # Güncelleme
 brew upgrade robo-market-search</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPANION TOOLS -->
+    <section id="companions" class="py-20 px-4 sm:px-6 border-t border-white/[0.06]">
+        <div class="max-w-5xl mx-auto reveal">
+            <div class="text-center mb-12">
+                <span class="font-mono text-xs text-accent uppercase tracking-widest">// Ecosystem</span>
+                <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2">Skill &amp; Chrome Eklentisi</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="rounded-3xl bg-[#0C0D12] border border-white/10 p-6 sm:p-8 flex flex-col">
+                    <span class="font-display font-bold text-lg text-white">bom-sourcing (Agent Skill)</span>
+                    <p class="text-sm text-zinc-400 mt-2 mb-4">Repolardan izlenebilir malzeme listesi (BOM) çıkarır. Canlı fiyat, stok ve sepet karşılaştırması için robo-market-search kullanır.</p>
+                    <pre class="p-4 rounded-2xl bg-black/70 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed"><code>npx skills add AtaCanYmc/bom-sourcing</code></pre>
+                    <a href="https://github.com/AtaCanYmc/bom-sourcing" target="_blank" rel="noopener" class="mt-4 text-xs font-mono text-accent hover:underline">GitHub'da incele →</a>
+                </div>
+                <div class="rounded-3xl bg-[#0C0D12] border border-white/10 p-6 sm:p-8 flex flex-col">
+                    <span class="font-display font-bold text-lg text-white">bomTR (Chrome Eklentisi)</span>
+                    <p class="text-sm text-zinc-400 mt-2 mb-4">BOM listesini tarayıcı yan panelinde yönetir, 6 mağazada fiyat ve stok kıyaslar. Fiyat karşılaştırması için yerel robo-market-search API'sine bağlanır.</p>
+                    <pre class="p-4 rounded-2xl bg-black/70 border border-white/5 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed"><code>make run-api   # 127.0.0.1:8000</code></pre>
+                    <a href="https://chromewebstore.google.com/detail/bomtr/mllknkaempcjocdjibelcjohjadnffep" target="_blank" rel="noopener" class="mt-4 text-xs font-mono text-accent hover:underline">Chrome Web Store'dan yükle →</a>
                 </div>
             </div>
         </div>

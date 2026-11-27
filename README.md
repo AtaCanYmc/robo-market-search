@@ -31,6 +31,7 @@ Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context P
 - **Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
 - **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) donanım analizi ve BOM listesi çıkarır.
 - **Masaüstü ve Web Önyüzü (Tauri + Vite + React)**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV / JSON / Markdown / Clipboard** dışa aktarma.
+- **Skill ve Chrome Eklentisi**: [`bom-sourcing`](https://github.com/AtaCanYmc/bom-sourcing) ajan skill'i repolardan BOM çıkarır ve canlı fiyatı bu projeyle karşılaştırır. [bomTR](https://chromewebstore.google.com/detail/bomtr/mllknkaempcjocdjibelcjohjadnffep) Chrome eklentisi BOM listesini yan panelde yönetir ([`bom-tr`](https://github.com/AtaCanYmc/bom-tr)). Ayrıntı: [docs/integrations.md](docs/integrations.md).
 - **Dayanıklılık ve Önbellek**: Arızalı marketler devre kesici (circuit breaker) ile geçici olarak atlanır, bot koruması sonrası `User-Agent` değiştirilerek yeniden denenir. Sonuçlar SQLite veya isteğe bağlı Redis önbelleğinde market bazlı TTL ile tutulur.
 - **Dinamik Token Mimarisi**: API anahtarı veya oturum token'ı değişikliklerinde otomatik yenilenir.
 - **CLI (`robo-search`)**: Terminal üzerinden tablolar ve canlı ilerleme çıktısıyla hızlı ürün araması.
@@ -86,6 +87,7 @@ Projenin tüm teknik belgeleri `docs/` dizininde yer alır:
 | **Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` ve CI/CD süreçleri | [docs/development.md](docs/development.md) |
 | **Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **SSS (FAQ)** | Sıkça sorulan sorular | [docs/faq.md](docs/faq.md) |
+| **Entegrasyonlar** | `bom-sourcing` skill'i ve bomTR Chrome eklentisi | [docs/integrations.md](docs/integrations.md) |
 | **Bruno API Koleksiyonu** | Uç nokta istekleri ve doğrulamaları, `make test-api` ile çalışır | [bruno/README.md](bruno/README.md) |
 | **Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [docs/roadmap.md](docs/roadmap.md) |
 | **Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [docs/adr/](docs/adr/) |
