@@ -7,7 +7,7 @@
 | Option | Cost & Card | Cold Start | 24/7 Uptime | `bomTR` / `robo-api` Fit |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. Oracle Cloud Always Free (Ampere A1)** | `$0` (card verification required) | `0 ms` | Continuous 24/7 | **Very High** — Full Linux VM (12–24 GB RAM), Docker + Nginx/Cloudflare Tunnel |
-| **2. Hugging Face Spaces (Docker)** | `$0` (no credit card) | `0 ms*` (with `/health` ping every 12h) | Sleeps after 48h idle (24/7 with cron/UptimeRobot) | **High** — Runs `robo-api` Dockerfile directly, free HTTPS URL |
+| **2. Hugging Face Spaces (Docker)** | Requires PRO (`cpu-basic` Docker Spaces no longer free) | `0 ms*` | — | **Paid only** — Static Spaces remain free; Docker Spaces require HF PRO |
 | **3. Google Cloud Run (Free Tier)** | `$0` (within quota; card required) | `1–3 s` (`min-instances=0`) | Wakes on request | **Medium** — Generous free quota, small first-request delay |
 | **4. Koyeb (Free Web Service)** | `$0` | Few seconds (after sleep) | Periodic sleep / limits | **Medium** — Fast GitHub deploy, secondary for 24/7 |
 | **Render / Railway (Free)** | `$0` / trial credit | `30–50 s` (Render) | Sleeps / stops after credit | **Low** — Noticeable wait for live `bomTR` queries |
@@ -42,6 +42,11 @@
    ```
 
    > **Note:** `robo-api` reads `PORT` from the environment and sets `CORS_ORIGINS=["*"]` by default, so `bomTR` and browser clients can call `https://<user>-<space>.hf.space` directly.
-3. **Shared Cloud Risk (Datacenter IP / WAF):**
+3. **Koyeb (Free Web Service):**
+   - Create a Web Service in Koyeb connected to `AtaCanYmc/robo-market-search` (`main` branch).
+   - Builder: **Dockerfile** (uses root `Dockerfile`, port `8000`, health check `/health`).
+   - Free tier gives 512 MB RAM / 0.1 vCPU and sleeps on idle (few seconds cold start).
+
+4. **Shared Cloud Risk (Datacenter IP / WAF):**
    - All cloud providers use datacenter IPs, which some Turkish stores may challenge or block via Cloudflare/WAF.
    - After deploying, run a single search query and verify all 6 stores return results. If a store blocks the cloud IP, `bomTR` falls back to local `127.0.0.1` or offline `?q=` search tabs.
