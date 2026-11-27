@@ -83,7 +83,8 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
   - Configurable target price threshold alerts via CLI and REST API.
 - **Cloud Hosting & Deploy Templates**:
   - [x] Free cloud hosting guide (`docs/hosting.md`) covering Oracle Cloud Always Free, Hugging Face Spaces (Docker), and Google Cloud Run.
-  - Ready-to-use Hugging Face Spaces `Dockerfile` and Oracle Cloud Always Free setup templates.
+  - [x] Hugging Face Spaces `Dockerfile` and `README.md` template in `docs/hosting.md`.
+  - Oracle Cloud Always Free setup template.
 
 #### v2.0.0: Advanced Component Graph & Enterprise Features
 - **Component Equivalence Graph**:

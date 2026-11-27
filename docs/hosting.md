@@ -18,8 +18,30 @@
    - If you already have an Oracle Cloud Tenancy, check if you can provision an Always Free Ampere A1 VM with Docker + Nginx or Cloudflare Tunnel.
    - To prevent idle VM reclamation while staying within free limits, Pay-As-You-Go (PAYG) keeps Always Free resources active.
 2. **Hugging Face Spaces (Best cardless option):**
-   - Create a Docker Space using the repository `Dockerfile` (exposes port `8000` / `/health`).
+   - Create a Docker Space using the repository `Dockerfile` (exposes port `8000` / `/health`), or use the minimal Space files below.
    - Ping `/health` (or `/api/v1/providers`) every 12 hours via UptimeRobot or GitHub Actions to prevent 48h idle sleep.
+
+   **Space `README.md` (YAML frontmatter):**
+
+   ```yaml
+   ---
+   title: Robo Market Search API
+   sdk: docker
+   app_port: 8000
+   ---
+   ```
+
+   **Space `Dockerfile`:**
+
+   ```dockerfile
+   FROM python:3.12-slim
+   RUN pip install --no-cache-dir "robo-market-search[api]"
+   ENV HOST=0.0.0.0 PORT=8000
+   EXPOSE 8000
+   CMD ["robo-api"]
+   ```
+
+   > **Note:** `robo-api` reads `PORT` from the environment and sets `CORS_ORIGINS=["*"]` by default, so `bomTR` and browser clients can call `https://<user>-<space>.hf.space` directly.
 3. **Shared Cloud Risk (Datacenter IP / WAF):**
    - All cloud providers use datacenter IPs, which some Turkish stores may challenge or block via Cloudflare/WAF.
    - After deploying, run a single search query and verify all 6 stores return results. If a store blocks the cloud IP, `bomTR` falls back to local `127.0.0.1` or offline `?q=` search tabs.
