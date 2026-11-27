@@ -174,6 +174,7 @@
                 <a href="#architecture" class="hover:text-white transition-colors" data-i18n="nav_arch">Mimari</a>
                 <a href="#showcase" class="hover:text-white transition-colors" data-i18n="nav_interfaces">Arayüzler</a>
                 <a href="#quickstart" class="hover:text-white transition-colors" data-i18n="nav_install">Kurulum</a>
+                <a href="#downloads" class="hover:text-white transition-colors">İndir</a>
                 <a href="#companions" class="hover:text-white transition-colors">Skill &amp; Eklenti</a>
             </div>
 
@@ -674,6 +675,43 @@ brew upgrade robo-market-search</code></pre>
         </div>
     </section>
 
+    <!-- DESKTOP DOWNLOADS -->
+    <section id="downloads" class="py-20 px-4 sm:px-6 border-t border-white/[0.06]">
+        <div class="max-w-5xl mx-auto reveal">
+            <div class="text-center mb-12">
+                <span class="font-mono text-xs text-accent uppercase tracking-widest">// Desktop App</span>
+                <h2 class="font-display font-bold text-3xl sm:text-5xl text-white mt-2">Masaüstü Uygulamasını İndir</h2>
+                <p id="dl-version" class="text-sm text-zinc-400 mt-3 font-mono">Tauri v2 • macOS, Windows, Linux</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a id="dl-mac" href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" target="_blank" rel="noopener"
+                   class="bento-card rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="font-display font-bold text-lg text-white">macOS</span>
+                        <p class="text-xs text-zinc-400 mt-1 font-mono">.dmg (Apple Silicon &amp; Intel)</p>
+                    </div>
+                    <span class="mt-6 text-xs font-mono text-accent">İndir →</span>
+                </a>
+                <a id="dl-win" href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" target="_blank" rel="noopener"
+                   class="bento-card rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="font-display font-bold text-lg text-white">Windows</span>
+                        <p class="text-xs text-zinc-400 mt-1 font-mono">.msi / .exe (64-bit)</p>
+                    </div>
+                    <span class="mt-6 text-xs font-mono text-accent">İndir →</span>
+                </a>
+                <a id="dl-linux" href="https://github.com/AtaCanYmc/robo-market-search/releases/latest" target="_blank" rel="noopener"
+                   class="bento-card rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="font-display font-bold text-lg text-white">Linux</span>
+                        <p class="text-xs text-zinc-400 mt-1 font-mono">.AppImage / .deb</p>
+                    </div>
+                    <span class="mt-6 text-xs font-mono text-accent">İndir →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER -->
     <footer class="py-14 px-4 sm:px-6 border-t border-white/10 bg-[#040406]">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -912,9 +950,27 @@ brew upgrade robo-market-search</code></pre>
             });
         });
 
-        // Initialize default simulator view
+        // Initialize default simulator view & resolve latest desktop release assets
         window.addEventListener('DOMContentLoaded', () => {
             runSearchSim();
+            fetch('https://api.github.com/repos/AtaCanYmc/robo-market-search/releases')
+                .then(r => r.ok ? r.json() : [])
+                .then(releases => {
+                    const rel = Array.isArray(releases) && releases.find(r => Array.isArray(r.assets) && r.assets.length > 0);
+                    if (!rel) return;
+                    const v = document.getElementById('dl-version');
+                    if (v) v.textContent = `${rel.tag_name} • macOS, Windows, Linux`;
+                    const pick = (exts) => rel.assets.find(a => exts.some(e => a.name.toLowerCase().endsWith(e)));
+                    const map = {
+                        'dl-mac': pick(['.dmg']),
+                        'dl-win': pick(['.msi', '.exe']),
+                        'dl-linux': pick(['.appimage', '.deb']),
+                    };
+                    Object.entries(map).forEach(([id, asset]) => {
+                        if (asset) document.getElementById(id).href = asset.browser_download_url;
+                    });
+                })
+                .catch(() => {});
         });
     </script>
 </body>
