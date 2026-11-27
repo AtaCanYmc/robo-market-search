@@ -31,6 +31,7 @@ Ayrıca yerleşik **REST API**, **CLI (Komut Satırı)**, **MCP (Model Context P
 - **Sepet Optimizasyonu ve Kargo Hesaplama (`cart_search`)**: Birden fazla parça alırken kargo limitlerini (ücretsiz kargo eşiklerini) ve mağazalar arası bölünmüş sepet (split cart) maliyetlerini otomatik optimize eder.
 - **BYOK Destekli Yapay Zeka Ajanı (AI Hardware Agent)**: Kendi API anahtarınızla (OpenAI, Gemini, Anthropic, DeepSeek, Groq, Ollama) donanım analizi ve BOM listesi çıkarır.
 - **Masaüstü ve Web Önyüzü (Tauri + Vite + React)**: Canlı arama, filtreleme, stok takibi, sepet optimizasyonu ve **CSV / JSON / Markdown / Clipboard** dışa aktarma.
+- **Dayanıklılık ve Önbellek**: Arızalı marketler devre kesici (circuit breaker) ile geçici olarak atlanır, bot koruması sonrası `User-Agent` değiştirilerek yeniden denenir. Sonuçlar SQLite veya isteğe bağlı Redis önbelleğinde market bazlı TTL ile tutulur.
 - **Dinamik Token Mimarisi**: API anahtarı veya oturum token'ı değişikliklerinde otomatik yenilenir.
 - **CLI (`robo-search`)**: Terminal üzerinden tablolar ve canlı ilerleme çıktısıyla hızlı ürün araması.
 - **LLM/MCP Entegrasyonu (`robo-mcp`)**: Claude Desktop, Antigravity ve VS Code (Cline / RooCode) asistanlarına canlı mağaza fiyat sorgulama yeteneği.
@@ -85,6 +86,7 @@ Projenin tüm teknik belgeleri `docs/` dizininde yer alır:
 | **Geliştirici Rehberi** | Katkı sağlama, `pytest`, `ruff` ve CI/CD süreçleri | [docs/development.md](docs/development.md) |
 | **Sorun Giderme** | Sık karşılaşılan hatalar ve çözümleri | [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **SSS (FAQ)** | Sıkça sorulan sorular | [docs/faq.md](docs/faq.md) |
+| **Bruno API Koleksiyonu** | Uç nokta istekleri ve doğrulamaları, `make test-api` ile çalışır | [bruno/README.md](bruno/README.md) |
 | **Yol Haritası** | Gelecek sürümler ve hedeflenen özellikler | [docs/roadmap.md](docs/roadmap.md) |
 | **Mimari Kararlar (ADR)** | Mimari karar kayıtları (`ThreadPool`, `4-Layer`) | [docs/adr/](docs/adr/) |
 
@@ -485,7 +487,7 @@ Dolayısıyla hiçbir markete SEO veya popülerlik avantajı tanınmaz; kullanı
 <summary><b>Ürünlerin fiyat ve stok bilgileri ne kadar güncel?</b></summary>
 <br/>
 
-Arama yapıldığı an 6 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir.
+Arama yapıldığı an 6 marketin canlı arama API ve web sayfalarına anlık HTTP istekleri atılır. Dolayısıyla görüntülenen fiyat ve stok durumu **%100 canlı ve anlıktır.** Ayrıca önbellek (cache) mekanizması isteğe bağlı çalışır ve varsayılan olarak 2 saatte bir güncellenir. Ozdisan ve Motorobit sonuçları 1 saat sonra yenilenir. `ROBO_REDIS_URL` tanımlıysa önbellek Redis'te tutulur (`pip install "robo-market-search[redis]"`).
 </details>
 
 <details>
@@ -523,6 +525,7 @@ Projede test, formatlama, tip kontrolü ve servis çalıştırma süreçlerini o
 | `make setup` | Geliştirici paketlerini kurar ve pre-commit hook'larını aktif eder |
 | `make test` | Pytest test paketini çalıştırır |
 | `make test-cov` | Testleri kapsam (coverage) raporu ile yürütür |
+| `make test-api` | Çalışan API'ye karşı [`bruno/`](bruno/) koleksiyonunu çalıştırır (`@usebruno/cli` gerekir) |
 | `make check` | Format, lint (Ruff) ve tip (Mypy) kontrollerini çalıştırır |
 | `make fix` | Kod formatlama ve lint hatalarını otomatik düzeltir |
 | `make run-api` | FastAPI REST API sunucusunu ayağa kaldırır (port 8000) |

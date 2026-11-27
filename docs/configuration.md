@@ -10,7 +10,8 @@ Robo Market Search can be configured via environment variables, configuration fi
 | :--- | :--- | :--- | :--- |
 | `LOG_LEVEL` | String | `INFO` | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `CACHE_ENABLED` | Boolean | `true` | Enable/disable search result caching in `SearchService` |
-| `CACHE_TTL_SECONDS` | Integer | `7200` | Search result cache expiration time (default 2 hours) |
+| `CACHE_TTL_SECONDS` | Integer | `7200` | Search result cache expiration time (default 2 hours). A cached result expires at the shortest TTL among its stores. `Ozdisan` and `Motorobit` use 3600 (`SOURCE_TTLS` in `shared/cache.py`) |
+| `ROBO_REDIS_URL` | String | None | Redis URL (for example `redis://localhost:6379/0`). When set, search results are cached in Redis instead of SQLite. Requires `pip install "robo-market-search[redis]"` |
 | `ROBO_AGENT_PROVIDER` | String | `openai` | Default LLM provider for AI Agent (`openai`, `gemini`, `anthropic`, `deepseek`, `groq`, `ollama`, `mock`) |
 | `ROBO_AGENT_KEY` | String | None | Default API Key for LLM provider |
 | `OPENAI_API_KEY` | String | None | Direct OpenAI API Key |

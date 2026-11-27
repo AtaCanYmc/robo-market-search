@@ -53,6 +53,8 @@ make help
 | `make test` | Run pytest test suite | `pytest` |
 | `make test-v` | Verbose pytest execution with short tracebacks | `pytest -v --tb=short` |
 | `make test-cov` | Pytest with cross-package coverage report | `pytest --cov=... --cov-report=term-missing tests/` |
+| `make test-api` | Run the Bruno API collection against a running API | `cd bruno && bru run --env local` |
+| `make test-api-docker` | Same, using the `docker` environment | `cd bruno && bru run --env docker` |
 | `make lint` | Check code with Ruff | `ruff check .` |
 | `make lint-fix` | Auto-fix lint violations with Ruff | `ruff check --fix .` |
 | `make format` | Format code using Ruff | `ruff format .` |

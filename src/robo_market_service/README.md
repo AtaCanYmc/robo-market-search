@@ -12,7 +12,7 @@
 
 1. **Paralel & Eşzamanlı Arama**: Çoklu donanım aramasını arka planda paralel yönetir.
 2. **Yeniden Deneme (Retries & Backoff)**: Bağlantı veya ağ hatalarında katlanarak artan zaman aşımı ile otomatik yeniden dener.
-3. **Önbellek Yönetimi (`ServiceCache`)**: SQLite altyapısı ile mükerrer aramaları engeller.
+3. **Önbellek Yönetimi (`ServiceCache`)**: SQLite (veya `ROBO_REDIS_URL` ile Redis) altyapısı ile mükerrer aramaları engeller. TTL market bazlıdır.
 4. **Sorgu Normalleştirme & Eşanlamlı Açılımı (`SynonymExpander`)**: Elektronik parça terimlerini otomatik genişletir (örn: "solenoid valve" -> "selenoid vana", "nodemcu" -> "esp32").
 5. **Fuzzy Matching & Deduplication**: Benzersiz ürünleri tespit eder, başlık benzerliği, stok durumu ve fiyata göre akıllı skorlama yaparak sıralar.
 6. **Sepet Optimizasyonu (`cart_search`)**: Tek mağaza vs. bölünmüş mağaza (split cart) kargo ve ürün toplam maliyetlerini kıyaslar.
