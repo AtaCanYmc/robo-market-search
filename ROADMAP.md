@@ -11,10 +11,10 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 | Milestone | Target Scope | Status | Focus Area |
 | :--- | :--- | :--- | :--- |
 | **v1.0.0 - v1.9.0** | Foundation & Ecosystem | Completed | Core scrapers, Unified Search, MCP server, Telegram bot, Vite Web UI. |
-| **v1.10.0** | Desktop App & Store Expansion | Current Release | Tauri v2 desktop app, Özdisan & Motorobit scrapers, `src/` migration, Release Please automation. |
-| **v1.11.0** | Pipeline & Automation | Planned | Full Dependabot ecosystem coverage, automated pre-commit updates, CI optimizations. |
-| **v1.12.0** | Distributed Cache & Queues | Planned | Redis caching layer in `robo_market_service`, rate-limiting backpressure. |
-| **v1.13.0** | Real-Time Streaming | Planned | Server-Sent Events (SSE) and WebSocket streaming for agent reasoning traces. |
+| **v1.10.0** | Desktop App & Store Expansion | Completed | Tauri v2 desktop app, Özdisan & Motorobit scrapers, `src/` migration, Release Please automation. |
+| **v1.11.0** | Pipeline & Automation | Completed | Full Dependabot ecosystem coverage, automated pre-commit updates, CI optimizations. |
+| **v1.12.0** | Desktop Packaging & Scraper Expansion | Current Release | Desktop release pipeline, Python sidecar, Bruno API collection. Redis cache and circuit breaker carried to v1.13.0. |
+| **v1.13.0** | Cache, Resilience & Streaming | Planned | Redis cache, circuit breaker, SSE streaming for agent reasoning traces. |
 | **v2.0.0** | Graph & Multi-Currency | Future Architecture | Component pin-compatibility graph, multi-currency conversion, unified GraphQL API. |
 
 ---
@@ -49,30 +49,34 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/). Releases a
 
 ### In Progress & Upcoming Milestones
 
-#### v1.11.0: Automation & Dependency Governance
-- Dynamic CLI package version resolution via `importlib.metadata`.
-- Repository-wide Dependabot configuration covering root, `/app/backend`, `/app/frontend`, Dockerfiles, and GitHub Actions.
-- Automated weekly pre-commit hook update workflow via GitHub Actions.
-- Dependency synchronization across Python packages and frontend build manifests.
+#### v1.11.0: Automation & Dependency Governance (Completed)
+- [x] Dynamic CLI package version resolution via `importlib.metadata`.
+- [x] Repository-wide Dependabot configuration covering root, `/app/backend`, `/app/frontend`, Dockerfiles, and GitHub Actions.
+- [x] Automated weekly pre-commit hook update workflow via GitHub Actions.
+- [x] Dependency synchronization across Python packages and frontend build manifests.
 
-#### v1.12.0: Scraper Expansion & Distributed Caching
+#### v1.12.0: Scraper Expansion & Desktop Packaging (Current)
 - **New Scraper Integrations**:
   - [x] Implement `OzdisanClient` for industrial electronic components and IC distribution.
   - [x] Implement `MotorobitClient` for robotics and automation hardware.
 - **Desktop Application Packaging (Tauri v2)**:
   - [x] Cross-platform desktop release pipeline for macOS (.dmg), Windows (.msi/.exe), and Linux (.AppImage/.deb).
   - [x] Standalone Python sidecar integration with zero external Python dependency.
+- **API Tooling**:
+  - [x] Bruno collection in [`bruno/`](bruno/) with endpoint requests and assertions, runnable with `make test-api`.
+
+#### v1.13.0: Cache, Resilience & Streaming
 - **Distributed Cache Layer**:
   - Add optional Redis backend to `robo_market_service` alongside the in-memory cache.
   - Implement TTL-based cache invalidation per market source.
 - **Scraper Resilience**:
   - Circuit-breaker pattern to gracefully isolate failing market endpoints.
   - Automated fallback headers and catalog pagination recovery.
-
-#### v1.13.0: Streaming Agent & Telemetry
 - **Agent Streaming Protocol**:
   - Server-Sent Events (SSE) endpoint in `robo_market_api` for step-by-step BOM generation.
   - Real-time token streaming from LLM providers (OpenAI, Anthropic, Gemini, Groq, Ollama).
+- **Platform Security**:
+  - Track upstream Tauri GTK3 migration to clear the `glib` 0.18 advisory on Linux builds.
 - **Price Alerting**:
   - Webhook delivery mechanism for component price drops and restock alerts.
   - Configurable target price threshold alerts via CLI and REST API.
